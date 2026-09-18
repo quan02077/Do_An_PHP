@@ -33,9 +33,21 @@ class SuKien extends Model
         return $this->hasMany(YeuThich::class, 'su_kien_id');
     }
 
-    // Thuộc tính tiện ích: Đếm số vé đã đăng ký thực tế từ bảng dang_ky
     public function getSoLuongDaDangKyAttribute()
     {
         return $this->relationLoaded('dangKys') ? $this->dangKys->count() : $this->dangKys()->count();
+    }
+
+    public function getUrlHinhAnhAttribute()
+    {
+        if (empty($this->hinh_anh)) {
+            return 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=800&h=500&fit=crop';
+        }
+
+        if (str_starts_with($this->hinh_anh, 'http://') || str_starts_with($this->hinh_anh, 'https://')) {
+            return $this->hinh_anh;
+        }
+
+        return asset('uploads/su_kien/' . $this->hinh_anh);
     }
 }

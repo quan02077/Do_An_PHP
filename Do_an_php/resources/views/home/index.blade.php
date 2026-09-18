@@ -104,16 +104,15 @@
         @php
           $id = $event->id;
           $title = $event->ten_su_kien;
-          $image = $event->hinh_anh ?: 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=800&h=500&fit=crop';
+          $image = $event->url_hinh_anh;
           $location = $event->dia_diem ?? 'Chưa cập nhật';
           $capacity = $event->so_luong_toi_da ?? 100;
           $registered = $event->so_luong_da_dang_ky ?? ($event->dangKys ? $event->dangKys->count() : 0);
           $status = $event->trang_thai ?? 'sap_dien_ra';
-          
           $catName = $event->danhMuc->ten_danh_muc ?? 'Chung';
 
           $rawDate = $event->thoi_gian_bat_dau;
-          $dateFormatted = $rawDate ? date('d/m/Y - H:i', strtotime($rawDate)) : 'Đang cập nhật';
+          $dateFormatted = $rawDate ? date('d/m/Y - H:i',  strtotime($rawDate)) : 'Đang cập nhật';
 
           $percent = min(100, round(($registered / max(1, $capacity)) * 100));
         @endphp
