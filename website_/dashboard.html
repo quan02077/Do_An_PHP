@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vé &amp; Sự kiện của tôi — EventVN</title>
+    <!-- Bootstrap 5.3.3 CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body class="bg-body-tertiary text-dark min-vh-100 d-flex flex-column">
+    <!-- Navbar Header -->
+    <header class="navbar navbar-expand-lg sticky-top bg-white border-bottom shadow-xs py-2">
+      <div class="container">
+        <a href="index.html" class="navbar-brand d-flex align-items-center gap-2 m-0 p-0 text-decoration-none">
+          <div class="rounded-3 bg-dark text-white d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 36px; height: 36px; font-size: 1.15rem;">
+            E
+          </div>
+          <span class="fs-5 fw-bold tracking-tight text-dark m-0">Event<span class="text-secondary fw-normal">VN</span></span>
+        </a>
+
+        <button class="navbar-toggler border-0 p-2 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarMain">
+          <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-1 gap-lg-2 pt-2 pt-lg-0">
+            <li class="nav-item">
+              <a href="index.html" class="nav-link px-3 py-1 rounded-pill small fw-medium text-secondary">Trang chủ</a>
+            </li>
+            <li class="nav-item">
+              <a href="dashboard.html" class="nav-link active px-3 py-1 rounded-pill small fw-semibold text-dark bg-light">Vé của tôi</a>
+            </li>
+            <li class="nav-item">
+              <a href="dashboard.html?tab=bookmarks" class="nav-link px-3 py-1 rounded-pill small fw-medium text-secondary d-flex align-items-center gap-1.5">
+                <svg class="text-danger" style="width: 15px; height: 15px; fill: currentColor;" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                <span>Yêu thích</span>
+                <span class="bookmark-count-badge d-none badge rounded-pill bg-danger text-white ms-1" style="font-size: 12px;">0</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="profile.html" class="nav-link px-3 py-1 rounded-pill small fw-medium text-secondary">Hồ sơ cá nhân</a>
+            </li>
+          </ul>
+
+          <div class="d-flex align-items-center gap-3 pt-2 pt-lg-0">
+            <div class="navbar-role-switcher d-none"></div>
+            <div class="navbar-auth-container"></div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container py-4 flex-grow-1" id="dashboard-main">
+      <!-- Giao diện khi chưa đăng nhập -->
+      <div id="unauth-view" class="d-none bg-white rounded-4 border shadow-sm p-4 p-sm-5 text-center mx-auto my-5" style="max-width: 440px;">
+        <div class="rounded-circle bg-light text-secondary d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 64px; height: 64px;">
+          <svg style="width: 32px; height: 32px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+        </div>
+        <h2 class="fs-4 fw-bold tracking-tight text-dark mb-2">Đăng nhập tài khoản</h2>
+        <p class="small text-muted mb-4">
+          Vui lòng đăng nhập để xem danh sách vé điện tử đã đăng ký và các sự kiện yêu thích của bạn.
+        </p>
+        <div class="d-flex gap-2">
+          <a href="auth.html" class="btn btn-dark flex-grow-1 py-2 small fw-medium">
+            Đăng nhập
+          </a>
+          <a href="auth.html?mode=register" class="btn btn-outline-secondary flex-grow-1 py-2 small fw-medium">
+            Đăng ký
+          </a>
+        </div>
+      </div>
+
+      <!-- Giao diện khi đã đăng nhập -->
+      <div id="auth-view" class="d-none">
+        <!-- Profile Banner -->
+        <div class="bg-white rounded-4 border shadow-sm p-4 mb-4 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+          <div class="d-flex align-items-center gap-3">
+            <div id="dash-avatar" class="rounded-3 bg-dark text-white fw-bold d-flex align-items-center justify-content-center shadow-sm flex-shrink-0 fs-4" style="width: 60px; height: 60px;">
+              U
+            </div>
+            <div>
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <h1 id="dash-name" class="fs-5 fw-bold tracking-tight text-dark mb-0"></h1>
+                <span id="dash-role-badge" class="badge rounded-pill fw-medium"></span>
+              </div>
+              <div class="d-flex flex-wrap gap-2 small text-muted">
+                <span id="dash-email"></span>
+                <span>•</span>
+                <span id="dash-phone"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex align-items-center gap-2">
+            <a href="profile.html" class="btn btn-sm btn-outline-secondary rounded-3 px-3 py-2 fw-medium small">
+              Chỉnh sửa hồ sơ
+            </a>
+            <button onclick="logout()" class="btn btn-sm btn-outline-danger rounded-3 px-3 py-2 fw-medium small">
+              Đăng xuất
+            </button>
+          </div>
+        </div>
+
+        <!-- Dashboard Tabs: Vé đã đăng ký vs Sự kiện Yêu thích -->
+        <ul class="nav nav-underline gap-3 border-bottom mb-4" role="tablist">
+          <li class="nav-item">
+            <button id="tab-tickets-btn" type="button" onclick="switchDashTab('tickets')" class="nav-link active text-dark fw-semibold d-flex align-items-center gap-2 pb-2.5">
+              <span>Vé đã đăng ký</span>
+              <span id="tickets-count-badge" class="badge rounded-pill bg-light text-dark border">0</span>
+            </button>
+          </li>
+          <li class="nav-item">
+            <button id="tab-bookmarks-btn" type="button" onclick="switchDashTab('bookmarks')" class="nav-link text-secondary fw-semibold d-flex align-items-center gap-2 pb-2.5">
+              <svg class="text-danger" style="width: 16px; height: 16px; fill: currentColor;" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+              <span>Sự kiện Yêu thích</span>
+              <span id="bookmarks-tab-count" class="badge rounded-pill bg-danger-subtle text-danger border border-danger-subtle">0</span>
+            </button>
+          </li>
+        </ul>
+
+        <!-- Nội dung Tab 1: Danh sách vé -->
+        <div id="tickets-container" class="d-flex flex-column gap-3">
+          <!-- Render dynamically -->
+        </div>
+
+        <!-- Nội dung Tab 2: Sự kiện Yêu thích -->
+        <div id="bookmarks-container" class="row g-4 d-none">
+          <!-- Render dynamically -->
+        </div>
+      </div>
+    </main>
+
+    <!-- Bootstrap 5.3.3 JS Bundle CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- App Scripts -->
+    <script src="js/data.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+      let currentDashTab = "tickets";
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const user = getCurrentUser();
+        const unauthView = document.getElementById("unauth-view");
+        const authView = document.getElementById("auth-view");
+
+        if (!user) {
+          unauthView.classList.remove("d-none");
+          authView.classList.add("d-none");
+          return;
+        }
+
+        unauthView.classList.add("d-none");
+        authView.classList.remove("d-none");
+
+        // Profile Info
+        document.getElementById("dash-avatar").textContent = user.avatar || "U";
+        document.getElementById("dash-name").textContent = user.name;
+        document.getElementById("dash-email").textContent = user.email;
+        document.getElementById("dash-phone").textContent = user.phone;
+
+        const roleBadge = document.getElementById("dash-role-badge");
+        if (user.role === "admin") {
+          roleBadge.textContent = "Quản trị viên";
+          roleBadge.className = "badge rounded-pill bg-dark text-white";
+        } else {
+          roleBadge.textContent = "Thành viên";
+          roleBadge.className = "badge rounded-pill bg-light text-secondary border";
+        }
+
+        // Kiểm tra query parameter ?tab=bookmarks
+        const params = new URLSearchParams(window.location.search);
+        if (params.get("tab") === "bookmarks") {
+          currentDashTab = "bookmarks";
+        }
+
+        renderTickets();
+        renderBookmarks();
+        updateTabStyles();
+      });
+
+      function switchDashTab(tab) {
+        currentDashTab = tab;
+        updateTabStyles();
+      }
+
+      function updateTabStyles() {
+        const ticketsBtn = document.getElementById("tab-tickets-btn");
+        const bookmarksBtn = document.getElementById("tab-bookmarks-btn");
+        const ticketsBox = document.getElementById("tickets-container");
+        const bookmarksBox = document.getElementById("bookmarks-container");
+
+        if (currentDashTab === "tickets") {
+          ticketsBtn.classList.add("active", "text-dark");
+          ticketsBtn.classList.remove("text-secondary");
+          bookmarksBtn.classList.remove("active", "text-dark");
+          bookmarksBtn.classList.add("text-secondary");
+          ticketsBox.classList.remove("d-none");
+          bookmarksBox.classList.add("d-none");
+        } else {
+          bookmarksBtn.classList.add("active", "text-dark");
+          bookmarksBtn.classList.remove("text-secondary");
+          ticketsBtn.classList.remove("active", "text-dark");
+          ticketsBtn.classList.add("text-secondary");
+          bookmarksBox.classList.remove("d-none");
+          ticketsBox.classList.add("d-none");
+        }
+      }
+
+      function renderTickets() {
+        const user = getCurrentUser();
+        if (!user) return;
+        const regs = getRegistrations().filter((r) => r.userId === user.id);
+        const events = getEvents();
+        const container = document.getElementById("tickets-container");
+        document.getElementById("tickets-count-badge").textContent = regs.length;
+
+        if (regs.length === 0) {
+          container.innerHTML = `
+            <div class="text-center py-5 bg-white rounded-4 border shadow-sm p-4">
+              <div class="rounded-circle bg-light text-muted d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 52px; height: 52px;">
+                <svg style="width: 24px; height: 24px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg>
+              </div>
+              <h3 class="fs-6 fw-bold text-dark mb-1">Bạn chưa đăng ký sự kiện nào</h3>
+              <p class="small text-muted mb-3">Hãy khám phá các sự kiện hấp dẫn và đăng ký tham gia ngay hôm nay.</p>
+              <a href="index.html" class="btn btn-dark btn-sm rounded-3 px-3 py-2 fw-medium">
+                Khám phá sự kiện
+              </a>
+            </div>
+          `;
+          return;
+        }
+
+        let html = "";
+        regs.forEach((reg) => {
+          const ev = events.find((e) => e.id === reg.eventId) || {
+            title: "Sự kiện #" + reg.eventId,
+            image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=500",
+            startDate: reg.registeredAt,
+            location: "Đang cập nhật",
+          };
+
+          html += `
+            <div class="bg-white rounded-4 border shadow-sm p-3 p-sm-4 d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+              <div class="d-flex align-items-center gap-3">
+                <img src="${ev.image}" alt="${ev.title}" class="rounded-3 object-fit-cover flex-shrink-0" style="width: 76px; height: 76px;" />
+                <div>
+                  <div class="d-flex align-items-center gap-2 mb-1">
+                    <span class="badge rounded-pill bg-light text-secondary border font-monospace" style="font-size: 12px;">EVN-2026-${reg.id.toString().slice(-4)}</span>
+                    ${getStatusBadge(reg.status)}
+                  </div>
+                  <h3 class="fs-6 fw-bold text-dark mb-1 text-truncate" style="max-width: 480px;">
+                    <a href="event-detail.html?id=${ev.id}" class="text-decoration-none text-dark hover:text-secondary">${ev.title}</a>
+                  </h3>
+                  <div class="d-flex flex-wrap gap-2 small text-muted">
+                    <span>${fmtDateTime(ev.startDate)}</span>
+                    <span>•</span>
+                    <span>${ev.location}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="d-flex align-items-center gap-2 w-100 w-md-auto pt-2 pt-md-0 border-top border-md-top-0">
+                <a href="event-detail.html?id=${ev.id}" class="btn btn-sm btn-outline-secondary rounded-3 px-3 py-2 flex-grow-1 flex-md-grow-0 fw-medium">
+                  Xem sự kiện
+                </a>
+                ${
+                  reg.status !== "cancelled"
+                    ? `<button onclick="cancelRegistration(${reg.id})" class="btn btn-sm btn-outline-danger rounded-3 px-3 py-2 flex-grow-1 flex-md-grow-0 fw-medium">Hủy vé</button>`
+                    : ""
+                }
+              </div>
+            </div>
+          `;
+        });
+
+        container.innerHTML = html;
+      }
+
+      function renderBookmarks() {
+        const bookmarks = getBookmarks();
+        const events = getEvents().filter((e) => bookmarks.includes(e.id));
+        const container = document.getElementById("bookmarks-container");
+        document.getElementById("bookmarks-tab-count").textContent = events.length;
+
+        if (events.length === 0) {
+          container.innerHTML = `
+            <div class="col-12 text-center py-5 bg-white rounded-4 border shadow-sm p-4">
+              <div class="rounded-circle bg-danger-subtle text-danger d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 52px; height: 52px;">
+                <svg style="width: 24px; height: 24px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+              </div>
+              <h3 class="fs-6 fw-bold text-dark mb-1">Chưa có sự kiện yêu thích nào</h3>
+              <p class="small text-muted mb-3">Bấm vào biểu tượng Trái tim trên bất kỳ sự kiện nào để lưu lại tại đây.</p>
+              <a href="index.html" class="btn btn-dark btn-sm rounded-3 px-3 py-2 fw-medium">
+                Khám phá ngay
+              </a>
+            </div>
+          `;
+          return;
+        }
+
+        let html = "";
+        events.forEach((ev) => {
+          html += `
+            <div class="col-12 col-sm-6 col-lg-4">
+              <div class="bg-white rounded-4 border shadow-sm overflow-hidden h-100 d-flex flex-column card-hover-scale">
+                <div class="position-relative" style="height: 180px;">
+                  <img src="${ev.image}" alt="${ev.title}" class="w-100 h-100 object-fit-cover" />
+                  <button 
+                    type="button"
+                    onclick="removeBookmarkFromDash(${ev.id})"
+                    class="position-absolute top-0 end-0 m-2.5 btn btn-light rounded-circle p-0 d-flex align-items-center justify-content-center shadow-sm text-danger border"
+                    style="width: 36px; height: 36px;"
+                    title="Bỏ lưu"
+                  >
+                    <svg style="width: 16px; height: 16px; fill: currentColor;" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                  </button>
+                </div>
+                <div class="p-3.5 flex-grow-1 d-flex flex-column justify-content-between">
+                  <div>
+                    <div class="small fw-medium text-secondary mb-1">${fmtDateTime(ev.startDate)}</div>
+                    <h4 class="fs-6 fw-bold text-dark mb-1 text-truncate">${ev.title}</h4>
+                    <div class="small text-muted mb-3 text-truncate">${ev.location}</div>
+                  </div>
+                  <a href="event-detail.html?id=${ev.id}" class="btn btn-dark btn-sm w-100 py-2 rounded-3 fw-medium">
+                    Xem chi tiết &amp; Đặt vé
+                  </a>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+
+        container.innerHTML = html;
+      }
+
+      function cancelRegistration(regId) {
+        if (!confirm("Bạn có chắc chắn muốn hủy đăng ký vé này?")) return;
+        const regs = getRegistrations();
+        const index = regs.findIndex((r) => r.id === regId);
+        if (index !== -1) {
+          regs[index].status = "cancelled";
+          saveRegistrations(regs);
+          renderTickets();
+          showToast("Đã hủy đăng ký vé thành công", "info");
+        }
+      }
+
+      function removeBookmarkFromDash(eventId) {
+        toggleBookmark(eventId);
+        renderBookmarks();
+        showToast("Đã bỏ lưu sự kiện khỏi Yêu thích", "info");
+      }
+    </script>
+  </body>
+</html>

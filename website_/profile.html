@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hồ sơ cá nhân — EventVN</title>
+    <!-- Bootstrap 5.3.3 CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body class="bg-body-tertiary text-dark min-vh-100 d-flex flex-column">
+    <!-- Navbar Header -->
+    <header class="navbar navbar-expand-lg sticky-top bg-white border-bottom shadow-xs py-2">
+      <div class="container">
+        <a href="index.html" class="navbar-brand d-flex align-items-center gap-2 m-0 p-0 text-decoration-none">
+          <div class="rounded-3 bg-dark text-white d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 36px; height: 36px; font-size: 1.15rem;">
+            E
+          </div>
+          <span class="fs-5 fw-bold tracking-tight text-dark m-0">Event<span class="text-secondary fw-normal">VN</span></span>
+        </a>
+
+        <button class="navbar-toggler border-0 p-2 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarMain">
+          <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-1 gap-lg-2 pt-2 pt-lg-0">
+            <li class="nav-item">
+              <a href="index.html" class="nav-link px-3 py-1 rounded-pill small fw-medium text-secondary">Trang chủ</a>
+            </li>
+            <li class="nav-item">
+              <a href="dashboard.html" class="nav-link px-3 py-1 rounded-pill small fw-medium text-secondary">Vé của tôi</a>
+            </li>
+            <li class="nav-item">
+              <a href="dashboard.html?tab=bookmarks" class="nav-link px-3 py-1 rounded-pill small fw-medium text-secondary d-flex align-items-center gap-1.5">
+                <svg class="text-danger" style="width: 15px; height: 15px; fill: currentColor;" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                <span>Yêu thích</span>
+                <span class="bookmark-count-badge d-none badge rounded-pill bg-danger text-white ms-1" style="font-size: 12px;">0</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="profile.html" class="nav-link active px-3 py-1 rounded-pill small fw-semibold text-dark bg-light">Hồ sơ cá nhân</a>
+            </li>
+          </ul>
+
+          <div class="d-flex align-items-center gap-3 pt-2 pt-lg-0">
+            <div class="navbar-role-switcher d-none"></div>
+            <div class="navbar-auth-container"></div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container py-4 flex-grow-1" style="max-width: 960px;" id="profile-page-main">
+      
+      <!-- 1. Trạng thái khi chưa đăng nhập -->
+      <div id="unauth-profile-view" class="d-none bg-white rounded-4 border shadow-sm p-4 p-sm-5 text-center mx-auto my-5" style="max-width: 440px;">
+        <div class="rounded-circle bg-light text-secondary d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 64px; height: 64px;">
+          <svg style="width: 32px; height: 32px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+        </div>
+        <h2 class="fs-4 fw-bold tracking-tight text-dark mb-2">Bạn chưa đăng nhập</h2>
+        <p class="small text-muted mb-4">
+          Vui lòng đăng nhập để xem thông tin hồ sơ cá nhân và quản lý tài khoản của bạn.
+        </p>
+        <div class="d-flex gap-2">
+          <a href="auth.html?redirect=profile.html" class="btn btn-dark flex-grow-1 py-2 small fw-medium">
+            Đăng nhập ngay
+          </a>
+          <a href="auth.html?mode=register&redirect=profile.html" class="btn btn-outline-secondary flex-grow-1 py-2 small fw-medium">
+            Tạo tài khoản
+          </a>
+        </div>
+      </div>
+
+      <!-- 2. Giao diện hiển thị Profile riêng khi đã đăng nhập -->
+      <div id="auth-profile-view" class="d-none">
+        
+        <!-- Breadcrumb & Back -->
+        <div class="d-flex align-items-center justify-content-between mb-4">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb small mb-0">
+              <li class="breadcrumb-item"><a href="index.html" class="text-decoration-none text-muted">Trang chủ</a></li>
+              <li class="breadcrumb-item active text-dark fw-semibold" aria-current="page">Hồ sơ cá nhân</li>
+            </ol>
+          </nav>
+          
+          <a href="dashboard.html" class="btn btn-sm btn-outline-secondary rounded-pill px-3 d-flex align-items-center gap-1.5 small">
+            <span>Xem vé của tôi</span>
+            <svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+
+        <!-- Cover Header & Profile Card -->
+        <div class="bg-white rounded-4 border shadow-sm overflow-hidden mb-4">
+          <!-- Background Banner Cover -->
+          <div class="position-relative" style="height: 160px; background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);"></div>
+
+          <!-- Profile User Summary Info -->
+          <div class="px-4 px-md-5 pb-4 position-relative">
+            <div class="d-flex flex-column flex-sm-row align-items-sm-end justify-content-between gap-3 mb-4">
+              <div class="d-flex flex-column flex-sm-row align-items-sm-end gap-3">
+                <!-- Avatar lớn nổi trên banner -->
+                <div id="profile-avatar-display" class="rounded-4 bg-dark text-white fw-bold d-flex align-items-center justify-content-center shadow border border-white border-4 flex-shrink-0 position-relative fs-2" style="margin-top: -50px; width: 96px; height: 96px; z-index: 5;">
+                  U
+                </div>
+                <!-- Name & Email -->
+                <div>
+                  <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                    <h1 id="profile-name-display" class="fs-4 fw-bold tracking-tight text-dark mb-0"></h1>
+                    <span id="profile-role-badge" class="badge rounded-pill fw-semibold"></span>
+                  </div>
+                  <p id="profile-email-display" class="small text-muted mb-0"></p>
+                </div>
+              </div>
+
+              <!-- Nút Đăng xuất -->
+              <div>
+                <button 
+                  type="button" 
+                  onclick="confirmLogout()" 
+                  class="btn btn-sm btn-outline-danger rounded-3 px-3 py-2 fw-semibold small d-flex align-items-center gap-1.5"
+                >
+                  <svg style="width: 15px; height: 15px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                  </svg>
+                  <span>Đăng xuất</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="row g-2 pt-3 border-top text-center">
+              <div class="col-6 col-sm-3">
+                <a href="dashboard.html" class="d-block p-2 rounded-3 text-decoration-none text-dark hover-bg-light">
+                  <div id="stat-registered-count" class="fs-4 fw-bold text-dark tabular-nums">0</div>
+                  <div class="small text-muted">Vé đã đăng ký</div>
+                </a>
+              </div>
+              <div class="col-6 col-sm-3">
+                <a href="dashboard.html?tab=bookmarks" class="d-block p-2 rounded-3 text-decoration-none text-dark hover-bg-light">
+                  <div id="stat-bookmarks-count" class="fs-4 fw-bold text-dark tabular-nums">0</div>
+                  <div class="small text-muted">Sự kiện yêu thích</div>
+                </a>
+              </div>
+              <div class="col-6 col-sm-3">
+                <div class="p-2">
+                  <div id="stat-attended-count" class="fs-4 fw-bold text-dark tabular-nums">0</div>
+                  <div class="small text-muted">Đã tham gia</div>
+                </div>
+              </div>
+              <div class="col-6 col-sm-3">
+                <div class="p-2">
+                  <div class="fs-4 fw-bold text-success d-flex align-items-center justify-content-center gap-1.5">
+                    <span class="rounded-circle bg-success" style="width: 8px; height: 8px;"></span>
+                    Hoạt động
+                  </div>
+                  <div class="small text-muted">Trạng thái tài khoản</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ─── Tabs Navigation & Content ─────────────────────────────────────── -->
+        <div class="bg-white rounded-4 border shadow-sm p-4 p-md-5">
+          
+          <div class="d-flex align-items-center gap-2 border-bottom pb-3 mb-4 overflow-x-auto">
+            <button 
+              type="button" 
+              onclick="switchProfileTab('info')" 
+              id="tab-btn-info" 
+              class="btn btn-sm rounded-pill px-3 py-2 fw-semibold btn-dark shadow-xs d-flex align-items-center gap-1.5"
+            >
+              <svg style="width: 15px; height: 15px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+              <span>Thông tin cá nhân</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="switchProfileTab('security')" 
+              id="tab-btn-security" 
+              class="btn btn-sm rounded-pill px-3 py-2 fw-medium text-secondary d-flex align-items-center gap-1.5"
+            >
+              <svg style="width: 15px; height: 15px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <span>Bảo mật &amp; Đổi mật khẩu</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="switchProfileTab('settings')" 
+              id="tab-btn-settings" 
+              class="btn btn-sm rounded-pill px-3 py-2 fw-medium text-secondary d-flex align-items-center gap-1.5"
+            >
+              <svg style="width: 15px; height: 15px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+              <span>Cài đặt thông báo</span>
+            </button>
+          </div>
+
+          <!-- ─── TAB 1: THÔNG TIN CÁ NHÂN ──────────────────────────────────── -->
+          <div id="view-profile-info">
+            <h2 class="fs-5 fw-bold tracking-tight text-dark mb-3">Thông tin cá nhân</h2>
+            <form onsubmit="handleSaveProfileDetails(event)">
+              <div class="row g-3 mb-3">
+                <div class="col-sm-6">
+                  <label for="input-name" class="form-label small fw-medium text-dark mb-1">Họ và tên</label>
+                  <input 
+                    type="text" 
+                    id="input-name" 
+                    required 
+                    class="form-control form-control-sm py-2"
+                  />
+                </div>
+
+                <div class="col-sm-6">
+                  <label for="input-email" class="form-label small fw-medium text-dark mb-1">Địa chỉ Email</label>
+                  <div class="input-group">
+                    <input 
+                      type="email" 
+                      id="input-email" 
+                      readonly 
+                      class="form-control form-control-sm py-2 bg-light text-muted font-monospace"
+                    />
+                    <span class="input-group-text bg-success-subtle text-success border small fw-medium">Đã xác minh</span>
+                  </div>
+                </div>
+
+                <div class="col-sm-6">
+                  <label for="input-phone" class="form-label small fw-medium text-dark mb-1">Số điện thoại</label>
+                  <input 
+                    type="tel" 
+                    id="input-phone" 
+                    required 
+                    class="form-control form-control-sm py-2"
+                  />
+                </div>
+
+                <div class="col-sm-6">
+                  <label for="input-gender" class="form-label small fw-medium text-dark mb-1">Giới tính</label>
+                  <select id="input-gender" class="form-select form-select-sm py-2">
+                    <option value="Nam">Nam</option>
+                    <option value="Nữ">Nữ</option>
+                    <option value="Khác">Khác</option>
+                  </select>
+                </div>
+
+                <div class="col-sm-6">
+                  <label for="input-birthdate" class="form-label small fw-medium text-dark mb-1">Ngày sinh</label>
+                  <input 
+                    type="date" 
+                    id="input-birthdate" 
+                    class="form-control form-control-sm py-2"
+                  />
+                </div>
+
+                <div class="col-sm-6">
+                  <label for="input-location" class="form-label small fw-medium text-dark mb-1">Tỉnh / Thành phố</label>
+                  <input 
+                    type="text" 
+                    id="input-location" 
+                    class="form-control form-control-sm py-2"
+                    placeholder="Ví dụ: Hà Nội, Việt Nam"
+                  />
+                </div>
+
+                <div class="col-12">
+                  <label for="input-bio" class="form-label small fw-medium text-dark mb-1">Giới thiệu ngắn (Bio)</label>
+                  <textarea 
+                    id="input-bio" 
+                    rows="3" 
+                    class="form-control form-control-sm py-2"
+                    placeholder="Chia sẻ sở thích, chuyên ngành hoặc sự kiện bạn quan tâm..."
+                  ></textarea>
+                </div>
+              </div>
+
+              <div class="pt-3 border-top d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3">
+                <span class="small text-muted">Thông tin được bảo mật theo chính sách quyền riêng tư của EventVN</span>
+                <button 
+                  type="submit" 
+                  class="btn btn-dark btn-sm rounded-3 px-4 py-2 fw-medium d-flex align-items-center gap-1.5 justify-content-center"
+                >
+                  <svg style="width: 15px; height: 15px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                  <span>Lưu thay đổi hồ sơ</span>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- ─── TAB 2: BẢO MẬT & ĐỔI MẬT KHẨU ─────────────────────────────── -->
+          <div id="view-profile-security" class="d-none">
+            <h2 class="fs-5 fw-bold tracking-tight text-dark mb-3">Thay đổi mật khẩu đăng nhập</h2>
+            <form onsubmit="handleChangePassword(event)" style="max-width: 440px;" class="mb-4">
+              <div class="mb-3">
+                <label for="pwd-current" class="form-label small fw-medium text-dark mb-1">Mật khẩu hiện tại</label>
+                <input 
+                  type="password" 
+                  id="pwd-current" 
+                  required 
+                  class="form-control form-control-sm py-2"
+                  placeholder="••••••••"
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="pwd-new" class="form-label small fw-medium text-dark mb-1">Mật khẩu mới</label>
+                <input 
+                  type="password" 
+                  id="pwd-new" 
+                  required 
+                  class="form-control form-control-sm py-2"
+                  placeholder="Tối thiểu 6 ký tự"
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="pwd-confirm" class="form-label small fw-medium text-dark mb-1">Nhập lại mật khẩu mới</label>
+                <input 
+                  type="password" 
+                  id="pwd-confirm" 
+                  required 
+                  class="form-control form-control-sm py-2"
+                  placeholder="••••••••"
+                />
+              </div>
+
+              <button 
+                type="submit" 
+                class="btn btn-dark btn-sm rounded-3 px-4 py-2 fw-medium"
+              >
+                Cập nhật mật khẩu mới
+              </button>
+            </form>
+
+            <!-- Thiết bị đăng nhập -->
+            <div class="pt-4 border-top">
+              <h2 class="fs-5 fw-bold tracking-tight text-dark mb-3">Thiết bị đang đăng nhập</h2>
+              <div class="py-2.5 d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-3">
+                  <span class="rounded-3 bg-light text-secondary d-flex align-items-center justify-content-center border" style="width: 40px; height: 40px;">
+                    <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
+                  </span>
+                  <div>
+                    <div class="small fw-semibold text-dark">Trình duyệt Web (Windows)</div>
+                    <div class="small text-success fw-medium">Thiết bị hiện tại • Đang trực tuyến</div>
+                  </div>
+                </div>
+                <span class="badge rounded-pill bg-light text-secondary border font-monospace">Hà Nội, VN</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ─── TAB 3: CÀI ĐẶT THÔNG BÁO ──────────────────────────────────── -->
+          <div id="view-profile-settings" class="d-none">
+            <h2 class="fs-5 fw-bold tracking-tight text-dark mb-3">Tùy chọn nhận thông báo</h2>
+
+            <div class="d-flex flex-column gap-3 mb-4">
+              <div class="d-flex align-items-center justify-content-between p-3 rounded-3 bg-light">
+                <div>
+                  <div class="small fw-semibold text-dark">Thông báo sự kiện mới</div>
+                  <div class="small text-muted">Nhận email khi có các sự kiện nổi bật thuộc danh mục bạn yêu thích</div>
+                </div>
+                <div class="form-check form-switch m-0">
+                  <input class="form-check-input" type="checkbox" role="switch" checked />
+                </div>
+              </div>
+
+              <div class="d-flex align-items-center justify-content-between p-3 rounded-3 bg-light">
+                <div>
+                  <div class="small fw-semibold text-dark">Nhắc nhở trước sự kiện</div>
+                  <div class="small text-muted">Gửi email &amp; SMS nhắc nhở lịch trình trước giờ diễn ra 24 giờ</div>
+                </div>
+                <div class="form-check form-switch m-0">
+                  <input class="form-check-input" type="checkbox" role="switch" checked />
+                </div>
+              </div>
+
+              <div class="d-flex align-items-center justify-content-between p-3 rounded-3 bg-light">
+                <div>
+                  <div class="small fw-semibold text-dark">Cập nhật vé &amp; hóa đơn</div>
+                  <div class="small text-muted">Nhận mã QR vé điện tử và thông báo xác nhận từ ban tổ chức</div>
+                </div>
+                <div class="form-check form-switch m-0">
+                  <input class="form-check-input" type="checkbox" role="switch" checked />
+                </div>
+              </div>
+            </div>
+
+            <button onclick="showToast('Đã lưu cài đặt thông báo!', 'success')" class="btn btn-dark btn-sm rounded-3 px-4 py-2 fw-medium">
+              Lưu tùy chọn thông báo
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Bootstrap 5.3.3 JS Bundle CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- App Scripts -->
+    <script src="js/data.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+      let currentProfileUser = null;
+
+      document.addEventListener("DOMContentLoaded", () => {
+        loadUserProfile();
+      });
+
+      function loadUserProfile() {
+        currentProfileUser = getCurrentUser();
+        const unauthView = document.getElementById("unauth-profile-view");
+        const authView = document.getElementById("auth-profile-view");
+
+        if (!currentProfileUser) {
+          unauthView.classList.remove("d-none");
+          authView.classList.add("d-none");
+          return;
+        }
+
+        unauthView.classList.add("d-none");
+        authView.classList.remove("d-none");
+
+        // Header displays
+        document.getElementById("profile-avatar-display").textContent = currentProfileUser.avatar || "U";
+        document.getElementById("profile-name-display").textContent = currentProfileUser.name;
+        document.getElementById("profile-email-display").textContent = `${currentProfileUser.email} • ${currentProfileUser.phone}`;
+
+        const roleBadge = document.getElementById("profile-role-badge");
+        if (currentProfileUser.role === "admin") {
+          roleBadge.textContent = "Quản trị viên";
+          roleBadge.className = "badge rounded-pill bg-dark text-white";
+        } else {
+          roleBadge.textContent = "Thành viên";
+          roleBadge.className = "badge rounded-pill bg-light text-secondary border";
+        }
+
+        // Stats calculation
+        const regs = getRegistrations().filter((r) => r.userId === currentProfileUser.id);
+        const bookmarks = getBookmarks();
+        const events = getEvents();
+
+        const myEvents = regs.map((r) => events.find((e) => e.id === r.eventId)).filter(Boolean);
+        const attended = myEvents.filter((e) => e.status === "ended").length;
+
+        document.getElementById("stat-registered-count").textContent = regs.length;
+        document.getElementById("stat-bookmarks-count").textContent = bookmarks.length;
+        document.getElementById("stat-attended-count").textContent = attended;
+
+        // Form fields
+        document.getElementById("input-name").value = currentProfileUser.name || "";
+        document.getElementById("input-email").value = currentProfileUser.email || "";
+        document.getElementById("input-phone").value = currentProfileUser.phone || "";
+        document.getElementById("input-gender").value = currentProfileUser.gender || "Nam";
+        document.getElementById("input-birthdate").value = currentProfileUser.birthdate || "1995-06-15";
+        document.getElementById("input-location").value = currentProfileUser.location || "Hà Nội, Việt Nam";
+        document.getElementById("input-bio").value = currentProfileUser.bio || "Đam mê công nghệ và các sự kiện cộng đồng. Thích kết nối và học hỏi những điều mới mẻ.";
+      }
+
+      function switchProfileTab(tab) {
+        const tabs = ["info", "security", "settings"];
+        tabs.forEach((t) => {
+          const btn = document.getElementById("tab-btn-" + t);
+          const view = document.getElementById("view-profile-" + t);
+          if (t === tab) {
+            btn.className = "btn btn-sm rounded-pill px-3 py-2 fw-semibold btn-dark shadow-xs d-flex align-items-center gap-1.5";
+            view.classList.remove("d-none");
+          } else {
+            btn.className = "btn btn-sm rounded-pill px-3 py-2 fw-medium text-secondary d-flex align-items-center gap-1.5";
+            view.classList.add("d-none");
+          }
+        });
+      }
+
+      function handleSaveProfileDetails(e) {
+        e.preventDefault();
+        if (!currentProfileUser) return;
+
+        const updatedName = document.getElementById("input-name").value.trim();
+        const updatedPhone = document.getElementById("input-phone").value.trim();
+        const updatedGender = document.getElementById("input-gender").value;
+        const updatedBirth = document.getElementById("input-birthdate").value;
+        const updatedLoc = document.getElementById("input-location").value.trim();
+        const updatedBio = document.getElementById("input-bio").value.trim();
+
+        currentProfileUser.name = updatedName;
+        currentProfileUser.phone = updatedPhone;
+        currentProfileUser.gender = updatedGender;
+        currentProfileUser.birthdate = updatedBirth;
+        currentProfileUser.location = updatedLoc;
+        currentProfileUser.bio = updatedBio;
+
+        // Cập nhật trong danh sách users
+        const users = getUsers();
+        const idx = users.findIndex((u) => u.id === currentProfileUser.id);
+        if (idx !== -1) {
+          users[idx] = { ...users[idx], ...currentProfileUser };
+          saveUsers(users);
+        }
+
+        setCurrentUser(currentProfileUser);
+        loadUserProfile();
+        showToast("Đã lưu thông tin hồ sơ cá nhân thành công!", "success");
+      }
+
+      function handleChangePassword(e) {
+        e.preventDefault();
+        if (!currentProfileUser) return;
+
+        const currentPwd = document.getElementById("pwd-current").value;
+        const newPwd = document.getElementById("pwd-new").value;
+        const confirmPwd = document.getElementById("pwd-confirm").value;
+
+        if (currentProfileUser.password && currentPwd !== currentProfileUser.password) {
+          alert("Mật khẩu hiện tại không đúng!");
+          return;
+        }
+
+        if (newPwd.length < 6) {
+          alert("Mật khẩu mới phải có tối thiểu 6 ký tự!");
+          return;
+        }
+
+        if (newPwd !== confirmPwd) {
+          alert("Mật khẩu xác nhận không khớp!");
+          return;
+        }
+
+        currentProfileUser.password = newPwd;
+        const users = getUsers();
+        const idx = users.findIndex((u) => u.id === currentProfileUser.id);
+        if (idx !== -1) {
+          users[idx].password = newPwd;
+          saveUsers(users);
+        }
+
+        setCurrentUser(currentProfileUser);
+        document.getElementById("pwd-current").value = "";
+        document.getElementById("pwd-new").value = "";
+        document.getElementById("pwd-confirm").value = "";
+        showToast("Đã thay đổi mật khẩu thành công!", "success");
+      }
+
+      function confirmLogout() {
+        if (confirm("Bạn có chắc chắn muốn đăng xuất khỏi tài khoản không?")) {
+          logout();
+        }
+      }
+    </script>
+  </body>
+</html>

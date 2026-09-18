@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bảng Quản trị — EventVN Admin Portal</title>
+    <!-- Bootstrap 5.3.3 CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body class="bg-body-tertiary text-dark min-vh-100 d-flex flex-column">
+    <!-- Navbar Header -->
+    <header class="navbar navbar-expand-lg sticky-top bg-white border-bottom shadow-xs py-2">
+      <div class="container-fluid px-3 px-lg-4 d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-3">
+          <a href="admin.html" class="navbar-brand d-flex align-items-center gap-2 m-0 p-0 text-decoration-none">
+            <div class="rounded-3 bg-dark text-white d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 36px; height: 36px; font-size: 1.15rem;">
+              A
+            </div>
+            <div class="d-flex align-items-center gap-1.5">
+              <span class="fs-5 fw-bold tracking-tight text-dark m-0">EventVN</span>
+              <span class="badge rounded-pill bg-light text-secondary border fw-semibold">Admin</span>
+            </div>
+          </a>
+        </div>
+
+        <div class="d-flex align-items-center gap-3">
+          <!-- Nút chuyển Người dùng / Admin -->
+          <div class="navbar-role-switcher"></div>
+          <!-- Avatar -->
+          <div class="navbar-auth-container"></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Admin Body -->
+    <main class="container-fluid px-3 px-lg-4 py-4 flex-grow-1">
+      
+      <!-- Top Overview Stats -->
+      <div class="row g-3 mb-4" id="admin-stats-grid">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Navigation Tabs & Actions & Tables -->
+      <div class="bg-white rounded-4 border shadow-sm p-3 p-sm-4 p-md-5">
+        <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3 border-bottom pb-4 mb-4">
+          <!-- Admin Tabs -->
+          <div class="btn-group p-1 bg-light rounded-pill align-self-start" role="group" aria-label="Admin navigation tabs">
+            <button type="button" onclick="switchAdminTab('events')" id="adm-tab-events" class="btn btn-sm rounded-pill fw-semibold btn-dark shadow-xs px-3 py-2">
+              Quản lý sự kiện
+            </button>
+            <button type="button" onclick="switchAdminTab('registrations')" id="adm-tab-registrations" class="btn btn-sm rounded-pill fw-medium text-secondary px-3 py-2">
+              Duyệt đăng ký vé
+            </button>
+            <button type="button" onclick="switchAdminTab('categories')" id="adm-tab-categories" class="btn btn-sm rounded-pill fw-medium text-secondary px-3 py-2">
+              Danh mục sự kiện
+            </button>
+          </div>
+
+          <!-- Action Buttons -->
+          <div id="admin-action-btn-container" class="d-flex align-items-center gap-2">
+            <button type="button" onclick="openAddCategoryModal()" class="btn btn-sm btn-outline-secondary rounded-3 px-3 py-2 fw-medium small d-flex align-items-center gap-1.5">
+              <svg style="width: 15px; height: 15px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              <span>Thêm danh mục</span>
+            </button>
+            <button type="button" onclick="openAddEventModal()" class="btn btn-sm btn-dark rounded-3 px-3 py-2 fw-medium small d-flex align-items-center gap-1.5 shadow-xs">
+              <svg style="width: 15px; height: 15px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              <span>Thêm sự kiện mới</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ─── TAB 1: QUẢN LÝ SỰ KIỆN ─────────────────────────────────────── -->
+        <div id="adm-view-events">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 small">
+              <thead class="table-light text-secondary text-uppercase small">
+                <tr>
+                  <th class="py-3 px-3">Sự kiện</th>
+                  <th class="py-3 px-3">Danh mục</th>
+                  <th class="py-3 px-3">Thời gian</th>
+                  <th class="py-3 px-3">Địa điểm</th>
+                  <th class="py-3 px-3">Đăng ký</th>
+                  <th class="py-3 px-3">Trạng thái</th>
+                  <th class="py-3 px-3 text-end">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="admin-events-tbody">
+                <!-- Render dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ─── TAB 2: DUYỆT ĐĂNG KÝ VÉ ───────────────────────────────────── -->
+        <div id="adm-view-registrations" class="d-none">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 small">
+              <thead class="table-light text-secondary text-uppercase small">
+                <tr>
+                  <th class="py-3 px-3">Mã vé</th>
+                  <th class="py-3 px-3">Người tham dự</th>
+                  <th class="py-3 px-3">Sự kiện</th>
+                  <th class="py-3 px-3">Ngày đăng ký</th>
+                  <th class="py-3 px-3">Ghi chú</th>
+                  <th class="py-3 px-3">Trạng thái</th>
+                  <th class="py-3 px-3 text-end">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="admin-regs-tbody">
+                <!-- Render dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ─── TAB 3: DANH MỤC SỰ KIỆN ──────────────────────────────────── -->
+        <div id="adm-view-categories" class="d-none">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 small">
+              <thead class="table-light text-secondary text-uppercase small">
+                <tr>
+                  <th class="py-3 px-3">ID</th>
+                  <th class="py-3 px-3">Tên danh mục</th>
+                  <th class="py-3 px-3">Mô tả</th>
+                  <th class="py-3 px-3">Số lượng sự kiện</th>
+                  <th class="py-3 px-3">Trạng thái</th>
+                  <th class="py-3 px-3 text-end">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="admin-cats-tbody">
+                <!-- Render dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- ─── Modal Thêm Sự Kiện ──────────────────────────────────────────────── -->
+    <div class="modal fade" id="add-event-modal" tabindex="-1" aria-labelledby="addEventModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content rounded-4 border-0 shadow position-relative p-2 p-sm-3">
+          <div class="modal-header border-0 pb-0">
+            <h2 class="fs-5 fw-bold tracking-tight text-dark mb-0" id="addEventModalLabel">Thêm sự kiện mới</h2>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body p-3 p-sm-4">
+            <form onsubmit="handleCreateEvent(event)">
+              <div class="mb-3">
+                <label for="new-ev-title" class="form-label small fw-medium text-dark mb-1">Tên sự kiện</label>
+                <input type="text" id="new-ev-title" required class="form-control form-control-sm py-2" placeholder="Ví dụ: AI Summit 2026..." />
+              </div>
+
+              <div class="row g-3 mb-3">
+                <div class="col-sm-6">
+                  <div class="d-flex align-items-center justify-content-between mb-1">
+                    <label for="new-ev-category" class="form-label small fw-medium text-dark mb-0">Danh mục</label>
+                    <button type="button" onclick="openAddCategoryModal()" class="btn btn-link btn-sm p-0 text-decoration-none small text-dark fw-medium">
+                      + Thêm mới
+                    </button>
+                  </div>
+                  <select id="new-ev-category" class="form-select form-select-sm py-2">
+                    <!-- Filled dynamically -->
+                  </select>
+                </div>
+                <div class="col-sm-6">
+                  <label for="new-ev-capacity" class="form-label small fw-medium text-dark mb-1">Quy mô chỗ ngồi</label>
+                  <input type="number" id="new-ev-capacity" required value="200" class="form-control form-control-sm py-2" />
+                </div>
+              </div>
+
+              <div class="row g-3 mb-3">
+                <div class="col-sm-6">
+                  <label for="new-ev-start" class="form-label small fw-medium text-dark mb-1">Bắt đầu</label>
+                  <input type="datetime-local" id="new-ev-start" required class="form-control form-control-sm py-2" />
+                </div>
+                <div class="col-sm-6">
+                  <label for="new-ev-end" class="form-label small fw-medium text-dark mb-1">Kết thúc</label>
+                  <input type="datetime-local" id="new-ev-end" required class="form-control form-control-sm py-2" />
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="new-ev-location" class="form-label small fw-medium text-dark mb-1">Địa điểm tổ chức</label>
+                <input type="text" id="new-ev-location" required class="form-control form-control-sm py-2" placeholder="Trung tâm hội nghị..." />
+              </div>
+
+              <div class="mb-3">
+                <label for="new-ev-image" class="form-label small fw-medium text-dark mb-1">Link ảnh thumbnail</label>
+                <input type="url" id="new-ev-image" required value="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800" class="form-control form-control-sm py-2" />
+              </div>
+
+              <div class="mb-4">
+                <label for="new-ev-desc" class="form-label small fw-medium text-dark mb-1">Mô tả sự kiện</label>
+                <textarea id="new-ev-desc" rows="3" required class="form-control form-control-sm py-2" placeholder="Nội dung tóm tắt..."></textarea>
+              </div>
+
+              <div class="d-flex gap-2 pt-2 border-top">
+                <button type="button" class="btn btn-outline-secondary flex-grow-1 py-2 small fw-medium" data-bs-dismiss="modal">Hủy</button>
+                <button type="submit" class="btn btn-dark flex-grow-1 py-2 small fw-medium">Tạo sự kiện</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Modal Thêm Danh Mục ─────────────────────────────────────────────── -->
+    <div class="modal fade" id="add-category-modal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true" style="z-index: 1060;">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow position-relative p-2 p-sm-3">
+          <div class="modal-header border-0 pb-0">
+            <div>
+              <h2 class="fs-5 fw-bold tracking-tight text-dark mb-1" id="addCategoryModalLabel">Thêm danh mục mới</h2>
+              <p class="small text-muted mb-0">Tạo nhóm danh mục mới để phân loại sự kiện hiệu quả hơn.</p>
+            </div>
+            <button type="button" class="btn-close align-self-start" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body p-3 p-sm-4">
+            <form onsubmit="handleCreateCategory(event)">
+              <div class="mb-3">
+                <label for="new-cat-name" class="form-label small fw-medium text-dark mb-1">Tên danh mục <span class="text-danger">*</span></label>
+                <input type="text" id="new-cat-name" required class="form-control form-control-sm py-2" placeholder="Ví dụ: Triển lãm, Ẩm thực..." />
+              </div>
+
+              <div class="mb-3">
+                <label for="new-cat-desc" class="form-label small fw-medium text-dark mb-1">Mô tả danh mục</label>
+                <textarea id="new-cat-desc" rows="3" class="form-control form-control-sm py-2" placeholder="Mô tả tóm tắt về loại hình sự kiện này..."></textarea>
+              </div>
+
+              <div class="mb-4">
+                <label for="new-cat-status" class="form-label small fw-medium text-dark mb-1">Trạng thái hiển thị</label>
+                <select id="new-cat-status" class="form-select form-select-sm py-2">
+                  <option value="true">Đang hoạt động (Hiển thị công khai)</option>
+                  <option value="false">Tạm dừng (Ẩn khỏi bộ lọc)</option>
+                </select>
+              </div>
+
+              <div class="d-flex gap-2 pt-2 border-top">
+                <button type="button" class="btn btn-outline-secondary flex-grow-1 py-2 small fw-medium" data-bs-dismiss="modal">Hủy</button>
+                <button type="submit" class="btn btn-dark flex-grow-1 py-2 small fw-medium">Lưu danh mục</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap 5.3.3 JS Bundle CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- App Scripts -->
+    <script src="js/data.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+      let currentAdminTab = "events";
+      let eventModalInstance = null;
+      let categoryModalInstance = null;
+
+      document.addEventListener("DOMContentLoaded", () => {
+        // Khởi tạo Bootstrap Modals
+        const evModalEl = document.getElementById("add-event-modal");
+        if (evModalEl) eventModalInstance = new bootstrap.Modal(evModalEl);
+
+        const catModalEl = document.getElementById("add-category-modal");
+        if (catModalEl) categoryModalInstance = new bootstrap.Modal(catModalEl);
+
+        // Kiểm tra phân quyền: Chỉ cho phép tài khoản có role === 'admin'
+        if (!requireAdmin()) return;
+
+        renderStats();
+        renderAdminEvents();
+        renderAdminRegistrations();
+        renderAdminCategories();
+        populateCategorySelect();
+      });
+
+      function renderStats() {
+        const events = getEvents();
+        const regs = getRegistrations();
+        const users = getUsers();
+
+        const totalEvents = events.length;
+        const upcomingEvents = events.filter((e) => e.status === "upcoming").length;
+        const totalRegs = regs.filter((r) => r.status === "confirmed").length;
+        const totalUsers = users.length;
+
+        document.getElementById("admin-stats-grid").innerHTML = `
+          <div class="col-12 col-sm-6 col-lg-3">
+            <div class="bg-white p-3 p-sm-4 rounded-4 border shadow-sm h-100">
+              <div class="small fw-semibold text-muted text-uppercase tracking-wider mb-1">Tổng sự kiện</div>
+              <div class="fs-3 fw-bold tracking-tight text-dark tabular-nums">${totalEvents}</div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 col-lg-3">
+            <div class="bg-white p-3 p-sm-4 rounded-4 border shadow-sm h-100">
+              <div class="small fw-semibold text-muted text-uppercase tracking-wider mb-1">Sắp diễn ra</div>
+              <div class="fs-3 fw-bold tracking-tight text-dark tabular-nums">${upcomingEvents}</div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 col-lg-3">
+            <div class="bg-white p-3 p-sm-4 rounded-4 border shadow-sm h-100">
+              <div class="small fw-semibold text-muted text-uppercase tracking-wider mb-1">Vé đã đăng ký</div>
+              <div class="fs-3 fw-bold tracking-tight text-dark tabular-nums">${totalRegs}</div>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 col-lg-3">
+            <div class="bg-white p-3 p-sm-4 rounded-4 border shadow-sm h-100">
+              <div class="small fw-semibold text-muted text-uppercase tracking-wider mb-1">Thành viên</div>
+              <div class="fs-3 fw-bold tracking-tight text-dark tabular-nums">${totalUsers}</div>
+            </div>
+          </div>
+        `;
+      }
+
+      function switchAdminTab(tab) {
+        currentAdminTab = tab;
+        const tabs = ["events", "registrations", "categories"];
+        tabs.forEach((t) => {
+          const btn = document.getElementById("adm-tab-" + t);
+          const view = document.getElementById("adm-view-" + t);
+          if (t === tab) {
+            btn.className = "btn btn-sm rounded-pill fw-semibold btn-dark shadow-xs px-3 py-2";
+            view.classList.remove("d-none");
+          } else {
+            btn.className = "btn btn-sm rounded-pill fw-medium text-secondary px-3 py-2";
+            view.classList.add("d-none");
+          }
+        });
+      }
+
+      function renderAdminEvents() {
+        const events = getEvents();
+        const categories = getCategories();
+        const tbody = document.getElementById("admin-events-tbody");
+
+        let html = "";
+        events.forEach((ev) => {
+          const cat = categories.find((c) => c.id === ev.categoryId) || { name: "Chung" };
+          html += `
+            <tr>
+              <td class="py-3 px-3">
+                <div class="d-flex align-items-center gap-3">
+                  <img src="${ev.image}" alt="${ev.title}" class="rounded-3 object-fit-cover flex-shrink-0" style="width: 44px; height: 44px;" />
+                  <span class="fw-semibold text-dark text-truncate" style="max-width: 240px;">${ev.title}</span>
+                </div>
+              </td>
+              <td class="py-3 px-3 fw-medium text-secondary">${cat.name}</td>
+              <td class="py-3 px-3 text-secondary">${fmtDateTime(ev.startDate)}</td>
+              <td class="py-3 px-3 text-secondary text-truncate" style="max-width: 200px;">${ev.location}</td>
+              <td class="py-3 px-3 fw-medium text-dark">${ev.registered}/${ev.capacity}</td>
+              <td class="py-3 px-3">${getStatusBadge(ev.status)}</td>
+              <td class="py-3 px-3 text-end">
+                <button onclick="deleteEvent(${ev.id})" class="btn btn-sm btn-outline-danger p-1 rounded-2" title="Xóa sự kiện">
+                  <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                </button>
+              </td>
+            </tr>
+          `;
+        });
+        tbody.innerHTML = html;
+      }
+
+      function renderAdminRegistrations() {
+        const regs = getRegistrations();
+        const users = getUsers();
+        const events = getEvents();
+        const tbody = document.getElementById("admin-regs-tbody");
+
+        let html = "";
+        regs.forEach((r) => {
+          const user = users.find((u) => u.id === r.userId) || { name: "Khách", email: "N/A" };
+          const ev = events.find((e) => e.id === r.eventId) || { title: "Sự kiện #" + r.eventId };
+
+          html += `
+            <tr>
+              <td class="py-3 px-3 font-monospace fw-medium text-secondary">EVN-2026-${r.id.toString().slice(-4)}</td>
+              <td class="py-3 px-3">
+                <div class="fw-semibold text-dark">${user.name}</div>
+                <div class="text-muted font-monospace small">${user.email}</div>
+              </td>
+              <td class="py-3 px-3 fw-medium text-dark text-truncate" style="max-width: 240px;">${ev.title}</td>
+              <td class="py-3 px-3 text-secondary">${fmtDateTime(r.registeredAt)}</td>
+              <td class="py-3 px-3 text-muted fst-italic">${r.notes || "Không có"}</td>
+              <td class="py-3 px-3">${getStatusBadge(r.status)}</td>
+              <td class="py-3 px-3 text-end">
+                ${
+                  r.status !== "confirmed"
+                    ? `<button onclick="updateRegStatus(${r.id}, 'confirmed')" class="btn btn-sm btn-outline-success py-1 px-2.5 rounded-2 me-1">Duyệt</button>`
+                    : ""
+                }
+                ${
+                  r.status !== "cancelled"
+                    ? `<button onclick="updateRegStatus(${r.id}, 'cancelled')" class="btn btn-sm btn-outline-danger py-1 px-2.5 rounded-2">Hủy</button>`
+                    : ""
+                }
+              </td>
+            </tr>
+          `;
+        });
+        tbody.innerHTML = html;
+      }
+
+      function renderAdminCategories() {
+        const categories = getCategories();
+        const events = getEvents();
+        const tbody = document.getElementById("admin-cats-tbody");
+
+        let html = "";
+        categories.forEach((cat) => {
+          const count = events.filter((e) => e.categoryId === cat.id).length;
+          html += `
+            <tr>
+              <td class="py-3 px-3 font-monospace text-muted">#${cat.id}</td>
+              <td class="py-3 px-3">
+                <div class="d-flex align-items-center gap-2 fw-semibold text-dark">
+                  <span class="p-1 rounded bg-light border text-secondary flex-shrink-0 d-inline-flex align-items-center justify-content-center" style="width: 26px; height: 26px;">${getCategorySymbol(cat.name, "text-secondary", 14)}</span>
+                  <span>${cat.name}</span>
+                </div>
+              </td>
+              <td class="py-3 px-3 text-muted text-truncate" style="max-width: 240px;">${cat.description || "—"}</td>
+              <td class="py-3 px-3 fw-medium text-secondary">${count} sự kiện</td>
+              <td class="py-3 px-3">
+                <button type="button" onclick="toggleCategoryStatus(${cat.id})" class="badge rounded-pill border ${
+                  cat.active 
+                    ? "bg-success-subtle text-success border-success-subtle" 
+                    : "bg-light text-secondary border"
+                }" style="cursor: pointer;" title="Nhấn để đổi trạng thái">
+                  ${cat.active ? "Hoạt động" : "Tạm dừng"}
+                </button>
+              </td>
+              <td class="py-3 px-3 text-end">
+                <button type="button" onclick="deleteCategory(${cat.id})" class="btn btn-sm btn-outline-danger p-1 rounded-2" title="Xóa danh mục">
+                  <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                </button>
+              </td>
+            </tr>
+          `;
+        });
+        tbody.innerHTML = html;
+      }
+
+      function openAddCategoryModal() {
+        document.getElementById("new-cat-name").value = "";
+        const descInput = document.getElementById("new-cat-desc");
+        if (descInput) descInput.value = "";
+        const statusSelect = document.getElementById("new-cat-status");
+        if (statusSelect) statusSelect.value = "true";
+        if (categoryModalInstance) categoryModalInstance.show();
+      }
+
+      function closeAddCategoryModal() {
+        if (categoryModalInstance) categoryModalInstance.hide();
+      }
+
+      function handleCreateCategory(e) {
+        e.preventDefault();
+        const name = document.getElementById("new-cat-name").value.trim();
+        const desc = document.getElementById("new-cat-desc").value.trim();
+        const active = document.getElementById("new-cat-status").value === "true";
+
+        if (!name) return;
+
+        const categories = getCategories();
+        if (categories.some((c) => c.name.toLowerCase() === name.toLowerCase())) {
+          showToast("Tên danh mục này đã tồn tại!", "error");
+          return;
+        }
+
+        const newCat = {
+          id: Date.now(),
+          name,
+          icon: "folder",
+          description: desc || "Sự kiện thuộc nhóm " + name,
+          active,
+          color: "#0F172A",
+        };
+
+        categories.push(newCat);
+        saveCategories(categories);
+        closeAddCategoryModal();
+        renderAdminCategories();
+        populateCategorySelect();
+        const catSelect = document.getElementById("new-ev-category");
+        if (catSelect) {
+          catSelect.value = newCat.id;
+        }
+        showToast(`Đã thêm danh mục "${name}" thành công!`, "success");
+      }
+
+      function toggleCategoryStatus(id) {
+        const categories = getCategories();
+        const cat = categories.find((c) => c.id === id);
+        if (cat) {
+          cat.active = !cat.active;
+          saveCategories(categories);
+          renderAdminCategories();
+          populateCategorySelect();
+          showToast(`Đã ${cat.active ? "kích hoạt" : "tạm dừng"} danh mục "${cat.name}"!`, "info");
+        }
+      }
+
+      function deleteCategory(id) {
+        const events = getEvents();
+        const isUsed = events.some((e) => e.categoryId === id);
+        if (isUsed) {
+          showToast("Không thể xóa danh mục đang chứa các sự kiện!", "error");
+          return;
+        }
+        if (!confirm("Bạn có chắc chắn muốn xóa danh mục này?")) return;
+
+        let categories = getCategories();
+        const cat = categories.find((c) => c.id === id);
+        categories = categories.filter((c) => c.id !== id);
+        saveCategories(categories);
+        renderAdminCategories();
+        populateCategorySelect();
+        showToast(`Đã xóa danh mục "${cat ? cat.name : id}"!`, "info");
+      }
+
+      function populateCategorySelect() {
+        const select = document.getElementById("new-ev-category");
+        if (!select) return;
+        const categories = getCategories();
+        select.innerHTML = categories.map((c) => `<option value="${c.id}">${c.name}</option>`).join("");
+      }
+
+      function openAddEventModal() {
+        if (eventModalInstance) eventModalInstance.show();
+      }
+
+      function closeAddEventModal() {
+        if (eventModalInstance) eventModalInstance.hide();
+      }
+
+      function handleCreateEvent(e) {
+        e.preventDefault();
+        const title = document.getElementById("new-ev-title").value.trim();
+        const catId = Number(document.getElementById("new-ev-category").value);
+        const capacity = Number(document.getElementById("new-ev-capacity").value);
+        const start = document.getElementById("new-ev-start").value;
+        const end = document.getElementById("new-ev-end").value;
+        const location = document.getElementById("new-ev-location").value.trim();
+        const image = document.getElementById("new-ev-image").value.trim();
+        const desc = document.getElementById("new-ev-desc").value.trim();
+
+        const events = getEvents();
+        const newEv = {
+          id: Date.now(),
+          title,
+          categoryId: catId,
+          image,
+          startDate: start,
+          endDate: end,
+          location,
+          description: desc,
+          capacity,
+          registered: 0,
+          status: "upcoming",
+          featured: false,
+        };
+
+        events.unshift(newEv);
+        saveEvents(events);
+        closeAddEventModal();
+        renderStats();
+        renderAdminEvents();
+        showToast("Đã thêm sự kiện mới thành công!", "success");
+      }
+
+      function deleteEvent(id) {
+        if (!confirm("Bạn có chắc chắn muốn xóa sự kiện này?")) return;
+        let events = getEvents();
+        events = events.filter((e) => e.id !== id);
+        saveEvents(events);
+        renderStats();
+        renderAdminEvents();
+        showToast("Đã xóa sự kiện!", "info");
+      }
+
+      function updateRegStatus(regId, status) {
+        const regs = getRegistrations();
+        const idx = regs.findIndex((r) => r.id === regId);
+        if (idx !== -1) {
+          regs[idx].status = status;
+          saveRegistrations(regs);
+          renderAdminRegistrations();
+          renderStats();
+          showToast(`Đã cập nhật trạng thái vé thành [${status === "confirmed" ? "Đã duyệt" : "Đã hủy"}]`, "success");
+        }
+      }
+    </script>
+  </body>
+</html>

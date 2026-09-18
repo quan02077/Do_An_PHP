@@ -130,19 +130,21 @@ function updateNavbarAuth() {
     if (user && user.role === "admin") {
       const isCurrentAdminPage = window.location.pathname.includes("admin.html");
       container.innerHTML = `
-        <div class="flex items-center bg-slate-100 p-0.5 rounded-full border border-slate-200 text-xs font-semibold">
-          <a href="index.html" class="px-3 py-1 rounded-full transition-all ${
-            !isCurrentAdminPage ? "bg-white text-indigo-700 shadow-sm font-bold" : "text-slate-600 hover:text-slate-900"
+        <div class="btn-group btn-group-sm rounded-pill p-1 bg-light border" role="group">
+          <a href="index.html" class="btn btn-sm rounded-pill py-1 px-3 ${
+            !isCurrentAdminPage ? "btn-dark fw-semibold" : "btn-light text-secondary border-0"
           }">Người dùng</a>
-          <a href="admin.html" class="px-3 py-1 rounded-full transition-all ${
-            isCurrentAdminPage ? "bg-indigo-600 text-white shadow-sm font-bold" : "text-slate-600 hover:text-slate-900"
+          <a href="admin.html" class="btn btn-sm rounded-pill py-1 px-3 ${
+            isCurrentAdminPage ? "btn-dark fw-semibold" : "btn-light text-secondary border-0"
           }">Admin</a>
         </div>
       `;
+      container.classList.remove("d-none");
       container.classList.remove("hidden");
     } else {
       // Người dùng thường (role === 'user') hoặc chưa đăng nhập: ẨN HOÀN TOÀN
       container.innerHTML = "";
+      container.classList.add("d-none");
       container.classList.add("hidden");
     }
   });
@@ -151,30 +153,30 @@ function updateNavbarAuth() {
   containers.forEach((container) => {
     if (user) {
       container.innerHTML = `
-        <div class="flex items-center gap-3">
+        <div class="d-flex align-items-center gap-2">
           <!-- BẤM VÀO AVATAR CHUYỂN TỚI TRANG HỒ SƠ RIÊNG (profile.html) -->
-          <a href="profile.html" title="Xem hồ sơ cá nhân" class="flex items-center gap-2 group p-1 rounded-full hover:bg-slate-100 transition-colors">
-            <div class="w-8 h-8 rounded-full bg-gradient-to-tr ${
-              user.role === "admin" ? "from-indigo-600 to-purple-600" : "from-emerald-500 to-teal-600"
-            } text-white font-bold text-xs flex items-center justify-center shadow-sm">
+          <a href="profile.html" title="Xem hồ sơ cá nhân" class="d-flex align-items-center gap-2 text-decoration-none p-1 rounded-pill">
+            <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-dark text-white fw-bold" style="width: 34px; height: 34px; font-size: 13px;">
               ${user.avatar || "U"}
-            </div>
-            <div class="hidden sm:block text-left pr-1">
-              <div class="text-xs font-semibold text-slate-800 leading-tight group-hover:text-indigo-600 transition-colors">${user.name}</div>
-              <div class="text-[10px] ${user.role === "admin" ? "text-purple-600 font-bold" : "text-emerald-600 font-medium"}">
+            </span>
+            <div class="d-none d-sm-block text-start pe-1 lh-sm">
+              <div class="fw-semibold text-dark small">${user.name}</div>
+              <div class="text-muted small" style="font-size: 12px;">
                 ${user.role === "admin" ? "Quản trị viên" : "Thành viên"}
               </div>
             </div>
           </a>
 
-          <!-- Nút Đăng xuất nhanh với icon nổi bật -->
+          <!-- Nút Đăng xuất nhanh -->
           <button 
             type="button" 
             onclick="logout()" 
             title="Đăng xuất khỏi tài khoản" 
-            class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors cursor-pointer"
+            aria-label="Đăng xuất khỏi tài khoản"
+            class="btn btn-sm btn-outline-danger border-0 rounded-circle d-flex align-items-center justify-content-center"
+            style="width: 34px; height: 34px; padding: 0;"
           >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
             </svg>
           </button>
@@ -183,9 +185,9 @@ function updateNavbarAuth() {
     } else {
       // Khi đã đăng xuất hoặc chưa đăng nhập: Hiển thị Đăng nhập / Đăng ký
       container.innerHTML = `
-        <div class="flex items-center gap-2">
-          <a href="auth.html" class="px-3.5 py-1.5 text-xs font-semibold text-slate-700 hover:text-indigo-600 transition-colors">Đăng nhập</a>
-          <a href="auth.html?mode=register" class="px-3.5 py-1.5 text-xs font-semibold bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 shadow-sm transition-colors">Đăng ký</a>
+        <div class="d-flex align-items-center gap-2">
+          <a href="auth.html" class="btn btn-sm btn-outline-secondary">Đăng nhập</a>
+          <a href="auth.html?mode=register" class="btn btn-sm btn-dark">Đăng ký</a>
         </div>
       `;
     }

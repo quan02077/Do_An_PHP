@@ -1,12 +1,12 @@
 // js/data.js - Dữ liệu hạt giống và các hàm tiện ích dùng chung
 
 const DEFAULT_CATEGORIES = [
-  { id: 1, name: "Công nghệ", icon: "cpu", description: "Hội thảo, workshop công nghệ và AI", active: true, color: "#4338CA" },
-  { id: 2, name: "Âm nhạc", icon: "music", description: "Concert, biểu diễn và lễ hội âm nhạc", active: true, color: "#7C3AED" },
-  { id: 3, name: "Thể thao", icon: "trophy", description: "Giải đấu và sự kiện thể thao", active: true, color: "#059669" },
-  { id: 4, name: "Giáo dục", icon: "book", description: "Khóa học, seminar và hội thảo học thuật", active: true, color: "#D97706" },
-  { id: 5, name: "Nghệ thuật", icon: "palette", description: "Triển lãm và sự kiện nghệ thuật", active: true, color: "#DC2626" },
-  { id: 6, name: "Kinh doanh", icon: "briefcase", description: "Hội nghị và networking doanh nghiệp", active: true, color: "#2563EB" },
+  { id: 1, name: "Công nghệ", description: "Hội thảo, workshop công nghệ và AI", active: true, color: "#4338CA" },
+  { id: 2, name: "Âm nhạc", description: "Concert, biểu diễn và lễ hội âm nhạc", active: true, color: "#7C3AED" },
+  { id: 3, name: "Thể thao", description: "Giải đấu và sự kiện thể thao", active: true, color: "#059669" },
+  { id: 4, name: "Giáo dục", description: "Khóa học, seminar và hội thảo học thuật", active: true, color: "#D97706" },
+  { id: 5, name: "Nghệ thuật", description: "Triển lãm và sự kiện nghệ thuật", active: true, color: "#DC2626" },
+  { id: 6, name: "Kinh doanh", description: "Hội nghị và networking doanh nghiệp", active: true, color: "#2563EB" },
 ];
 
 const DEFAULT_EVENTS = [
@@ -230,7 +230,7 @@ function fmtTime(iso) {
 // ─── Vector SVG Symbols Generators ──────────────────────────────────────────
 function getHeartSymbol(filled = false, className = "w-4 h-4") {
   return `
-    <svg viewBox="0 0 24 24" class="${className}" fill="${filled ? "currentColor" : "none"}" stroke="currentColor" stroke-width="${filled ? "0" : "2"}" stroke-linecap="round" stroke-linejoin="round">
+    <svg viewBox="0 0 24 24" width="16" height="16" class="${className}" fill="${filled ? "currentColor" : "none"}" stroke="currentColor" stroke-width="${filled ? "0" : "2"}" stroke-linecap="round" stroke-linejoin="round">
       <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
     </svg>
   `;
@@ -238,7 +238,7 @@ function getHeartSymbol(filled = false, className = "w-4 h-4") {
 
 function getCalendarSymbol(className = "w-4 h-4") {
   return `
-    <svg viewBox="0 0 24 24" class="${className}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <svg viewBox="0 0 24 24" width="16" height="16" class="${className}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
       <line x1="16" x2="16" y1="2" y2="6" />
       <line x1="8" x2="8" y1="2" y2="6" />
@@ -249,7 +249,7 @@ function getCalendarSymbol(className = "w-4 h-4") {
 
 function getMapPinSymbol(className = "w-4 h-4") {
   return `
-    <svg viewBox="0 0 24 24" class="${className}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <svg viewBox="0 0 24 24" width="16" height="16" class="${className}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
       <circle cx="12" cy="10" r="3" />
     </svg>
@@ -258,7 +258,7 @@ function getMapPinSymbol(className = "w-4 h-4") {
 
 function getClockSymbol(className = "w-4 h-4") {
   return `
-    <svg viewBox="0 0 24 24" class="${className}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <svg viewBox="0 0 24 24" width="16" height="16" class="${className}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="12" cy="12" r="10" />
       <polyline points="12 6 12 12 16 14" />
     </svg>
@@ -267,7 +267,7 @@ function getClockSymbol(className = "w-4 h-4") {
 
 function getSearchSymbol(className = "w-4 h-4") {
   return `
-    <svg viewBox="0 0 24 24" class="${className}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <svg viewBox="0 0 24 24" width="16" height="16" class="${className}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="11" cy="11" r="8" />
       <path d="m21 21-4.3-4.3" />
     </svg>
@@ -276,7 +276,7 @@ function getSearchSymbol(className = "w-4 h-4") {
 
 function getUserSymbol(className = "w-4 h-4") {
   return `
-    <svg viewBox="0 0 24 24" class="${className}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <svg viewBox="0 0 24 24" width="16" height="16" class="${className}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
       <circle cx="12" cy="7" r="4" />
     </svg>
@@ -285,7 +285,7 @@ function getUserSymbol(className = "w-4 h-4") {
 
 function getUsersSymbol(className = "w-4 h-4") {
   return `
-    <svg viewBox="0 0 24 24" class="${className}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <svg viewBox="0 0 24 24" width="16" height="16" class="${className}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
       <circle cx="9" cy="7" r="4" />
       <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
@@ -296,7 +296,7 @@ function getUsersSymbol(className = "w-4 h-4") {
 
 function getMailSymbol(className = "w-4 h-4") {
   return `
-    <svg viewBox="0 0 24 24" class="${className}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <svg viewBox="0 0 24 24" width="16" height="16" class="${className}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <rect width="20" height="16" x="2" y="4" rx="2" />
       <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
     </svg>
@@ -305,7 +305,7 @@ function getMailSymbol(className = "w-4 h-4") {
 
 function getPhoneSymbol(className = "w-4 h-4") {
   return `
-    <svg viewBox="0 0 24 24" class="${className}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <svg viewBox="0 0 24 24" width="16" height="16" class="${className}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
     </svg>
   `;
@@ -313,7 +313,7 @@ function getPhoneSymbol(className = "w-4 h-4") {
 
 function getCheckSymbol(className = "w-4 h-4") {
   return `
-    <svg viewBox="0 0 24 24" class="${className}" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <svg viewBox="0 0 24 24" width="16" height="16" class="${className}" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
       <polyline points="20 6 9 17 4 12" />
     </svg>
   `;
@@ -321,7 +321,7 @@ function getCheckSymbol(className = "w-4 h-4") {
 
 function getStarSymbol(className = "w-4 h-4") {
   return `
-    <svg viewBox="0 0 24 24" class="${className}" fill="currentColor" stroke="none">
+    <svg viewBox="0 0 24 24" width="16" height="16" class="${className}" fill="currentColor" stroke="none">
       <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
     </svg>
   `;
@@ -331,7 +331,7 @@ function getCategorySymbol(name, className = "w-4 h-4") {
   const n = (name || "").toLowerCase();
   if (n.includes("công nghệ")) {
     return `
-      <svg viewBox="0 0 24 24" class="${className}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg viewBox="0 0 24 24" width="16" height="16" class="${className}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <rect width="16" height="16" x="4" y="4" rx="2" />
         <rect width="6" height="6" x="9" y="9" rx="1" />
         <path d="M15 2v2" /><path d="M15 20v2" /><path d="M2 15h2" /><path d="M2 9h2" /><path d="M20 15h2" /><path d="M20 9h2" /><path d="M9 2v2" /><path d="M9 20v2" />
@@ -340,14 +340,14 @@ function getCategorySymbol(name, className = "w-4 h-4") {
   }
   if (n.includes("âm nhạc")) {
     return `
-      <svg viewBox="0 0 24 24" class="${className}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg viewBox="0 0 24 24" width="16" height="16" class="${className}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" />
       </svg>
     `;
   }
   if (n.includes("thể thao")) {
     return `
-      <svg viewBox="0 0 24 24" class="${className}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg viewBox="0 0 24 24" width="16" height="16" class="${className}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="10" />
         <path d="M2.1 13.4A10 10 0 0 0 6 19.9" />
         <path d="M21.9 10.6A10 10 0 0 0 18 4.1" />
@@ -358,7 +358,7 @@ function getCategorySymbol(name, className = "w-4 h-4") {
   }
   if (n.includes("giáo dục")) {
     return `
-      <svg viewBox="0 0 24 24" class="${className}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg viewBox="0 0 24 24" width="16" height="16" class="${className}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z" />
         <path d="M6 6h10" /><path d="M6 10h10" />
       </svg>
@@ -366,7 +366,7 @@ function getCategorySymbol(name, className = "w-4 h-4") {
   }
   if (n.includes("nghệ thuật")) {
     return `
-      <svg viewBox="0 0 24 24" class="${className}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg viewBox="0 0 24 24" width="16" height="16" class="${className}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="13.5" cy="6.5" r=".5" fill="currentColor" />
         <circle cx="17.5" cy="10.5" r=".5" fill="currentColor" />
         <circle cx="8.5" cy="7.5" r=".5" fill="currentColor" />
@@ -376,7 +376,7 @@ function getCategorySymbol(name, className = "w-4 h-4") {
     `;
   }
   return `
-    <svg viewBox="0 0 24 24" class="${className}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <svg viewBox="0 0 24 24" width="16" height="16" class="${className}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
       <rect width="20" height="14" x="2" y="6" rx="2" />
     </svg>
@@ -385,15 +385,15 @@ function getCategorySymbol(name, className = "w-4 h-4") {
 
 function getStatusBadge(status) {
   const map = {
-    upcoming: { label: "Sắp diễn ra", bg: "bg-indigo-50 text-indigo-700 border-indigo-200" },
-    ongoing: { label: "Đang diễn ra", bg: "bg-emerald-50 text-emerald-700 border-emerald-200" },
-    ended: { label: "Đã kết thúc", bg: "bg-slate-100 text-slate-600 border-slate-200" },
-    cancelled: { label: "Đã hủy", bg: "bg-rose-50 text-rose-700 border-rose-200" },
-    confirmed: { label: "Đã xác nhận", bg: "bg-emerald-50 text-emerald-700 border-emerald-200" },
-    pending: { label: "Chờ duyệt", bg: "bg-amber-50 text-amber-700 border-amber-200" },
+    upcoming: { label: "Sắp diễn ra", bg: "bg-light text-dark border" },
+    ongoing: { label: "Đang diễn ra", bg: "bg-success-subtle text-success border border-success-subtle" },
+    ended: { label: "Đã kết thúc", bg: "bg-light text-secondary border" },
+    cancelled: { label: "Đã hủy", bg: "bg-danger-subtle text-danger border border-danger-subtle" },
+    confirmed: { label: "Đã xác nhận", bg: "bg-success-subtle text-success border border-success-subtle" },
+    pending: { label: "Chờ duyệt", bg: "bg-warning-subtle text-warning-emphasis border border-warning-subtle" },
   };
-  const s = map[status] || { label: status, bg: "bg-slate-100 text-slate-600 border-slate-200" };
-  return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${s.bg}">${s.label}</span>`;
+  const s = map[status] || { label: status, bg: "bg-light text-secondary border" };
+  return `<span class="badge rounded-pill fw-medium ${s.bg}">${s.label}</span>`;
 }
 
 // ─── Toast Notification Helper ──────────────────────────────────────────────
@@ -402,30 +402,35 @@ function showToast(message, type = "success") {
   if (!container) {
     container = document.createElement("div");
     container.id = "toast-container";
-    container.className = "fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm pointer-events-none";
+    container.className = "toast-container position-fixed bottom-0 end-0 p-3";
+    container.style.zIndex = "1080";
     document.body.appendChild(container);
   }
 
   const toast = document.createElement("div");
-  toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg border text-sm font-medium animate-slide-up transition-all duration-300 ${
-    type === "success"
-      ? "bg-white text-slate-900 border-slate-200"
+  toast.className = `toast show align-items-center border-0 shadow ${type === "success"
+      ? "text-bg-dark"
       : type === "error"
-      ? "bg-rose-50 text-rose-800 border-rose-200"
-      : "bg-indigo-50 text-indigo-800 border-indigo-200"
-  }`;
+        ? "text-bg-danger"
+        : "text-bg-secondary"
+    }`;
+  toast.setAttribute("role", "alert");
+  toast.setAttribute("aria-live", "assertive");
+  toast.setAttribute("aria-atomic", "true");
 
   toast.innerHTML = `
-    <div class="flex-shrink-0 text-indigo-600">${type === "success" ? getCheckSymbol("w-4 h-4") : ""}</div>
-    <div class="flex-1">${message}</div>
-    <button type="button" class="text-slate-400 hover:text-slate-600 ml-2" onclick="this.parentElement.remove()">
-      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-    </button>
+    <div class="d-flex">
+      <div class="toast-body d-flex align-items-center gap-2">
+        ${type === "success" ? getCheckSymbol("w-4 h-4") : ""}
+        <span>${message}</span>
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" onclick="this.closest('.toast').remove()" aria-label="Close"></button>
+    </div>
   `;
 
   container.appendChild(toast);
   setTimeout(() => {
-    toast.classList.add("opacity-0", "translate-y-2");
+    toast.classList.remove("show");
     setTimeout(() => toast.remove(), 300);
   }, 3200);
 }

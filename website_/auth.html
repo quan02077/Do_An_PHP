@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng nhập & Đăng ký — EventVN</title>
+    <!-- Bootstrap 5.3.3 CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body class="bg-body-tertiary text-dark min-vh-100 d-flex flex-column">
+    <!-- Header đơn giản -->
+    <header class="bg-white border-bottom py-3">
+      <div class="container d-flex align-items-center justify-content-between">
+        <a href="index.html" class="navbar-brand d-flex align-items-center gap-2 m-0 p-0 text-decoration-none">
+          <div class="rounded-3 bg-dark text-white d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 34px; height: 34px; font-size: 1.1rem;">
+            E
+          </div>
+          <span class="fs-5 fw-bold tracking-tight text-dark m-0">Event<span class="text-secondary fw-normal">VN</span></span>
+        </a>
+        <a href="index.html" class="btn btn-sm btn-outline-secondary rounded-pill px-3 d-flex align-items-center gap-1.5 small">
+          <svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+          <span>Quay lại Trang chủ</span>
+        </a>
+      </div>
+    </header>
+
+    <!-- Main Content Form -->
+    <main class="container flex-grow-1 d-flex align-items-center justify-content-center py-5">
+      <div class="w-100 bg-white rounded-4 border shadow-sm p-4 p-sm-5" style="max-width: 440px;">
+        
+        <!-- Tab Chuyển Đăng nhập / Đăng ký -->
+        <div class="btn-group w-100 p-1 bg-light rounded-pill mb-4" role="group" aria-label="Lựa chọn phương thức xác thực">
+          <button 
+            type="button" 
+            id="tab-login-btn"
+            onclick="switchAuthTab('login')" 
+            class="btn btn-sm rounded-pill fw-medium btn-dark shadow-xs"
+          >
+            Đăng nhập
+          </button>
+          <button 
+            type="button" 
+            id="tab-register-btn"
+            onclick="switchAuthTab('register')" 
+            class="btn btn-sm rounded-pill fw-medium text-secondary"
+          >
+            Đăng ký
+          </button>
+        </div>
+
+        <!-- Thông báo lỗi / thành công -->
+        <div id="auth-alert" class="alert d-none small py-2.5 px-3 rounded-3 mb-4" role="alert"></div>
+
+        <!-- ─── FORM ĐĂNG NHẬP ──────────────────────────────────────────────── -->
+        <form id="login-form" onsubmit="handleLoginSubmit(event)">
+          <div class="mb-3">
+            <label for="login-email" class="form-label small fw-medium text-dark mb-1">Địa chỉ Email</label>
+            <div class="input-group">
+              <span class="input-group-text bg-white border-end-0 text-muted ps-3 pe-2">
+                <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+              </span>
+              <input 
+                type="email" 
+                id="login-email" 
+                name="email"
+                required 
+                placeholder="name@example.com" 
+                class="form-control border-start-0 ps-1 py-2"
+              />
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <div class="d-flex align-items-center justify-content-between mb-1">
+              <label for="login-password" class="form-label small fw-medium text-dark mb-0">Mật khẩu</label>
+              <a href="#" onclick="alert('Tính năng khôi phục mật khẩu đang được kết nối hệ thống!')" class="small text-secondary text-decoration-none">Quên mật khẩu?</a>
+            </div>
+            <div class="input-group">
+              <span class="input-group-text bg-white border-end-0 text-muted ps-3 pe-2">
+                <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              </span>
+              <input 
+                type="password" 
+                id="login-password" 
+                name="password"
+                required 
+                placeholder="••••••••" 
+                class="form-control border-start-0 border-end-0 ps-1 py-2"
+              />
+              <button 
+                type="button" 
+                aria-label="Hiện hoặc ẩn mật khẩu"
+                onclick="togglePasswordVisibility('login-password')" 
+                class="btn bg-white border border-start-0 text-muted px-3"
+              >
+                <svg id="eye-icon-login-password" style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-check mb-4">
+            <input type="checkbox" id="remember-me" class="form-check-input" />
+            <label for="remember-me" class="form-check-label small text-secondary">Ghi nhớ đăng nhập</label>
+          </div>
+
+          <button 
+            type="submit" 
+            class="btn btn-dark w-100 py-2.5 fw-medium shadow-sm rounded-3"
+          >
+            Đăng nhập vào tài khoản
+          </button>
+        </form>
+
+        <!-- ─── FORM ĐĂNG KÝ ──────────────────────────────────────────────── -->
+        <form id="register-form" onsubmit="handleRegisterSubmit(event)" class="d-none">
+          <div class="mb-3">
+            <label for="reg-name" class="form-label small fw-medium text-dark mb-1">Họ và tên</label>
+            <div class="input-group">
+              <span class="input-group-text bg-white border-end-0 text-muted ps-3 pe-2">
+                <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </span>
+              <input 
+                type="text" 
+                id="reg-name" 
+                name="name"
+                required 
+                placeholder="Nguyễn Văn A" 
+                class="form-control border-start-0 ps-1 py-2"
+              />
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="reg-email" class="form-label small fw-medium text-dark mb-1">Địa chỉ Email</label>
+            <div class="input-group">
+              <span class="input-group-text bg-white border-end-0 text-muted ps-3 pe-2">
+                <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+              </span>
+              <input 
+                type="email" 
+                id="reg-email" 
+                name="email"
+                required 
+                placeholder="vana@example.com" 
+                class="form-control border-start-0 ps-1 py-2"
+              />
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="reg-phone" class="form-label small fw-medium text-dark mb-1">Số điện thoại</label>
+            <div class="input-group">
+              <span class="input-group-text bg-white border-end-0 text-muted ps-3 pe-2">
+                <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              </span>
+              <input 
+                type="tel" 
+                id="reg-phone" 
+                name="phone"
+                required 
+                placeholder="0912 345 678" 
+                class="form-control border-start-0 ps-1 py-2"
+              />
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="reg-password" class="form-label small fw-medium text-dark mb-1">Mật khẩu</label>
+            <div class="input-group">
+              <span class="input-group-text bg-white border-end-0 text-muted ps-3 pe-2">
+                <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              </span>
+              <input 
+                type="password" 
+                id="reg-password" 
+                name="password"
+                required 
+                placeholder="Tối thiểu 6 ký tự" 
+                class="form-control border-start-0 border-end-0 ps-1 py-2"
+              />
+              <button 
+                type="button" 
+                aria-label="Hiện hoặc ẩn mật khẩu"
+                onclick="togglePasswordVisibility('reg-password')" 
+                class="btn bg-white border border-start-0 text-muted px-3"
+              >
+                <svg id="eye-icon-reg-password" style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-check mb-4">
+            <input type="checkbox" id="reg-agree" required class="form-check-input" />
+            <label for="reg-agree" class="form-check-label small text-secondary">
+              Tôi đồng ý với <a href="#" class="text-dark fw-medium text-decoration-underline">Điều khoản dịch vụ</a> và Chính sách bảo mật của EventVN.
+            </label>
+          </div>
+
+          <button 
+            type="submit" 
+            class="btn btn-dark w-100 py-2.5 fw-medium shadow-sm rounded-3"
+          >
+            Đăng ký tài khoản Thành viên
+          </button>
+        </form>
+
+        <!-- ─── TÀI KHOẢN DEMO 1-CHẠM ───────────────────────────────────────── -->
+        <div class="mt-4 pt-4 border-top">
+          <div class="text-center mb-3">
+            <span class="small fw-semibold text-muted text-uppercase tracking-wider">Tài khoản Demo 1-chạm</span>
+          </div>
+
+          <div class="row g-2">
+            <!-- Nút Demo Admin -->
+            <div class="col-6">
+              <button 
+                type="button" 
+                onclick="demoLogin('thuha@email.com', 'admin123')"
+                class="btn btn-light text-start w-100 p-2.5 rounded-3 d-flex flex-column gap-1"
+              >
+                <div class="d-flex align-items-center gap-1.5">
+                  <span class="rounded-circle bg-dark" style="width: 8px; height: 8px;"></span>
+                  <span class="small fw-bold text-dark">Admin</span>
+                </div>
+                <div class="small text-secondary text-truncate">Lê Thị Thu Hà</div>
+                <div class="text-muted font-monospace small" style="font-size: 12px;">Có nút Admin</div>
+              </button>
+            </div>
+
+            <!-- Nút Demo User -->
+            <div class="col-6">
+              <button 
+                type="button" 
+                onclick="demoLogin('minhanh@email.com', 'user123')"
+                class="btn btn-light text-start w-100 p-2.5 rounded-3 d-flex flex-column gap-1"
+              >
+                <div class="d-flex align-items-center gap-1.5">
+                  <span class="rounded-circle bg-secondary" style="width: 8px; height: 8px;"></span>
+                  <span class="small fw-bold text-dark">Thành viên</span>
+                </div>
+                <div class="small text-secondary text-truncate">Nguyễn Minh Anh</div>
+                <div class="text-muted font-monospace small" style="font-size: 12px;">Không có Admin</div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Bootstrap 5.3.3 JS Bundle CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- App Scripts -->
+    <script src="js/data.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+      // Kiểm tra tham số URL ?mode=register
+      document.addEventListener("DOMContentLoaded", () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get("mode") === "register") {
+          switchAuthTab("register");
+        }
+      });
+
+      function switchAuthTab(mode) {
+        const loginBtn = document.getElementById("tab-login-btn");
+        const regBtn = document.getElementById("tab-register-btn");
+        const loginForm = document.getElementById("login-form");
+        const regForm = document.getElementById("register-form");
+        const alertBox = document.getElementById("auth-alert");
+        alertBox.classList.add("d-none");
+
+        if (mode === "login") {
+          loginBtn.className = "btn btn-sm rounded-pill fw-medium btn-dark shadow-xs";
+          regBtn.className = "btn btn-sm rounded-pill fw-medium text-secondary";
+          loginForm.classList.remove("d-none");
+          regForm.classList.add("d-none");
+        } else {
+          regBtn.className = "btn btn-sm rounded-pill fw-medium btn-dark shadow-xs";
+          loginBtn.className = "btn btn-sm rounded-pill fw-medium text-secondary";
+          regForm.classList.remove("d-none");
+          loginForm.classList.add("d-none");
+        }
+      }
+
+      function togglePasswordVisibility(inputId) {
+        const input = document.getElementById(inputId);
+        const icon = document.getElementById("eye-icon-" + inputId);
+        if (!input) return;
+        if (input.type === "password") {
+          input.type = "text";
+          if (icon) {
+            icon.innerHTML = `<path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/>`;
+          }
+        } else {
+          input.type = "password";
+          if (icon) {
+            icon.innerHTML = `<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>`;
+          }
+        }
+      }
+
+      function showAlert(msg, isSuccess = false) {
+        const alertBox = document.getElementById("auth-alert");
+        alertBox.className = `alert ${
+          isSuccess ? "alert-success" : "alert-danger"
+        } small py-2.5 px-3 rounded-3 mb-4 animate-slide-up`;
+        alertBox.textContent = msg;
+        alertBox.classList.remove("d-none");
+      }
+
+      function handleLoginSubmit(e) {
+        e.preventDefault();
+        const email = document.getElementById("login-email").value;
+        const pass = document.getElementById("login-password").value;
+
+        const res = login(email, pass);
+        if (res.success) {
+          showAlert("Đăng nhập thành công! Đang chuyển hướng...", true);
+          const params = new URLSearchParams(window.location.search);
+          const redirect = params.get("redirect") || "index.html";
+          setTimeout(() => {
+            window.location.href = redirect;
+          }, 600);
+        } else {
+          showAlert(res.message, false);
+        }
+      }
+
+      function handleRegisterSubmit(e) {
+        e.preventDefault();
+        const name = document.getElementById("reg-name").value;
+        const email = document.getElementById("reg-email").value;
+        const phone = document.getElementById("reg-phone").value;
+        const pass = document.getElementById("reg-password").value;
+
+        if (pass.length < 6) {
+          showAlert("Mật khẩu phải có ít nhất 6 ký tự!", false);
+          return;
+        }
+
+        const res = register(name, email, phone, pass);
+        if (res.success) {
+          showAlert("Đăng ký thành công! Đang chuyển hướng...", true);
+          const params = new URLSearchParams(window.location.search);
+          const redirect = params.get("redirect") || "index.html";
+          setTimeout(() => {
+            window.location.href = redirect;
+          }, 600);
+        } else {
+          showAlert(res.message, false);
+        }
+      }
+
+      function demoLogin(email, pass) {
+        document.getElementById("login-email").value = email;
+        document.getElementById("login-password").value = pass;
+        switchAuthTab("login");
+        const res = login(email, pass);
+        if (res.success) {
+          showAlert(`Đăng nhập thành công tài khoản [${res.user.role.toUpperCase()}]! Đang chuyển hướng...`, true);
+          const params = new URLSearchParams(window.location.search);
+          const redirect = params.get("redirect") || (res.user.role === "admin" ? "admin.html" : "index.html");
+          setTimeout(() => {
+            window.location.href = redirect;
+          }, 600);
+        }
+      }
+    </script>
+  </body>
+</html>

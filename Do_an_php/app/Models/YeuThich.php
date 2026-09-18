@@ -1,12 +1,11 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class DangKy extends Model
+class YeuThich extends Model
 {
-    protected $table = 'dang_ky';
+    protected $table = 'yeu_thich';
     protected $guarded = [];
 
     public function suKien()
