@@ -195,11 +195,8 @@
                 </div>
 
                 <div class="d-flex gap-2 pt-2 border-top">
-                  <a href="{{ url('/events/' . $id) }}" class="btn btn-sm btn-outline-secondary flex-fill py-2 fw-medium">
+                  <a href="{{ url('/event/' . $id) }}" class="btn btn-sm btn-outline-secondary flex-fill py-2 fw-medium">
                     Xem chi tiết
-                  </a>
-                  <a href="{{ url('/events/' . $id . '?register=1') }}" class="btn btn-sm btn-dark flex-fill py-2 fw-medium">
-                    Đăng ký ngay
                   </a>
                 </div>
               </div>

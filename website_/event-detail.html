@@ -1,259 +1,298 @@
 <!doctype html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chi tiết sự kiện — EventVN</title>
-    <!-- Bootstrap 5.3.3 CSS CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="css/style.css" />
-  </head>
-  <body class="bg-body-tertiary text-dark min-vh-100 d-flex flex-column">
-    <!-- Navbar Header -->
-    <header class="navbar navbar-expand-lg sticky-top bg-white border-bottom shadow-xs py-2">
-      <div class="container">
-        <!-- Logo -->
-        <a href="index.html" class="navbar-brand d-flex items-center gap-2 m-0 p-0 text-decoration-none">
-          <div class="rounded-3 bg-dark text-white d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 36px; height: 36px; font-size: 1.15rem;">
-            E
-          </div>
-          <span class="fs-5 fw-bold tracking-tight text-dark m-0">Event<span class="text-secondary fw-normal">VN</span></span>
-        </a>
 
-        <!-- Hamburger Toggle -->
-        <button class="navbar-toggler border-0 p-2 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chi tiết sự kiện — EventVN</title>
+  <!-- Bootstrap 5.3.3 CSS CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
 
-        <!-- Navbar Links & Auth -->
-        <div class="collapse navbar-collapse" id="navbarMain">
-          <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-1 gap-lg-2 pt-2 pt-lg-0">
-            <li class="nav-item">
-              <a href="index.html" class="nav-link px-3 py-1 rounded-pill small fw-medium text-secondary">Trang chủ</a>
-            </li>
-            <li class="nav-item">
-              <a href="dashboard.html" class="nav-link px-3 py-1 rounded-pill small fw-medium text-secondary">Vé của tôi</a>
-            </li>
-            <li class="nav-item">
-              <a href="dashboard.html?tab=bookmarks" class="nav-link px-3 py-1 rounded-pill small fw-medium text-secondary d-flex align-items-center gap-1.5">
-                <svg class="text-danger" style="width: 15px; height: 15px; fill: currentColor;" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
-                <span>Yêu thích</span>
-                <span class="bookmark-count-badge d-none badge rounded-pill bg-danger text-white ms-1" style="font-size: 12px;">0</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="profile.html" class="nav-link px-3 py-1 rounded-pill small fw-medium text-secondary">Hồ sơ cá nhân</a>
-            </li>
-          </ul>
+<body class="bg-body-tertiary text-dark min-vh-100 d-flex flex-column">
+  <!-- Navbar Header -->
+  <header class="navbar navbar-expand-lg sticky-top bg-white border-bottom shadow-xs py-2">
+    <div class="container">
+      <!-- Logo -->
+      <a href="index.html" class="navbar-brand d-flex items-center gap-2 m-0 p-0 text-decoration-none">
+        <div class="rounded-3 bg-dark text-white d-flex align-items-center justify-content-center fw-bold shadow-sm"
+          style="width: 36px; height: 36px; font-size: 1.15rem;">
+          E
+        </div>
+        <span class="fs-5 fw-bold tracking-tight text-dark m-0">Event<span
+            class="text-secondary fw-normal">VN</span></span>
+      </a>
 
-          <div class="d-flex align-items-center gap-3 pt-2 pt-lg-0">
-            <div class="navbar-role-switcher d-none"></div>
-            <div class="navbar-auth-container"></div>
-          </div>
+      <!-- Hamburger Toggle -->
+      <button class="navbar-toggler border-0 p-2 shadow-none" type="button" data-bs-toggle="collapse"
+        data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Navbar Links & Auth -->
+      <div class="collapse navbar-collapse" id="navbarMain">
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-1 gap-lg-2 pt-2 pt-lg-0">
+          <li class="nav-item">
+            <a href="index.html" class="nav-link px-3 py-1 rounded-pill small fw-medium text-secondary">Trang chủ</a>
+          </li>
+          <li class="nav-item">
+            <a href="dashboard.html" class="nav-link px-3 py-1 rounded-pill small fw-medium text-secondary">Vé của
+              tôi</a>
+          </li>
+          <li class="nav-item">
+            <a href="dashboard.html?tab=bookmarks"
+              class="nav-link px-3 py-1 rounded-pill small fw-medium text-secondary d-flex align-items-center gap-1.5">
+              <svg class="text-danger" style="width: 15px; height: 15px; fill: currentColor;" viewBox="0 0 24 24">
+                <path
+                  d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+              </svg>
+              <span>Yêu thích</span>
+              <span class="bookmark-count-badge d-none badge rounded-pill bg-danger text-white ms-1"
+                style="font-size: 12px;">0</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="profile.html" class="nav-link px-3 py-1 rounded-pill small fw-medium text-secondary">Hồ sơ cá
+              nhân</a>
+          </li>
+        </ul>
+
+        <div class="d-flex align-items-center gap-3 pt-2 pt-lg-0">
+          <div class="navbar-role-switcher d-none"></div>
+          <div class="navbar-auth-container"></div>
         </div>
       </div>
-    </header>
+    </div>
+  </header>
 
-    <!-- Main Content -->
-    <main class="container py-4 flex-grow-1" id="event-detail-content">
-      <!-- Breadcrumb -->
-      <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb small mb-0">
-          <li class="breadcrumb-item"><a href="index.html" class="text-decoration-none text-muted">Trang chủ</a></li>
-          <li class="breadcrumb-item text-muted">Sự kiện</li>
-          <li class="breadcrumb-item active text-truncate" id="breadcrumb-title" style="max-width: 280px;" aria-current="page">Đang tải...</li>
-        </ol>
-      </nav>
+  <!-- Main Content -->
+  <main class="container py-4 flex-grow-1" id="event-detail-content">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+      <ol class="breadcrumb small mb-0">
+        <li class="breadcrumb-item"><a href="index.html" class="text-decoration-none text-muted">Trang chủ</a></li>
+        <li class="breadcrumb-item text-muted">Sự kiện</li>
+        <li class="breadcrumb-item active text-truncate" id="breadcrumb-title" style="max-width: 280px;"
+          aria-current="page">Đang tải...</li>
+      </ol>
+    </nav>
 
-      <!-- Grid layout: Left details & Right booking sidebar -->
-      <div class="row g-4">
-        
-        <!-- Left 2 Cols: Banner, Info, Details, Agenda -->
-        <div class="col-lg-8">
-          <!-- Banner Image Container -->
-          <div class="position-relative rounded-4 overflow-hidden bg-dark shadow-sm border mb-4">
-            <img id="event-image" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='400' viewBox='0 0 800 400'><rect width='100%' height='100%' fill='%230F172A'/></svg>" alt="Hình ảnh sự kiện" class="w-100 object-fit-cover" style="height: 360px;" />
-            <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(to top, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.25) 50%, transparent 100%); pointer-events: none;"></div>
-            
-            <div class="position-absolute top-0 start-0 p-3 d-flex gap-2" id="event-badges-container"></div>
+    <!-- Grid layout: Left details & Right booking sidebar -->
+    <div class="row g-4">
 
-            <!-- Nút Bookmark Trái tim -->
-            <button 
-              id="event-bookmark-btn" 
-              type="button" 
-              onclick="toggleDetailBookmark()"
-              class="position-absolute top-0 end-0 m-3 btn btn-light rounded-circle p-0 d-flex align-items-center justify-content-center shadow-sm border z-2"
-              style="width: 44px; height: 44px;"
-              title="Lưu vào yêu thích"
-            >
-              <svg id="detail-heart-icon" class="text-muted" style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
-            </button>
+      <!-- Left 2 Cols: Banner, Info, Details, Agenda -->
+      <div class="col-lg-8">
+        <!-- Banner Image Container -->
+        <div class="position-relative rounded-4 overflow-hidden bg-dark shadow-sm border mb-4">
+          <img id="event-image"
+            src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='400' viewBox='0 0 800 400'><rect width='100%' height='100%' fill='%230F172A'/></svg>"
+            alt="Hình ảnh sự kiện" class="w-100 object-fit-cover" style="height: 360px;" />
+          <div class="position-absolute top-0 start-0 w-100 h-100"
+            style="background: linear-gradient(to top, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.25) 50%, transparent 100%); pointer-events: none;">
+          </div>
 
-            <div class="position-absolute bottom-0 start-0 end-0 p-4 text-white">
-              <h1 id="event-title" class="fw-bold tracking-tight mb-2 display-6"></h1>
-              <div class="d-flex flex-wrap align-items-center gap-3 small text-white-50">
-                <div class="d-flex align-items-center gap-1.5" id="event-time-badge"></div>
-                <div class="d-flex align-items-center gap-1.5" id="event-location-badge"></div>
+          <div class="position-absolute top-0 start-0 p-3 d-flex gap-2" id="event-badges-container"></div>
+
+          <!-- Nút Bookmark Trái tim -->
+          <button id="event-bookmark-btn" type="button" onclick="toggleDetailBookmark()"
+            class="position-absolute top-0 end-0 m-3 btn btn-light rounded-circle p-0 d-flex align-items-center justify-content-center shadow-sm border z-2"
+            style="width: 44px; height: 44px;" title="Lưu vào yêu thích">
+            <svg id="detail-heart-icon" class="text-muted" style="width: 20px; height: 20px;" fill="none"
+              stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+            </svg>
+          </button>
+
+          <div class="position-absolute bottom-0 start-0 end-0 p-4 text-white">
+            <h1 id="event-title" class="fw-bold tracking-tight mb-2 display-6"></h1>
+            <div class="d-flex flex-wrap align-items-center gap-3 small text-white-50">
+              <div class="d-flex align-items-center gap-1.5" id="event-time-badge"></div>
+              <div class="d-flex align-items-center gap-1.5" id="event-location-badge"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Description Section -->
+        <div class="bg-white border shadow-sm rounded-4 p-4 p-md-5 mb-4">
+          <h2 class="fw-bold tracking-tight fs-4 text-dark border-bottom pb-3 mb-3">Giới thiệu sự kiện</h2>
+          <div id="event-description" class="text-secondary small leading-relaxed"
+            style="white-space: pre-line; line-height: 1.7;"></div>
+        </div>
+
+        <!-- Organizer Section -->
+        <div class="bg-white border shadow-sm rounded-4 p-4 p-md-5 mb-4">
+          <h2 class="fw-bold tracking-tight fs-4 text-dark border-bottom pb-3 mb-4">Đơn vị tổ chức</h2>
+          <div class="d-flex align-items-center gap-3">
+            <span
+              class="rounded-3 bg-light border text-dark d-flex align-items-center justify-content-center fw-bold fs-5 flex-shrink-0"
+              style="width: 56px; height: 56px;">
+              VN
+            </span>
+            <div>
+              <h3 class="fs-6 fw-bold text-dark mb-1">Ban Tổ Chức Sự Kiện Quốc Gia (EventVN)</h3>
+              <p class="small text-muted mb-2">Đơn vị tiên phong kết nối cộng đồng học thuật &amp; văn hóa</p>
+              <div class="d-flex flex-wrap gap-3 small text-secondary">
+                <span class="d-flex align-items-center gap-1.5">
+                  <svg style="width: 14px; height: 14px;" class="text-muted" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <rect width="20" height="16" x="2" y="4" rx="2" />
+                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                  </svg>
+                  contact@eventvn.org
+                </span>
+                <span class="d-flex align-items-center gap-1.5">
+                  <svg style="width: 14px; height: 14px;" class="text-muted" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path
+                      d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                  </svg>
+                  1900 6868 (Hotline 24/7)
+                </span>
               </div>
             </div>
           </div>
+        </div>
+      </div>
 
-          <!-- Description Section -->
-          <div class="bg-white border shadow-sm rounded-4 p-4 p-md-5 mb-4">
-            <h2 class="fw-bold tracking-tight fs-4 text-dark border-bottom pb-3 mb-3">Giới thiệu sự kiện</h2>
-            <div id="event-description" class="text-secondary small leading-relaxed" style="white-space: pre-line; line-height: 1.7;"></div>
+      <!-- Right 1 Col: Ticket Registration Card -->
+      <div class="col-lg-4">
+        <div class="bg-white border shadow-sm rounded-4 p-4 sticky-top" style="top: 84px;">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <span class="small fw-semibold text-muted text-uppercase tracking-wider">Vé tham dự</span>
+            <span
+              class="badge rounded-pill bg-success-subtle text-success border border-success-subtle px-2.5 py-1">MIỄN
+              PHÍ</span>
           </div>
 
-          <!-- Organizer Section -->
-          <div class="bg-white border shadow-sm rounded-4 p-4 p-md-5 mb-4">
-            <h2 class="fw-bold tracking-tight fs-4 text-dark border-bottom pb-3 mb-4">Đơn vị tổ chức</h2>
-            <div class="d-flex align-items-center gap-3">
-              <span class="rounded-3 bg-light border text-dark d-flex align-items-center justify-content-center fw-bold fs-5 flex-shrink-0" style="width: 56px; height: 56px;">
-                VN
-              </span>
+          <!-- Capacity Progress -->
+          <div class="mb-4">
+            <div class="d-flex justify-content-between small fw-medium mb-1">
+              <span class="text-muted">Tình trạng chỗ ngồi</span>
+              <span id="capacity-text" class="fw-semibold text-dark"></span>
+            </div>
+            <div class="progress" style="height: 8px;">
+              <div id="capacity-bar" class="progress-bar bg-dark rounded-pill" role="progressbar" style="width: 0%">
+              </div>
+            </div>
+            <div class="text-muted text-end mt-1 small" id="remaining-text"></div>
+          </div>
+
+          <!-- Quick Specs -->
+          <div class="py-3 border-top border-bottom mb-4 d-flex flex-column gap-3 small">
+            <div class="d-flex items-start gap-3">
+              <div class="text-muted mt-0.5">
+                <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <rect width="18" height="18" x="3" y="4" rx="2" />
+                  <line x1="16" x2="16" y1="2" y2="6" />
+                  <line x1="8" x2="8" y1="2" y2="6" />
+                  <line x1="3" x2="21" y1="10" y2="10" />
+                </svg>
+              </div>
               <div>
-                <h3 class="fs-6 fw-bold text-dark mb-1">Ban Tổ Chức Sự Kiện Quốc Gia (EventVN)</h3>
-                <p class="small text-muted mb-2">Đơn vị tiên phong kết nối cộng đồng học thuật &amp; văn hóa</p>
-                <div class="d-flex flex-wrap gap-3 small text-secondary">
-                  <span class="d-flex align-items-center gap-1.5">
-                    <svg style="width: 14px; height: 14px;" class="text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                    contact@eventvn.org
-                  </span>
-                  <span class="d-flex align-items-center gap-1.5">
-                    <svg style="width: 14px; height: 14px;" class="text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                    1900 6868 (Hotline 24/7)
-                  </span>
-                </div>
+                <div class="fw-medium text-dark">Ngày diễn ra</div>
+                <div id="sidebar-date" class="text-secondary"></div>
+              </div>
+            </div>
+
+            <div class="d-flex items-start gap-3">
+              <div class="text-muted mt-0.5">
+                <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+              </div>
+              <div>
+                <div class="fw-medium text-dark">Thời gian</div>
+                <div id="sidebar-time" class="text-secondary"></div>
+              </div>
+            </div>
+
+            <div class="d-flex items-start gap-3">
+              <div class="text-muted mt-0.5">
+                <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+              </div>
+              <div>
+                <div class="fw-medium text-dark">Địa điểm</div>
+                <div id="sidebar-location" class="text-secondary"></div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Right 1 Col: Ticket Registration Card -->
-        <div class="col-lg-4">
-          <div class="bg-white border shadow-sm rounded-4 p-4 sticky-top" style="top: 84px;">
-            <div class="d-flex align-items-center justify-content-between mb-3">
-              <span class="small fw-semibold text-muted text-uppercase tracking-wider">Vé tham dự</span>
-              <span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle px-2.5 py-1">MIỄN PHÍ</span>
-            </div>
-
-              <!-- Capacity Progress -->
-              <div class="mb-4">
-                <div class="d-flex justify-content-between small fw-medium mb-1">
-                  <span class="text-muted">Tình trạng chỗ ngồi</span>
-                  <span id="capacity-text" class="fw-semibold text-dark"></span>
-                </div>
-                <div class="progress" style="height: 8px;">
-                  <div id="capacity-bar" class="progress-bar bg-dark rounded-pill" role="progressbar" style="width: 0%"></div>
-                </div>
-                <div class="text-muted text-end mt-1 small" id="remaining-text"></div>
-              </div>
-
-              <!-- Quick Specs -->
-              <div class="py-3 border-top border-bottom mb-4 d-flex flex-column gap-3 small">
-                <div class="d-flex items-start gap-3">
-                  <div class="text-muted mt-0.5">
-                    <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="4" rx="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
-                  </div>
-                  <div>
-                    <div class="fw-medium text-dark">Ngày diễn ra</div>
-                    <div id="sidebar-date" class="text-secondary"></div>
-                  </div>
-                </div>
-
-                <div class="d-flex items-start gap-3">
-                  <div class="text-muted mt-0.5">
-                    <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                  </div>
-                  <div>
-                    <div class="fw-medium text-dark">Thời gian</div>
-                    <div id="sidebar-time" class="text-secondary"></div>
-                  </div>
-                </div>
-
-                <div class="d-flex items-start gap-3">
-                  <div class="text-muted mt-0.5">
-                    <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
-                  </div>
-                  <div>
-                    <div class="fw-medium text-dark">Địa điểm</div>
-                    <div id="sidebar-location" class="text-secondary"></div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Action Button -->
-              <button 
-                type="button" 
-                id="register-action-btn"
-                onclick="openRegisterModal()" 
-                class="btn btn-dark w-100 py-2 fw-medium shadow-sm rounded-3"
-              >
-                Đăng ký tham gia ngay
-              </button>
-              <p class="text-center text-muted mt-2 mb-0 small">Vé điện tử sẽ được cấp ngay sau khi đăng ký</p>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </main>
-
-    <!-- ─── Registration Modal ──────────────────────────────────────────────── -->
-    <div class="modal fade" id="register-modal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content rounded-4 border-0 shadow position-relative p-2 p-sm-3">
-          <button type="button" class="btn-close position-absolute top-0 end-0 m-3 z-3" data-bs-dismiss="modal" aria-label="Close"></button>
-          <div class="modal-body p-3 p-sm-4" id="modal-content-container">
-            <!-- Render dynamically by JS depending on auth state -->
-          </div>
+          <!-- Action Button -->
+          <button type="button" id="register-action-btn" onclick="openRegisterModal()"
+            class="btn btn-dark w-100 py-2 fw-medium shadow-sm rounded-3">
+            Đăng ký tham gia ngay
+          </button>
+          <p class="text-center text-muted mt-2 mb-0 small">Vé điện tử sẽ được cấp ngay sau khi đăng ký</p>
         </div>
       </div>
     </div>
 
-    <!-- Bootstrap 5.3.3 JS Bundle CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- App Scripts -->
-    <script src="js/data.js"></script>
-    <script src="js/auth.js"></script>
-    <script>
-      let currentEvent = null;
-      let modalInstance = null;
+    </div>
+  </main>
 
-      document.addEventListener("DOMContentLoaded", () => {
-        const modalEl = document.getElementById("register-modal");
-        if (modalEl) {
-          modalInstance = new bootstrap.Modal(modalEl);
-        }
+  <!-- ─── Registration Modal ──────────────────────────────────────────────── -->
+  <div class="modal fade" id="register-modal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content rounded-4 border-0 shadow position-relative p-2 p-sm-3">
+        <button type="button" class="btn-close position-absolute top-0 end-0 m-3 z-3" data-bs-dismiss="modal"
+          aria-label="Close"></button>
+        <div class="modal-body p-3 p-sm-4" id="modal-content-container">
+          <!-- Render dynamically by JS depending on auth state -->
+        </div>
+      </div>
+    </div>
+  </div>
 
-        const params = new URLSearchParams(window.location.search);
-        const eventId = Number(params.get("id") || 1);
-        const events = getEvents();
-        currentEvent = events.find((e) => e.id === eventId) || events[0];
+  <!-- Bootstrap 5.3.3 JS Bundle CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- App Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    let currentEvent = null;
+    let modalInstance = null;
 
-        renderEventDetails();
+    document.addEventListener("DOMContentLoaded", () => {
+      const modalEl = document.getElementById("register-modal");
+      if (modalEl) {
+        modalInstance = new bootstrap.Modal(modalEl);
+      }
 
-        if (params.get("register") === "1") {
-          setTimeout(openRegisterModal, 300);
-        }
-      });
+      const params = new URLSearchParams(window.location.search);
+      const eventId = Number(params.get("id") || 1);
+      const events = getEvents();
+      currentEvent = events.find((e) => e.id === eventId) || events[0];
 
-      function renderEventDetails() {
-        if (!currentEvent) return;
+      renderEventDetails();
 
-        const categories = getCategories();
-        const cat = categories.find((c) => c.id === currentEvent.categoryId) || { name: "Chung" };
-        const percent = Math.min(100, Math.round((currentEvent.registered / currentEvent.capacity) * 100));
-        const isSaved = isBookmarked(currentEvent.id);
+      if (params.get("register") === "1") {
+        setTimeout(openRegisterModal, 300);
+      }
+    });
 
-        document.title = `${currentEvent.title} — EventVN`;
-        document.getElementById("breadcrumb-title").textContent = currentEvent.title;
-        document.getElementById("event-image").src = currentEvent.image;
-        document.getElementById("event-title").textContent = currentEvent.title;
-        document.getElementById("event-description").textContent = currentEvent.description;
+    function renderEventDetails() {
+      if (!currentEvent) return;
 
-        // Badges
-        document.getElementById("event-badges-container").innerHTML = `
+      const categories = getCategories();
+      const cat = categories.find((c) => c.id === currentEvent.categoryId) || { name: "Chung" };
+      const percent = Math.min(100, Math.round((currentEvent.registered / currentEvent.capacity) * 100));
+      const isSaved = isBookmarked(currentEvent.id);
+
+      document.title = `${currentEvent.title} — EventVN`;
+      document.getElementById("breadcrumb-title").textContent = currentEvent.title;
+      document.getElementById("event-image").src = currentEvent.image;
+      document.getElementById("event-title").textContent = currentEvent.title;
+      document.getElementById("event-description").textContent = currentEvent.description;
+
+      // Badges
+      document.getElementById("event-badges-container").innerHTML = `
           <span class="badge rounded-pill bg-white text-dark shadow-sm border px-3 py-1.5 d-inline-flex align-items-center gap-1.5 fw-medium small">
             ${getCategorySymbol(cat.name, "w-3.5 h-3.5 text-secondary")}
             <span>${cat.name}</span>
@@ -261,70 +300,70 @@
           ${getStatusBadge(currentEvent.status)}
         `;
 
-        // Time & Location
-        document.getElementById("event-time-badge").innerHTML = `
+      // Time & Location
+      document.getElementById("event-time-badge").innerHTML = `
           ${getCalendarSymbol("w-4 h-4 text-light opacity-75")}
           <span>${fmtDateTime(currentEvent.startDate)}</span>
         `;
-        document.getElementById("event-location-badge").innerHTML = `
+      document.getElementById("event-location-badge").innerHTML = `
           ${getMapPinSymbol("w-4 h-4 text-light opacity-75")}
           <span>${currentEvent.location}</span>
         `;
 
-        // Heart Icon
-        updateHeartIcon(isSaved);
+      // Heart Icon
+      updateHeartIcon(isSaved);
 
-        // Sidebar specs
-        document.getElementById("sidebar-date").textContent = fmtDate(currentEvent.startDate);
-        document.getElementById("sidebar-time").textContent = `${fmtTime(currentEvent.startDate)} - ${fmtTime(currentEvent.endDate)}`;
-        document.getElementById("sidebar-location").textContent = currentEvent.location;
-        document.getElementById("capacity-text").textContent = `${currentEvent.registered}/${currentEvent.capacity} (${percent}%)`;
-        document.getElementById("capacity-bar").style.width = `${percent}%`;
-        document.getElementById("remaining-text").textContent = `Còn lại ${Math.max(0, currentEvent.capacity - currentEvent.registered)} chỗ trống`;
+      // Sidebar specs
+      document.getElementById("sidebar-date").textContent = fmtDate(currentEvent.startDate);
+      document.getElementById("sidebar-time").textContent = `${fmtTime(currentEvent.startDate)} - ${fmtTime(currentEvent.endDate)}`;
+      document.getElementById("sidebar-location").textContent = currentEvent.location;
+      document.getElementById("capacity-text").textContent = `${currentEvent.registered}/${currentEvent.capacity} (${percent}%)`;
+      document.getElementById("capacity-bar").style.width = `${percent}%`;
+      document.getElementById("remaining-text").textContent = `Còn lại ${Math.max(0, currentEvent.capacity - currentEvent.registered)} chỗ trống`;
 
-        if (currentEvent.status === "ended") {
-          const btn = document.getElementById("register-action-btn");
-          btn.disabled = true;
-          btn.textContent = "Sự kiện đã kết thúc";
-          btn.className = "btn btn-secondary w-100 py-2 fw-medium disabled";
-        }
+      if (currentEvent.status === "ended") {
+        const btn = document.getElementById("register-action-btn");
+        btn.disabled = true;
+        btn.textContent = "Sự kiện đã kết thúc";
+        btn.className = "btn btn-secondary w-100 py-2 fw-medium disabled";
       }
+    }
 
-      function updateHeartIcon(isSaved) {
-        const icon = document.getElementById("detail-heart-icon");
-        const btn = document.getElementById("event-bookmark-btn");
-        if (!icon || !btn) return;
-        icon.className = `${isSaved ? "text-danger" : "text-muted"}`;
-        if (isSaved) {
-          icon.setAttribute("fill", "currentColor");
-        } else {
-          icon.setAttribute("fill", "none");
-        }
-        btn.title = isSaved ? "Bỏ lưu sự kiện" : "Lưu vào yêu thích";
+    function updateHeartIcon(isSaved) {
+      const icon = document.getElementById("detail-heart-icon");
+      const btn = document.getElementById("event-bookmark-btn");
+      if (!icon || !btn) return;
+      icon.className = `${isSaved ? "text-danger" : "text-muted"}`;
+      if (isSaved) {
+        icon.setAttribute("fill", "currentColor");
+      } else {
+        icon.setAttribute("fill", "none");
       }
+      btn.title = isSaved ? "Bỏ lưu sự kiện" : "Lưu vào yêu thích";
+    }
 
-      function toggleDetailBookmark() {
-        if (!currentEvent) return;
-        const isAdded = toggleBookmark(currentEvent.id);
-        updateHeartIcon(isAdded);
-        const btn = document.getElementById("event-bookmark-btn");
-        btn.classList.add("animate-heart-pop");
-        setTimeout(() => btn.classList.remove("animate-heart-pop"), 350);
+    function toggleDetailBookmark() {
+      if (!currentEvent) return;
+      const isAdded = toggleBookmark(currentEvent.id);
+      updateHeartIcon(isAdded);
+      const btn = document.getElementById("event-bookmark-btn");
+      btn.classList.add("animate-heart-pop");
+      setTimeout(() => btn.classList.remove("animate-heart-pop"), 350);
 
-        if (isAdded) {
-          showToast(`Đã lưu "${currentEvent.title}" vào mục Yêu thích!`, "success");
-        } else {
-          showToast(`Đã bỏ lưu "${currentEvent.title}" khỏi mục Yêu thích!`, "info");
-        }
+      if (isAdded) {
+        showToast(`Đã lưu "${currentEvent.title}" vào mục Yêu thích!`, "success");
+      } else {
+        showToast(`Đã bỏ lưu "${currentEvent.title}" khỏi mục Yêu thích!`, "info");
       }
+    }
 
-      function openRegisterModal() {
-        const container = document.getElementById("modal-content-container");
-        const user = getCurrentUser();
+    function openRegisterModal() {
+      const container = document.getElementById("modal-content-container");
+      const user = getCurrentUser();
 
-        if (!user) {
-          // Chưa đăng nhập -> Yêu cầu đăng nhập
-          container.innerHTML = `
+      if (!user) {
+        // Chưa đăng nhập -> Yêu cầu đăng nhập
+        container.innerHTML = `
             <div class="text-center py-2">
               <div class="rounded-circle bg-light text-secondary d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 56px; height: 56px;">
                 <svg style="width: 28px; height: 28px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
@@ -343,9 +382,9 @@
               </div>
             </div>
           `;
-        } else {
-          // Đã đăng nhập -> Hiển thị form xác nhận
-          container.innerHTML = `
+      } else {
+        // Đã đăng nhập -> Hiển thị form xác nhận
+        container.innerHTML = `
             <div>
               <div class="d-flex align-items-center gap-2 mb-1">
                 <span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle" style="font-size: 12px;">ĐĂNG KÝ THAM GIA</span>
@@ -386,60 +425,60 @@
               </button>
             </div>
           `;
-        }
-
-        if (modalInstance) {
-          modalInstance.show();
-        }
       }
 
-      function closeRegisterModal() {
-        if (modalInstance) {
-          modalInstance.hide();
-        }
+      if (modalInstance) {
+        modalInstance.show();
+      }
+    }
+
+    function closeRegisterModal() {
+      if (modalInstance) {
+        modalInstance.hide();
+      }
+    }
+
+    function submitEventRegistration() {
+      const user = getCurrentUser();
+      if (!user || !currentEvent) return;
+
+      const notes = document.getElementById("reg-notes")?.value || "";
+      const regs = getRegistrations();
+
+      // Kiểm tra xem đã đăng ký chưa
+      const already = regs.find((r) => r.userId === user.id && r.eventId === currentEvent.id && r.status !== "cancelled");
+      if (already) {
+        alert("Bạn đã đăng ký tham gia sự kiện này rồi!");
+        closeRegisterModal();
+        return;
       }
 
-      function submitEventRegistration() {
-        const user = getCurrentUser();
-        if (!user || !currentEvent) return;
+      const newReg = {
+        id: Date.now(),
+        userId: user.id,
+        eventId: currentEvent.id,
+        registeredAt: new Date().toISOString().slice(0, 16),
+        notes: notes.trim(),
+        status: "confirmed",
+      };
 
-        const notes = document.getElementById("reg-notes")?.value || "";
-        const regs = getRegistrations();
+      regs.push(newReg);
+      saveRegistrations(regs);
 
-        // Kiểm tra xem đã đăng ký chưa
-        const already = regs.find((r) => r.userId === user.id && r.eventId === currentEvent.id && r.status !== "cancelled");
-        if (already) {
-          alert("Bạn đã đăng ký tham gia sự kiện này rồi!");
-          closeRegisterModal();
-          return;
-        }
+      // Cập nhật số người đăng ký sự kiện
+      const events = getEvents();
+      const evIndex = events.findIndex((e) => e.id === currentEvent.id);
+      if (evIndex !== -1) {
+        events[evIndex].registered += 1;
+        saveEvents(events);
+        currentEvent = events[evIndex];
+      }
 
-        const newReg = {
-          id: Date.now(),
-          userId: user.id,
-          eventId: currentEvent.id,
-          registeredAt: new Date().toISOString().slice(0, 16),
-          notes: notes.trim(),
-          status: "confirmed",
-        };
+      renderEventDetails();
 
-        regs.push(newReg);
-        saveRegistrations(regs);
-
-        // Cập nhật số người đăng ký sự kiện
-        const events = getEvents();
-        const evIndex = events.findIndex((e) => e.id === currentEvent.id);
-        if (evIndex !== -1) {
-          events[evIndex].registered += 1;
-          saveEvents(events);
-          currentEvent = events[evIndex];
-        }
-
-        renderEventDetails();
-
-        // Hiển thị vé thành công
-        const container = document.getElementById("modal-content-container");
-        container.innerHTML = `
+      // Hiển thị vé thành công
+      const container = document.getElementById("modal-content-container");
+      container.innerHTML = `
           <div class="text-center py-2">
             <div class="rounded-circle bg-success-subtle text-success d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 56px; height: 56px;">
               <svg style="width: 32px; height: 32px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
@@ -456,7 +495,8 @@
             </div>
           </div>
         `;
-      }
-    </script>
-  </body>
+    }
+  </script>
+</body>
+
 </html>
