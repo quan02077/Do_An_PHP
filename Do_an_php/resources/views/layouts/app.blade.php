@@ -46,15 +46,17 @@
               <li class="nav-item">
                 <a href="{{ route('dashboard', ['tab' => 'bookmarks']) }}" class="nav-link {{ (request()->routeIs('dashboard') && request('tab') === 'bookmarks') ? 'active fw-semibold text-dark' : 'text-secondary' }} px-3 py-2 rounded d-flex align-items-center gap-1.5">Yêu thích</a>
               </li>
-              <li class="nav-item">
-                <a href="{{ route('profile') }}" class="nav-link {{ request()->routeIs('profile') ? 'active fw-semibold text-dark' : 'text-secondary' }} px-3 py-2 rounded">Hồ sơ cá nhân</a>
-              </li>
             </ul>
 
             <!-- Phân quyền & Tài khoản người dùng (đồng bộ từ website_) -->
             <div class="d-flex align-items-center gap-2 pt-2 pt-md-0">
               <div class="navbar-role-switcher d-none"></div>
-              <div class="navbar-auth-container"></div>
+              <div class="navbar-auth-container">
+                <div class="d-flex align-items-center gap-2">
+                  <a href="{{ route('auth') }}" class="btn btn-sm btn-outline-secondary">Đăng nhập</a>
+                  <a href="{{ route('auth') }}?mode=register" class="btn btn-sm btn-dark">Đăng ký</a>
+                </div>
+              </div>  
             </div>
           </div>
         </div>
@@ -71,13 +73,8 @@
       <div class="container-xl d-flex flex-column flex-sm-row align-items-center justify-content-between gap-3">
         <div class="d-flex align-items-center gap-2">
           <span class="d-inline-flex align-items-center justify-content-center bg-dark text-white rounded fw-bold" style="width: 24px; height: 24px; font-size: 12px;">Q</span>
-          <span class="fw-bold text-dark">QQQ Platform</span>
-          <span>© 2026 — Đã đăng ký bản quyền.</span>
-        </div>
-        <div class="d-flex align-items-center gap-3">
-          <a href="{{ url('/') }}" class="text-secondary text-decoration-none">Trang chủ</a>
-          <a href="{{ url('/dashboard') }}" class="text-secondary text-decoration-none">Vé của tôi</a>
-          <a href="{{ url('/auth') }}" class="text-secondary text-decoration-none">Tài khoản</a>
+          <span class="fw-bold text-dark">Nhóm QQQ</span>
+          <span>2026.</span>
         </div>
       </div>
     </footer>
@@ -87,10 +84,6 @@
 
     <!-- Bootstrap 5 Bundle JS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Các Scripts cơ bản từ website_/js/ -->
-    <script src="{{ asset('js/data.js') }}"></script>
-    <script src="{{ asset('js/auth.js') }}"></script>
 
     @stack('scripts')
   </body>
