@@ -13,9 +13,7 @@
     <header class="bg-white border-bottom py-3">
       <div class="container d-flex align-items-center justify-content-between">
         <a href="{{ route('trang-chu') }}" class="navbar-brand d-flex align-items-center gap-2 m-0 p-0 text-decoration-none">
-          <div class="rounded-3 bg-dark text-white d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 34px; height: 34px; font-size: 1.1rem;">
-            Q
-          </div>
+
           <span class="fs-5 fw-bold tracking-tight text-dark m-0">QQQ</span>
         </a>
         <a href="{{ route('trang-chu') }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3 d-flex align-items-center gap-1.5 small">

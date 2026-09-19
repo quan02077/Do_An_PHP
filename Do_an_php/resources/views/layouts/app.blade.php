@@ -20,9 +20,6 @@
         <div class="container-xl">
           <!-- Logo -->
           <a href="{{ url('/') }}" class="navbar-brand d-flex align-items-center gap-2 text-decoration-none">
-            <span class="d-inline-flex align-items-center justify-content-center bg-dark text-white rounded fw-bold shadow-sm" style="width: 36px; height: 36px; font-size: 18px;">
-              Q
-            </span>
             <div class="lh-sm">
               <div class="fw-bold text-dark fs-5 tracking-tight">QQQ</div>
               <div class="d-none d-sm-block text-muted small" style="font-size: 12px;">Sự kiện &amp; Hội thảo</div>
