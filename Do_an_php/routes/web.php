@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -9,11 +10,7 @@ Route::redirect('/auth.html', '/auth');
 Route::redirect('/index.html', '/');
 
 Route::get('/', [HomeController::class, 'index'])->name('trang-chu');
-
-Route::get('/dashboard', function () {
-    return 'Trang Vé & Yêu thích của tôi (Đang phát triển)';
-})->name('dashboard');
-
-Route::get('/profile', function () {
-    return 'Trang Hồ sơ cá nhân (Đang phát triển)';
-})->name('profile');
+Route::get('/myTicket', [DashboardController::class, 'myTicket'])->name('myTicket');
+Route::get('/Favorite', [DashboardController::class, 'favorite'])->name('favorite');
+Route::redirect('/dashboard', '/myTicket');
+Route::redirect('/favorite', '/Favorite');

@@ -38,10 +38,10 @@
                 <a href="{{ route('trang-chu') }}" class="nav-link {{ request()->routeIs('trang-chu') ? 'active fw-semibold text-dark' : 'text-secondary' }} px-3 py-2 rounded">Trang chủ</a>
               </li>
               <li class="nav-item">
-                <a href="{{ route('dashboard') }}" class="nav-link {{ (request()->routeIs('dashboard') && request('tab') !== 'bookmarks') ? 'active fw-semibold text-dark' : 'text-secondary' }} px-3 py-2 rounded">Vé của tôi</a>
+                <a href="{{ route('myTicket') }}" class="nav-link {{ request()->routeIs('myTicket') ? 'active fw-semibold text-dark' : 'text-secondary' }} px-3 py-2 rounded">Vé của tôi</a>
               </li>
               <li class="nav-item">
-                <a href="{{ route('dashboard', ['tab' => 'bookmarks']) }}" class="nav-link {{ (request()->routeIs('dashboard') && request('tab') === 'bookmarks') ? 'active fw-semibold text-dark' : 'text-secondary' }} px-3 py-2 rounded d-flex align-items-center gap-1.5">Yêu thích</a>
+                <a href="{{ route('favorite') }}" class="nav-link {{ request()->routeIs('favorite') ? 'active fw-semibold text-dark' : 'text-secondary' }} px-3 py-2 rounded d-flex align-items-center gap-1.5">Yêu thích</a>
               </li>
             </ul>
 
