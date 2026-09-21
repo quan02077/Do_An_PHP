@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'QQQ — Khám phá & Đặt vé sự kiện Dễ dàng, Nhanh chóng')
 
@@ -16,7 +16,7 @@
           <span class="text-secondary fw-normal">Dễ dàng, Nhanh chóng</span>
         </h1>
         <div class="mx-auto position-relative" style="max-width: 560px;">
-          <form method="GET" action="{{ route('trang-chu') }}">
+          <form method="GET" action="{{ route('Home.index') }}">
             <div class="input-group input-group-lg shadow-sm">
               <span class="input-group-text bg-white border-end-0 text-muted ps-3">
                 <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -44,7 +44,7 @@
     <div class="mb-4">
       <div class="d-flex align-items-center gap-2 overflow-x-auto pb-2" id="category-pills-container">
         <a 
-          href="{{ route('trang-chu') }}" 
+          href="{{ route('Home.index') }}" 
           class="btn btn-sm rounded-pill px-3 py-1.5 fw-medium {{ !request('category') ? 'btn-dark shadow-xs' : 'btn-outline-secondary' }}"
         >
           Tất cả
@@ -52,7 +52,7 @@
 
         @foreach ($categories as $cat)
           <a 
-            href="{{ route('trang-chu', ['category' => $cat->id]) }}" 
+            href="{{ route('Home.index', ['category' => $cat->id]) }}" 
             class="btn btn-sm rounded-pill px-3 py-1.5 fw-medium {{ request('category') == $cat->id ? 'btn-dark shadow-xs' : 'btn-outline-secondary' }}"
           >
             {{ $cat->ten_danh_muc }}
@@ -63,31 +63,31 @@
       <div class="d-flex flex-column flex-sm-row sm:align-items-center justify-content-between gap-3 pt-3 border-top mt-2">
         <div class="btn-group btn-group-sm rounded-pill p-1 bg-white border shadow-sm w-auto align-self-start align-self-sm-auto" role="group">
           <a 
-            href="{{ route('trang-chu') }}" 
+            href="{{ route('Home.index') }}" 
             class="status-filter-tab btn btn-sm rounded-pill px-3 {{ !request('status') ? 'btn-dark active' : 'btn-outline-secondary border-0' }}"
           >
             Tất cả
           </a>
           <a 
-            href="{{ route('trang-chu', ['status' => 'sap_dien_ra']) }}" 
+            href="{{ route('Home.index', ['status' => 'sap_dien_ra']) }}" 
             class="status-filter-tab btn btn-sm rounded-pill px-3 {{ request('status') === 'sap_dien_ra' ? 'btn-dark active' : 'btn-outline-secondary border-0' }}"
           >
             Sắp diễn ra
           </a>
           <a 
-            href="{{ route('trang-chu', ['status' => 'dang_dien_ra']) }}" 
+            href="{{ route('Home.index', ['status' => 'dang_dien_ra']) }}" 
             class="status-filter-tab btn btn-sm rounded-pill px-3 {{ request('status') === 'dang_dien_ra' ? 'btn-dark active' : 'btn-outline-secondary border-0' }}"
           >
             Đang diễn ra
           </a>
           <a 
-            href="{{ route('trang-chu', ['status' => 'da_ket_thuc']) }}" 
+            href="{{ route('Home.index', ['status' => 'da_ket_thuc']) }}" 
             class="status-filter-tab btn btn-sm rounded-pill px-3 {{ request('status') === 'da_ket_thuc' ? 'btn-dark active' : 'btn-outline-secondary border-0' }}"
           >
             Đã kết thúc
           </a>
           <a 
-            href="{{ route('trang-chu', ['status' => 'yeu_thich']) }}" 
+            href="{{ route('Home.index', ['status' => 'yeu_thich']) }}" 
             class="status-filter-tab btn btn-sm rounded-pill px-3 {{ request('status') === 'yeu_thich' ? 'btn-dark active' : 'btn-outline-secondary border-0' }} d-flex align-items-center gap-1"
           >Yêu thích
           </a>
@@ -165,7 +165,7 @@
                 </div>
 
                 <h3 class="fs-5 fw-bold text-dark mb-2 line-clamp-2">
-                  <a href="{{ url('/events/' . $id) }}" class="text-decoration-none text-dark">
+                  <a href="{{ route('Event.show', $id) }}" class="text-decoration-none text-dark">
                     {{ $title }}
                   </a>
                 </h3>
@@ -195,7 +195,7 @@
                 </div>
 
                 <div class="d-flex gap-2 pt-2 border-top">
-                  <a href="{{ url('/event/' . $id) }}" class="btn btn-sm btn-outline-secondary flex-fill py-2 fw-medium">
+                  <a href="{{ route('Event.show', $id) }}" class="btn btn-sm btn-outline-secondary flex-fill py-2 fw-medium">
                     Xem chi tiết
                   </a>
                 </div>

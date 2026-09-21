@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
@@ -12,11 +12,11 @@
     <!-- Header đơn giản -->
     <header class="bg-white border-bottom py-3">
       <div class="container d-flex align-items-center justify-content-between">
-        <a href="{{ route('trang-chu') }}" class="navbar-brand d-flex align-items-center gap-2 m-0 p-0 text-decoration-none">
+        <a href="{{ route('Home.index') }}" class="navbar-brand d-flex align-items-center gap-2 m-0 p-0 text-decoration-none">
 
           <span class="fs-5 fw-bold tracking-tight text-dark m-0">QQQ</span>
         </a>
-        <a href="{{ route('trang-chu') }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3 d-flex align-items-center gap-1.5 small">
+        <a href="{{ route('Home.index') }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3 d-flex align-items-center gap-1.5 small">
           <svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
           <span>Quay lại Trang chủ</span>
         </a>
@@ -30,13 +30,13 @@
         <!-- Tab Chuyển Đăng nhập / Đăng ký thuần Blade (Không cần JS) -->
         <div class="btn-group w-100 p-1 bg-light rounded-pill mb-4" role="group">
           <a 
-            href="{{ route('auth') }}" 
+            href="{{ route('Auth.index') }}" 
             class="btn btn-sm rounded-pill fw-medium {{ request('mode') !== 'register' ? 'btn-dark shadow-xs' : 'text-secondary' }}"
           >
             Đăng nhập
           </a>
           <a 
-            href="{{ route('auth', ['mode' => 'register']) }}" 
+            href="{{ route('Auth.index', ['mode' => 'register']) }}" 
             class="btn btn-sm rounded-pill fw-medium {{ request('mode') === 'register' ? 'btn-dark shadow-xs' : 'text-secondary' }}"
           >
             Đăng ký

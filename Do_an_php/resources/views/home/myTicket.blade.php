@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'Vé của tôi — QQQ')
 
@@ -6,7 +6,7 @@
 <div class="container-xl py-4">
   <div class="d-flex align-items-center justify-content-between mb-4">
     <h1 class="fs-4 fw-bold text-dark mb-0">Vé đã đăng ký ({{ count($tickets) }})</h1>
-    <a href="{{ route('trang-chu') }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+    <a href="{{ route('Home.index') }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
       + Khám phá thêm sự kiện
     </a>
   </div>
@@ -70,7 +70,7 @@
           </div>
           <h3 class="fs-6 fw-bold text-dark mb-1">Bạn chưa đăng ký sự kiện nào</h3>
           <p class="small text-muted mb-3">Hãy khám phá các sự kiện hấp dẫn và đăng ký tham gia ngay hôm nay.</p>
-          <a href="{{ route('trang-chu') }}" class="btn btn-dark btn-sm rounded-3 px-3 py-2 fw-medium">
+          <a href="{{ route('Home.index') }}" class="btn btn-dark btn-sm rounded-3 px-3 py-2 fw-medium">
             Khám phá sự kiện
           </a>
         </div>

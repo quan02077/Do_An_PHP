@@ -1,18 +1,19 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', $event->ten_su_kien . ' — QQQ')
 @section('content')
 
 <div class="container-xl py-4">
-    <!-- Breadcrumb / Back button -->
-    <div class="mb-3">
-        <a href="{{ route('trang-chu') }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3 d-inline-flex align-items-center gap-2 text-decoration-none">
-            <svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            <span>Quay lại trang chủ</span>
-        </a>
-    </div>
+    <!-- Breadcrumb & Back button -->
+    @include('partials.breadcrumb', [
+        'backUrl' => route('Home.index'),
+        'backText' => 'Quay lại trang chủ',
+        'items' => [
+            'Trang chủ' => route('Home.index'),
+            ($event->danhMuc->ten_danh_muc ?? 'Sự kiện') => route('Home.index'),
+            $event->ten_su_kien => ''
+        ]
+    ])
 
     <div class="row g-4">
         <div class="col-lg-8">
