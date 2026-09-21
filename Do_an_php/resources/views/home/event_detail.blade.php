@@ -6,10 +6,10 @@
 <div class="container-xl py-4">
     <!-- Breadcrumb & Back button -->
     @include('partials.breadcrumb', [
-    'backUrl' => route('trang-chu'),
+    'backUrl' => route('Home.index'),
     'backText' => 'Quay lại trang chủ',
     'items' => [
-    'Trang chủ' => route('trang-chu'),
+    'Trang chủ' => route('Home.index'),
     $event->ten_su_kien => ''
     ]
     ])
