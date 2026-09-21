@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
@@ -46,119 +46,52 @@
         @if (request('mode') !== 'register')
         <!-- ─── FORM ĐĂNG NHẬP ──────────────────────────────────────────────── -->
         <form id="login-form">
-          <div class="mb-3">
-            <label for="login-email" class="form-label small fw-medium text-dark mb-1">Địa chỉ Email</label>
-            <div class="input-group">
-              <span class="input-group-text bg-white border-end-0 text-muted ps-3 pe-2">
-                <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-              </span>
-              <input 
-                type="email" 
-                id="login-email" 
-                name="email"
-                required 
-                placeholder="name@example.com" 
-                class="form-control border-start-0 ps-1 py-2"
-              />
-            </div>
-          </div>
+          <x-input type="email" id="login-email" name="email" label="Địa chỉ Email" required placeholder="name@example.com">
+            <x-slot:icon>
+              <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            </x-slot:icon>
+          </x-input>
 
-          <div class="mb-3">
-            <div class="d-flex align-items-center justify-content-between mb-1">
-              <label for="login-password" class="form-label small fw-medium text-dark mb-0">Mật khẩu</label>
-              <a href="#" onclick="alert('Tính năng khôi phục mật khẩu đang được kết nối hệ thống!')" class="small text-secondary text-decoration-none">Quên mật khẩu?</a>
-            </div>
-            <div class="input-group">
-              <span class="input-group-text bg-white border-end-0 text-muted ps-3 pe-2">
-                <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-              </span>
-              <input 
-                type="password" 
-                id="login-password" 
-                name="password" 
-                required 
-                placeholder="••••••••" 
-                class="form-control border-start-0 ps-1 py-2"
-              />
-            </div>
+          <div class="mb-1 d-flex align-items-center justify-content-between">
+            <label for="login-password" class="form-label small fw-medium text-dark mb-0">Mật khẩu <span class="text-danger">*</span></label>
+            <a href="#" onclick="alert('Tính năng khôi phục mật khẩu đang được kết nối hệ thống!')" class="small text-secondary text-decoration-none">Quên mật khẩu?</a>
           </div>
-          <button 
-            type="submit" 
-            class="btn btn-dark w-100 py-2.5 fw-medium shadow-sm rounded-3"
-          >
+          <x-input type="password" id="login-password" name="password" required placeholder="••••••••">
+            <x-slot:icon>
+              <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </x-slot:icon>
+          </x-input>
+
+          <x-button type="submit" variant="dark" class="w-100 py-2.5 mt-3">
             Đăng nhập vào tài khoản
-          </button>
+          </x-button>
         </form>
         @else
         <!-- ─── FORM ĐĂNG KÝ ──────────────────────────────────────────────── -->
         <form id="register-form">
-          <div class="mb-3">
-            <label for="reg-name" class="form-label small fw-medium text-dark mb-1">Họ và tên</label>
-            <div class="input-group">
-              <span class="input-group-text bg-white border-end-0 text-muted ps-3 pe-2">
-                <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-              </span>
-              <input 
-                type="text" 
-                id="reg-name" 
-                name="name"
-                required 
-                placeholder="Nguyễn Văn A" 
-                class="form-control border-start-0 ps-1 py-2"
-              />
-            </div>
-          </div>
+          <x-input type="text" id="reg-name" name="name" label="Họ và tên" required placeholder="Nguyễn Văn A">
+            <x-slot:icon>
+              <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </x-slot:icon>
+          </x-input>
 
-          <div class="mb-3">
-            <label for="reg-email" class="form-label small fw-medium text-dark mb-1">Địa chỉ Email</label>
-            <div class="input-group">
-              <span class="input-group-text bg-white border-end-0 text-muted ps-3 pe-2">
-                <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-              </span>
-              <input 
-                type="email" 
-                id="reg-email" 
-                name="email"
-                required 
-                placeholder="vana@example.com" 
-                class="form-control border-start-0 ps-1 py-2"
-              />
-            </div>
-          </div>
+          <x-input type="email" id="reg-email" name="email" label="Địa chỉ Email" required placeholder="vana@example.com">
+            <x-slot:icon>
+              <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            </x-slot:icon>
+          </x-input>
 
-          <div class="mb-3">
-            <label for="reg-phone" class="form-label small fw-medium text-dark mb-1">Số điện thoại</label>
-            <div class="input-group">
-              <span class="input-group-text bg-white border-end-0 text-muted ps-3 pe-2">
-                <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-              </span>
-              <input 
-                type="tel" 
-                id="reg-phone" 
-                name="phone"
-                required 
-                placeholder="0912 345 678" 
-                class="form-control border-start-0 ps-1 py-2"
-              />
-            </div>
-          </div>
+          <x-input type="tel" id="reg-phone" name="phone" label="Số điện thoại" required placeholder="0912 345 678">
+            <x-slot:icon>
+              <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            </x-slot:icon>
+          </x-input>
 
-          <div class="mb-3">
-            <label for="reg-password" class="form-label small fw-medium text-dark mb-1">Mật khẩu</label>
-            <div class="input-group">
-              <span class="input-group-text bg-white border-end-0 text-muted ps-3 pe-2">
-                <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-              </span>
-              <input 
-                type="password" 
-                id="reg-password" 
-                name="password" 
-                required 
-                placeholder="Tối thiểu 6 ký tự" 
-                class="form-control border-start-0 ps-1 py-2"
-              />
-            </div>
-          </div>
+          <x-input type="password" id="reg-password" name="password" label="Mật khẩu" required placeholder="Tối thiểu 6 ký tự">
+            <x-slot:icon>
+              <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </x-slot:icon>
+          </x-input>
 
           <div class="form-check mb-4">
             <input type="checkbox" id="reg-agree" required class="form-check-input" />
@@ -167,12 +100,9 @@
             </label>
           </div>
 
-          <button 
-            type="submit" 
-            class="btn btn-dark w-100 py-2.5 fw-medium shadow-sm rounded-3"
-          >
+          <x-button type="submit" variant="dark" class="w-100 py-2.5">
             Đăng ký tài khoản Thành viên
-          </button>
+          </x-button>
         </form>
         @endif
       </div>
