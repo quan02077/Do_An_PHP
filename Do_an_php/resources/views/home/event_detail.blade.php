@@ -6,18 +6,16 @@
 <div class="container-xl py-4">
     <!-- Breadcrumb & Back button -->
     @include('partials.breadcrumb', [
-        'backUrl' => route('Home.index'),
-        'backText' => 'Quay lại trang chủ',
-        'items' => [
-            'Trang chủ' => route('Home.index'),
-            ($event->danhMuc->ten_danh_muc ?? 'Sự kiện') => route('Home.index'),
-            $event->ten_su_kien => ''
-        ]
+    'backUrl' => route('trang-chu'),
+    'backText' => 'Quay lại trang chủ',
+    'items' => [
+    'Trang chủ' => route('trang-chu'),
+    $event->ten_su_kien => ''
+    ]
     ])
 
     <div class="row g-4">
         <div class="col-lg-8">
-            <!-- Banner Image Container -->
             <div class="position-relative rounded-4 overflow-hidden bg-dark shadow-sm border mb-4">
                 <img id="event-image" src="{{ $event->url_hinh_anh }}" alt="{{ $event->ten_su_kien }}" class="w-100 object-fit-cover" style="height: 360px;" />
                 <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(to top, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.25) 50%, transparent 100%); pointer-events: none;"></div>
