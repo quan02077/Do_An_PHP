@@ -62,9 +62,9 @@
             </x-slot:icon>
           </x-input>
 
-          <x-button type="submit" variant="dark" class="w-100 py-2.5 mt-3">
+          <button type="submit" class="btn btn-dark w-100 py-2.5 mt-3 fw-medium shadow-sm rounded-3">
             Đăng nhập vào tài khoản
-          </x-button>
+          </button>
         </form>
         @else
         <!-- ─── FORM ĐĂNG KÝ ──────────────────────────────────────────────── -->
@@ -100,9 +100,9 @@
             </label>
           </div>
 
-          <x-button type="submit" variant="dark" class="w-100 py-2.5">
+          <button type="submit" class="btn btn-dark w-100 py-2.5 fw-medium shadow-sm rounded-3">
             Đăng ký tài khoản Thành viên
-          </x-button>
+          </button>
         </form>
         @endif
       </div>

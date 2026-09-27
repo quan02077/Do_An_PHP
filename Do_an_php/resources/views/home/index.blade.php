@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'QQQ — Khám phá & Đặt vé sự kiện Dễ dàng, Nhanh chóng')
 
@@ -17,22 +17,15 @@
         </h1>
         <div class="mx-auto position-relative" style="max-width: 560px;">
           <form method="GET" action="{{ route('Home.index') }}">
-            <div class="input-group input-group-lg shadow-sm">
-              <span class="input-group-text bg-white border-end-0 text-muted ps-3">
-                <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <circle cx="11" cy="11" r="8"></circle>
-                  <path d="m21 21-4.3-4.3"></path>
-                </svg>
-              </span>
-              <input 
-                type="text" 
-                name="search" 
-                id="search-input" 
-                value="{{ request('search') }}"
-                aria-label="Tìm kiếm sự kiện"
-                placeholder="Tìm theo tên sự kiện, địa điểm, chủ đề..." 
-                class="form-control border-start-0 fs-6 py-2.5 ps-1"
-              />
+            <div class="shadow-sm rounded-3">
+              <x-input type="text" name="search" id="search-input" :value="request('search')" aria-label="Tìm kiếm sự kiện" placeholder="Tìm theo tên sự kiện, địa điểm, chủ đề..." class="fs-6 py-2.5 ps-1">
+                <x-slot:icon>
+                  <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.3-4.3"></path>
+                  </svg>
+                </x-slot:icon>
+              </x-input>
             </div>
           </form>
         </div>
