@@ -10,7 +10,8 @@ use function Laravel\Prompts\search;
 
 class HomeController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         $categories = DanhMuc::all();
         $events = SuKien::with(['danhMuc', 'dangKys'])->get();
 
@@ -27,13 +28,13 @@ class HomeController extends Controller
             });
         }
 
-        if(!empty($categoryId)){
-            $events = $events->filter(function ($item) use ($categoryId){
+        if (!empty($categoryId)) {
+            $events = $events->filter(function ($item) use ($categoryId) {
                 return $item->danh_muc_id == $categoryId;
             });
         }
 
-        if(!empty($status)){
+        if (!empty($status)) {
             $events = $events->filter(function ($item) use ($status) {
                 return $item->trang_thai == $status;
             });
@@ -42,4 +43,3 @@ class HomeController extends Controller
         return view('home.index', compact('categories', 'events'));
     }
 }
-
