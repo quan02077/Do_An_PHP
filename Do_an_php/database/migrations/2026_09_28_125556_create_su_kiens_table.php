@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('hinh_anh')->nullable();
             $table->dateTime('thoi_gian_bat_dau');
             $table->dateTime('thoi_gian_ket_thuc');
-            $table->string('dia_chi')->nullable();
+            $table->string('dia_diem')->nullable();
             $table->string('ban_to_chuc')->nullable();
             $table->integer('so_luong_toi_da')->default(0);
             $table->decimal('gia_ve', 12, 2)->default(0);
