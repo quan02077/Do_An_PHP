@@ -108,4 +108,33 @@ class SuKien extends Model
         }
         return number_format($this->gia_ve, 0, ',', '.') . ' đ';
     }
+
+    /**
+     * Trả về đường dẫn ảnh đầy đủ từ tên file lưu trong CSDL (VD: "001.jpg")
+     */
+    public function getUrlHinhAnhAttribute(): string
+    {
+        if (empty($this->hinh_anh)) {
+            return asset('uploads/su_kien/001.jpg');
+        }
+        if (str_starts_with($this->hinh_anh, 'http://') || str_starts_with($this->hinh_anh, 'https://')) {
+            return $this->hinh_anh;
+        }
+        // Nếu trong CSDL chỉ lưu tên file như "001.jpg"
+        if (!str_contains($this->hinh_anh, '/')) {
+            return asset('uploads/su_kien/' . $this->hinh_anh);
+        }
+        return asset($this->hinh_anh);
+    }
+
+    /**
+     * Số lượng vé / lượt đã đăng ký của sự kiện
+     */
+    public function getSoLuongDaDangKyAttribute(): int
+    {
+        if ($this->relationLoaded('dangKys')) {
+            return $this->dangKys->count();
+        }
+        return $this->dangKys()->count();
+    }
 }

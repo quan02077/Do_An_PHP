@@ -68,8 +68,8 @@ class NguoiDung extends Authenticatable
     public function suKienDangKys()
     {
         return $this->belongsToMany(SuKien::class, 'dang_ky', 'nguoi_dung_id', 'su_kien_id')
-                    ->withPivot('ma_ve', 'thoi_gian_dang_ky', 'trang_thai', 'ghi_chu')
-                    ->withTimestamps();
+            ->withPivot('ma_ve', 'thoi_gian_dang_ky', 'trang_thai', 'ghi_chu')
+            ->withTimestamps();
     }
 
     /**
@@ -86,6 +86,24 @@ class NguoiDung extends Authenticatable
     public function suKienYeuThichs()
     {
         return $this->belongsToMany(SuKien::class, 'yeu_thich', 'nguoi_dung_id', 'su_kien_id')
-                    ->withTimestamps();
+            ->withTimestamps();
+    }
+
+    /**
+     * Trả về đường dẫn ảnh đại diện đầy đủ từ tên file lưu trong CSDL (VD: "avatar.jpg")
+     */
+    public function getUrlAnhDaiDienAttribute(): string
+    {
+        if (empty($this->anh_dai_dien)) {
+            return 'https://ui-avatars.com/api/?name=' . urlencode($this->ho_ten ?? 'User') . '&background=0D8ABC&color=fff';
+        }
+        if (str_starts_with($this->anh_dai_dien, 'http://') || str_starts_with($this->anh_dai_dien, 'https://')) {
+            return $this->anh_dai_dien;
+        }
+        // Nếu trong CSDL chỉ lưu tên file như "avatar.jpg"
+        if (!str_contains($this->anh_dai_dien, '/')) {
+            return asset('uploads/nguoi_dung/' . $this->anh_dai_dien);
+        }
+        return asset($this->anh_dai_dien);
     }
 }
