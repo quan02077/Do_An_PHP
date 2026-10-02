@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Sự kiện yêu thích — EventVN')
+@section('title', 'Sự kiện yêu thích — QQQ')
 
 @section('content')
 <div class="container-xl py-4">
@@ -11,6 +11,16 @@
       <div class="d-flex align-items-center gap-2">
         <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
         <span>{{ session('success') }}</span>
+      </div>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  @endif
+
+  @if (session('warning'))
+    <div class="alert alert-warning alert-dismissible fade show rounded-3 mb-4 shadow-sm" role="alert">
+      <div class="d-flex align-items-center gap-2">
+        <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        <span>{{ session('warning') }}</span>
       </div>
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
@@ -77,19 +87,20 @@
               {{ $ev->danhMuc->ten_danh_muc ?? 'Chung' }}
             </span>
 
-            <!-- Nút Bỏ lưu: Xóa bản ghi trong bảng yeu_thich -->
-            <button 
-              type="button"
-              onclick="removeFromFavorites({{ $ev->id }}, '{{ addslashes($ev->ten_su_kien) }}')"
-              class="position-absolute top-0 end-0 m-3 btn btn-light rounded-circle p-0 d-flex align-items-center justify-content-center shadow-sm text-danger border"
-              style="width: 38px; height: 38px; z-index: 5;"
-              title="Bỏ lưu khỏi Yêu thích"
-              id="btn-remove-fav-{{ $ev->id }}"
-            >
-              <svg style="width: 18px; height: 18px; fill: currentColor;" viewBox="0 0 24 24">
-                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
-              </svg>
-            </button>
+            <!-- Nút Bỏ lưu: Form POST thông thường (không dùng AJAX) -->
+            <form action="{{ route('Favorite.remove', $ev->id) }}" method="POST" class="position-absolute top-0 end-0 m-3" style="z-index: 5;" onsubmit="return confirm('Bạn có chắc chắn muốn bỏ lưu sự kiện này khỏi danh sách yêu thích?');">
+              @csrf
+              <button 
+                type="submit"
+                class="btn btn-light rounded-circle p-0 d-flex align-items-center justify-content-center shadow-sm text-danger border"
+                style="width: 38px; height: 38px;"
+                title="Bỏ lưu khỏi Yêu thích"
+              >
+                <svg style="width: 18px; height: 18px; fill: currentColor;" viewBox="0 0 24 24">
+                  <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                </svg>
+              </button>
+            </form>
           </div>
 
           <div class="p-4 flex-grow-1 d-flex flex-column justify-content-between">
@@ -133,81 +144,4 @@
     @endforelse
   </div>  
 </div>
-
-<!-- CSRF Token cho AJAX -->
-<meta name="csrf-token" content="{{ csrf_token() }}">
-
-@push('scripts')
-<script>
-  function removeFromFavorites(eventId, eventTitle) {
-    showConfirmModal('Bạn có chắc chắn Không!', function() {
-      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-      const btn = document.getElementById('btn-remove-fav-' + eventId);
-      if (btn) btn.disabled = true;
-
-      fetch('{{ url("/favorite/remove") }}/' + eventId, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': csrfToken,
-          'Accept': 'application/json'
-        }
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          // Xóa card khỏi giao diện
-          const cardCol = document.getElementById('fav-card-' + eventId);
-          if (cardCol) {
-            cardCol.style.transition = 'opacity 0.3s, transform 0.3s';
-            cardCol.style.opacity = '0';
-            cardCol.style.transform = 'scale(0.9)';
-            setTimeout(() => {
-              cardCol.remove();
-              // Cập nhật số lượng đếm
-              const countSpan = document.getElementById('favs-count');
-              if (countSpan) countSpan.textContent = data.count;
-
-              const navBadge = document.getElementById('nav-fav-badge');
-              if (navBadge) {
-                navBadge.textContent = data.count;
-                if (data.count === 0) navBadge.classList.add('d-none');
-              }
-
-              // Nếu hết sự kiện thì hiện empty-state
-              const remainingCards = document.querySelectorAll('.fav-item-col');
-              if (remainingCards.length === 0) {
-                const grid = document.getElementById('favs-grid');
-                grid.innerHTML = `
-                  <div class="col-12 text-center py-5 bg-white rounded-4 border shadow-sm p-4">
-                    <div class="rounded-circle bg-danger-subtle text-danger d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 56px; height: 56px;">
-                      <svg style="width: 28px; height: 28px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                      </svg>
-                    </div>
-                    <h3 class="fs-6 fw-bold text-dark mb-1">Tài khoản này chưa lưu sự kiện nào</h3>
-                    <p class="small text-muted mb-3">Bấm vào biểu tượng Trái tim trên bất kỳ sự kiện nào để lưu lại danh sách yêu thích trong CSDL.</p>
-                    <a href="{{ route('Home.index') }}" class="btn btn-dark btn-sm rounded-3 px-3 py-2 fw-medium">
-                      Khám phá sự kiện ngay
-                    </a>
-                  </div>
-                `;
-              }
-            }, 300);
-          }
-          showToast(data.message || 'Đã Xóa thành công!', 'success');
-        } else {
-          showToast(data.message || 'Không thể xóa sự kiện khỏi yêu thích.', 'danger');
-          if (btn) btn.disabled = false;
-        }
-      })
-      .catch(err => {
-        console.error(err);
-        showToast('Lỗi kết nối máy chủ. Vui lòng kiểm tra lại.', 'danger');
-        if (btn) btn.disabled = false;
-      });
-    }, 'Xác nhận bỏ lưu', 'Đồng ý', 'btn-danger');
-  }
-</script>
-@endpush
 @endsection

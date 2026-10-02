@@ -5,10 +5,10 @@
       <!-- Logo -->
       <a href="{{ route('Home.index') }}" class="navbar-brand d-flex align-items-center gap-2 text-decoration-none">
         <div class="rounded-3 bg-dark text-white d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 36px; height: 36px; font-size: 1.15rem;">
-          E
+          Q
         </div>
         <div class="lh-sm">
-          <div class="fw-bold text-dark fs-5 tracking-tight">Event<span class="text-secondary fw-normal">VN</span></div>
+          <div class="fw-bold text-dark fs-5 tracking-tight">QQQ</div>
           <div class="d-none d-sm-block text-muted small" style="font-size: 11px;">Sự kiện &amp; Hội thảo</div>
         </div>
       </a>

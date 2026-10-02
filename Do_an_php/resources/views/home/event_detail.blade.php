@@ -14,6 +14,26 @@
     ]
     ])
 
+    <!-- Flash Alert -->
+    @if (session('success'))
+      <div class="alert alert-success alert-dismissible fade show rounded-3 mb-4 shadow-sm" role="alert">
+        <div class="d-flex align-items-center gap-2">
+          <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          <span>{{ session('success') }}</span>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    @endif
+    @if (session('warning'))
+      <div class="alert alert-warning alert-dismissible fade show rounded-3 mb-4 shadow-sm" role="alert">
+        <div class="d-flex align-items-center gap-2">
+          <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+          <span>{{ session('warning') }}</span>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    @endif
+
     <div class="row g-4">
         <div class="col-lg-8">
             <div class="position-relative rounded-4 overflow-hidden bg-dark shadow-sm border mb-4">
@@ -31,18 +51,19 @@
                     @endif
                 </div>
 
-                <!-- Nút Bookmark Trái tim (Kết nối CSDL bảng yeu_thich) -->
-                <button
-                    id="event-bookmark-btn"
-                    type="button"
-                    onclick="toggleDetailFavorite({{ $event->id }})"
-                    class="position-absolute top-0 end-0 m-3 btn btn-light rounded-circle p-0 d-flex align-items-center justify-content-center shadow-sm border z-2"
-                    style="width: 44px; height: 44px;"
-                    title="{{ $isFavorited ? 'Bỏ lưu khỏi yêu thích' : 'Lưu vào yêu thích' }}">
-                    <svg id="detail-heart-icon" class="{{ $isFavorited ? 'text-danger' : 'text-muted' }}" style="width: 22px; height: 22px; fill: {{ $isFavorited ? 'currentColor' : 'none' }}; stroke: currentColor;" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-                    </svg>
-                </button>
+                <!-- Nút Bookmark Trái tim: Form POST thông thường (không dùng AJAX) -->
+                <form action="{{ route('Favorite.toggle', $event->id) }}" method="POST" class="position-absolute top-0 end-0 m-3 z-2">
+                    @csrf
+                    <button
+                        type="submit"
+                        class="btn btn-light rounded-circle p-0 d-flex align-items-center justify-content-center shadow-sm border"
+                        style="width: 44px; height: 44px;"
+                        title="{{ $isFavorited ? 'Bỏ lưu khỏi yêu thích' : 'Lưu vào yêu thích' }}">
+                        <svg class="{{ $isFavorited ? 'text-danger' : 'text-muted' }}" style="width: 22px; height: 22px; fill: {{ $isFavorited ? 'currentColor' : 'none' }}; stroke: currentColor;" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                        </svg>
+                    </button>
+                </form>
 
                 <div class="position-absolute bottom-0 start-0 end-0 p-4 text-white">
                     <h1 id="event-title" class="fw-bold tracking-tight mb-2 display-6">{{ $event->ten_su_kien }}</h1>
@@ -224,59 +245,4 @@
     </div>
 </div>
 
-<meta name="csrf-token" content="{{ csrf_token() }}">
-
-@push('scripts')
-<script>
-  function toggleDetailFavorite(eventId) {
-    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-    const icon = document.getElementById('detail-heart-icon');
-    const btn = document.getElementById('event-bookmark-btn');
-
-    fetch('{{ url("/favorite/toggle") }}/' + eventId, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': csrfToken,
-        'Accept': 'application/json'
-      }
-    })
-    .then(res => res.json())
-    .then(data => {
-      if (data.login_required) {
-        showConfirmModal('Vui lòng đăng nhập để lưu sự kiện yêu thích. Bạn có muốn chuyển đến trang Đăng nhập không?', () => {
-          window.location.href = '{{ route("Auth.index") }}';
-        }, 'Yêu cầu đăng nhập', 'Đến trang đăng nhập', 'btn-dark');
-        return;
-      }
-      if (data.success) {
-        if (data.is_favorited) {
-          icon.classList.remove('text-muted');
-          icon.classList.add('text-danger');
-          icon.style.fill = 'currentColor';
-          btn.title = 'Bỏ lưu khỏi yêu thích';
-        } else {
-          icon.classList.remove('text-danger');
-          icon.classList.add('text-muted');
-          icon.style.fill = 'none';
-          btn.title = 'Lưu vào yêu thích';
-        }
-
-        const navBadge = document.getElementById('nav-fav-badge');
-        if (navBadge) {
-          navBadge.textContent = data.count;
-          if (data.count > 0) navBadge.classList.remove('d-none');
-          else navBadge.classList.add('d-none');
-        }
-
-        showToast(data.message, data.is_favorited ? 'success' : 'dark');
-      }
-    })
-    .catch(err => {
-      console.error(err);
-      showToast('Không thể kết nối máy chủ để cập nhật CSDL.', 'danger');
-    });
-  }
-</script>
-@endpush
 @endsection

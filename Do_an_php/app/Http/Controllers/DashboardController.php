@@ -44,9 +44,6 @@ class DashboardController extends Controller
     {
         $user = $this->getCurrentUser();
         if (!$user) {
-            if ($request->expectsJson() || $request->ajax()) {
-                return response()->json(['success' => false, 'message' => 'Vui lòng đăng nhập để thực hiện.'], 401);
-            }
             return redirect()->route('Auth.index')->with('warning', 'Vui lòng đăng nhập để thực hiện.');
         }
 
@@ -55,25 +52,13 @@ class DashboardController extends Controller
             ->first();
 
         if (!$ticket) {
-            if ($request->expectsJson() || $request->ajax()) {
-                return response()->json(['success' => false, 'message' => 'Không tìm thấy vé hoặc bạn không có quyền hủy vé này.'], 404);
-            }
-            return back()->with('error', 'Không tìm thấy thông tin vé hoặc bạn không có quyền hủy vé này.');
+            return back()->with('warning', 'Không tìm thấy vé hoặc bạn không có quyền hủy vé này.');
         }
 
         $ticket->trang_thai = 'da_huy';
         $ticket->save();
 
-        if ($request->expectsJson() || $request->ajax()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Đã Xóa thành công!',
-                'ticket_id' => $ticket->id,
-                'status' => 'da_huy',
-            ]);
-        }
-
-        return back()->with('success', 'Đã Xóa thành công!');
+        return back()->with('success', 'Đã hủy vé thành công!');
     }
 
     /**
@@ -101,28 +86,14 @@ class DashboardController extends Controller
     {
         $user = $this->getCurrentUser();
         if (!$user) {
-            if ($request->expectsJson() || $request->ajax()) {
-                return response()->json(['success' => false, 'message' => 'Vui lòng đăng nhập để thực hiện.'], 401);
-            }
-            return redirect()->route('Auth.index');
+            return redirect()->route('Auth.index')->with('warning', 'Vui lòng đăng nhập để thực hiện.');
         }
 
         YeuThich::where('nguoi_dung_id', $user->id)
             ->where('su_kien_id', $eventId)
             ->delete();
 
-        $count = YeuThich::where('nguoi_dung_id', $user->id)->count();
-
-        if ($request->expectsJson() || $request->ajax()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Đã Xóa thành công!',
-                'event_id' => $eventId,
-                'count' => $count,
-            ]);
-        }
-
-        return back()->with('success', 'Đã Xóa thành công!');
+        return back()->with('success', 'Đã xóa sự kiện khỏi danh sách yêu thích!');
     }
 
     /**
@@ -132,11 +103,7 @@ class DashboardController extends Controller
     {
         $user = $this->getCurrentUser();
         if (!$user) {
-            return response()->json([
-                'success' => false,
-                'login_required' => true,
-                'message' => 'Vui lòng đăng nhập để lưu sự kiện yêu thích.',
-            ], 401);
+            return redirect()->route('Auth.index')->with('warning', 'Vui lòng đăng nhập để lưu sự kiện yêu thích.');
         }
 
         $fav = YeuThich::where('nguoi_dung_id', $user->id)
@@ -145,24 +112,15 @@ class DashboardController extends Controller
 
         if ($fav) {
             $fav->delete();
-            $isFavorited = false;
-            $message = 'Đã Xóa thành công!';
+            $message = 'Đã xóa sự kiện khỏi danh sách yêu thích!';
         } else {
             YeuThich::create([
                 'nguoi_dung_id' => $user->id,
                 'su_kien_id' => $eventId,
             ]);
-            $isFavorited = true;
-            $message = 'Đã thêm vào yêu thích!';
+            $message = 'Đã thêm sự kiện vào danh sách yêu thích!';
         }
 
-        $count = YeuThich::where('nguoi_dung_id', $user->id)->count();
-
-        return response()->json([
-            'success' => true,
-            'is_favorited' => $isFavorited,
-            'count' => $count,
-            'message' => $message,
-        ]);
+        return back()->with('success', $message);
     }
 }

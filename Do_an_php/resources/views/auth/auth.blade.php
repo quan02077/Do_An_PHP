@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Đăng nhập & Đăng ký — EventVN</title>
+    <title>Đăng nhập & Đăng ký — QQQ</title>
     <!-- Bootstrap 5.3.3 CSS CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="{{ asset('css/style.css') }}" />
@@ -158,7 +158,7 @@
           <div class="form-check mb-4">
             <input type="checkbox" id="reg-agree" required class="form-check-input" checked />
             <label for="reg-agree" class="form-check-label small text-secondary">
-              Tôi đồng ý với <a href="#" class="text-dark fw-medium text-decoration-underline">Điều khoản dịch vụ</a> và Chính sách bảo mật của EventVN.
+              Tôi đồng ý với <a href="#" class="text-dark fw-medium text-decoration-underline">Điều khoản dịch vụ</a> và Chính sách bảo mật của QQQ.
             </label>
           </div>
 

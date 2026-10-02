@@ -34,6 +34,24 @@
   </section>
 
   <section class="container-xl py-5">
+    @if (session('success'))
+      <div class="alert alert-success alert-dismissible fade show rounded-3 mb-4 shadow-sm" role="alert">
+        <div class="d-flex align-items-center gap-2">
+          <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          <span>{{ session('success') }}</span>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    @endif
+    @if (session('warning'))
+      <div class="alert alert-warning alert-dismissible fade show rounded-3 mb-4 shadow-sm" role="alert">
+        <div class="d-flex align-items-center gap-2">
+          <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+          <span>{{ session('warning') }}</span>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    @endif
     <div class="mb-4">
       <div class="d-flex align-items-center gap-2 overflow-x-auto pb-2" id="category-pills-container">
         <a 
@@ -139,19 +157,21 @@
                 @endif
               </div>
 
-              <!-- Nút Bookmark Trái tim: Kết nối CSDL bảng yeu_thich -->
-              <button 
-                type="button"
-                onclick="toggleIndexFavorite(event, {{ $id }})"
-                class="bookmark-btn-{{ $id }} position-absolute top-0 end-0 m-3 btn btn-light rounded-circle shadow-sm p-0 d-flex align-items-center justify-content-center border {{ $isFav ? 'text-danger' : 'text-secondary' }}"
-                style="width: 36px; height: 36px; z-index: 5;"
-                title="{{ $isFav ? 'Bỏ lưu khỏi yêu thích' : 'Lưu vào yêu thích' }}"
-                aria-label="Lưu vào yêu thích"
-              >
-                <svg id="icon-fav-{{ $id }}" style="width: 16px; height: 16px; fill: {{ $isFav ? 'currentColor' : 'none' }}; stroke: currentColor;" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                </svg>
-              </button>
+              <!-- Nút Bookmark Trái tim: Form POST thông thường (không dùng AJAX) -->
+              <form action="{{ route('Favorite.toggle', $id) }}" method="POST" class="position-absolute top-0 end-0 m-3" style="z-index: 5;">
+                @csrf
+                <button 
+                  type="submit"
+                  class="btn btn-light rounded-circle shadow-sm p-0 d-flex align-items-center justify-content-center border {{ $isFav ? 'text-danger' : 'text-secondary' }}"
+                  style="width: 36px; height: 36px;"
+                  title="{{ $isFav ? 'Bỏ lưu khỏi yêu thích' : 'Lưu vào yêu thích' }}"
+                  aria-label="Lưu vào yêu thích"
+                >
+                  <svg style="width: 16px; height: 16px; fill: {{ $isFav ? 'currentColor' : 'none' }}; stroke: currentColor;" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                  </svg>
+                </button>
+              </form>
             </div>
 
             <div class="card-body d-flex flex-column justify-content-between p-4">
@@ -217,66 +237,4 @@
     </div>
   </section>
 
-  <meta name="csrf-token" content="{{ csrf_token() }}">
-
-  @push('scripts')
-  <script>
-    function toggleIndexFavorite(e, eventId) {
-      if (e) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-
-      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-      const btn = document.querySelector('.bookmark-btn-' + eventId);
-      const icon = document.getElementById('icon-fav-' + eventId);
-
-      fetch('{{ url("/favorite/toggle") }}/' + eventId, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': csrfToken,
-          'Accept': 'application/json'
-        }
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.login_required) {
-          showConfirmModal('Vui lòng đăng nhập để lưu sự kiện yêu thích. Bạn có muốn chuyển đến trang Đăng nhập không?', () => {
-            window.location.href = '{{ route("Auth.index") }}';
-          }, 'Yêu cầu đăng nhập', 'Đến trang đăng nhập', 'btn-dark');
-          return;
-        }
-        if (data.success) {
-          if (btn && icon) {
-            if (data.is_favorited) {
-              btn.classList.remove('text-secondary');
-              btn.classList.add('text-danger');
-              btn.title = 'Bỏ lưu khỏi yêu thích';
-              icon.style.fill = 'currentColor';
-            } else {
-              btn.classList.remove('text-danger');
-              btn.classList.add('text-secondary');
-              btn.title = 'Lưu vào yêu thích';
-              icon.style.fill = 'none';
-            }
-          }
-
-          const navBadge = document.getElementById('nav-fav-badge');
-          if (navBadge) {
-            navBadge.textContent = data.count;
-            if (data.count > 0) navBadge.classList.remove('d-none');
-            else navBadge.classList.add('d-none');
-          }
-
-          showToast(data.message, data.is_favorited ? 'success' : 'dark');
-        }
-      })
-      .catch(err => {
-        console.error(err);
-        showToast('Không thể kết nối máy chủ để cập nhật CSDL.', 'danger');
-      });
-    }
-  </script>
-  @endpush
 @endsection

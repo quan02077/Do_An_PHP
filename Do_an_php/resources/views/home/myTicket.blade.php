@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Vé của tôi — EventVN')
+@section('title', 'Vé của tôi — QQQ')
 
 @section('content')
 <div class="container-xl py-4">
@@ -79,7 +79,7 @@
       @php
         $ev = $ticket->suKien;
         $img = $ev ? $ev->url_hinh_anh : asset('uploads/su_kien/001.jpg');
-        $code = $ticket->ma_ve ?: ('EVN-2026-' . str_pad($ticket->id, 4, '0', STR_PAD_LEFT));
+        $code = $ticket->ma_ve ?: ('QQQ-2026-' . str_pad($ticket->id, 4, '0', STR_PAD_LEFT));
         $date = ($ev && $ev->thoi_gian_bat_dau) ? date('H:i - d/m/Y', strtotime($ev->thoi_gian_bat_dau)) : 'Đang cập nhật';
         $isCancelled = ($ticket->trang_thai === 'da_huy');
       @endphp
@@ -132,15 +132,17 @@
 
           <div id="cancel-btn-wrapper-{{ $ticket->id }}">
             @if (!$isCancelled)
-              <button 
-                type="button" 
-                onclick="confirmCancelTicket({{ $ticket->id }}, '{{ $code }}')" 
-                class="btn btn-sm btn-outline-danger rounded-3 px-3 py-2 flex-grow-1 flex-md-grow-0 fw-medium d-flex align-items-center gap-1"
-                id="btn-cancel-{{ $ticket->id }}"
-              >
-                <svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                <span>Hủy vé</span>
-              </button>
+              <form action="{{ route('Tickets.cancel', $ticket->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn hủy vé này không?');" class="d-inline">
+                @csrf
+                <button 
+                  type="submit" 
+                  class="btn btn-sm btn-outline-danger rounded-3 px-3 py-2 flex-grow-1 flex-md-grow-0 fw-medium d-flex align-items-center gap-1"
+                  id="btn-cancel-{{ $ticket->id }}"
+                >
+                  <svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                  <span>Hủy vé</span>
+                </button>
+              </form>
             @else
               <span class="text-muted small fst-italic px-2">Vé đã hủy</span>
             @endif
@@ -164,65 +166,4 @@
   </div>
 
 </div>
-
-<!-- CSRF Token cho AJAX -->
-<meta name="csrf-token" content="{{ csrf_token() }}">
-
-@push('scripts')
-<script>
-  function confirmCancelTicket(ticketId, ticketCode) {
-    showConfirmModal('Bạn có chắc chắn Không!', function() {
-      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-      const btn = document.getElementById('btn-cancel-' + ticketId);
-      if (btn) {
-        btn.disabled = true;
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Đang hủy...';
-      }
-
-      fetch('{{ url("/tickets") }}/' + ticketId + '/cancel', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': csrfToken,
-          'Accept': 'application/json'
-        }
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          // Cập nhật nhãn trạng thái thành Đã hủy
-          const statusSpan = document.getElementById('badge-status-' + ticketId);
-          if (statusSpan) {
-            statusSpan.innerHTML = '<span class="badge bg-danger text-white rounded-pill">Đã hủy</span>';
-          }
-          // Thay nút bằng thông báo
-          const btnWrapper = document.getElementById('cancel-btn-wrapper-' + ticketId);
-          if (btnWrapper) {
-            btnWrapper.innerHTML = '<span class="text-muted small fst-italic px-2">Vé đã hủy</span>';
-          }
-          const card = document.getElementById('ticket-item-' + ticketId);
-          if (card) {
-            card.classList.add('opacity-75', 'bg-light-subtle');
-          }
-          showToast(data.message || 'Đã Xóa thành công!', 'success');
-        } else {
-          showToast(data.message || 'Có lỗi xảy ra khi hủy vé.', 'danger');
-          if (btn) {
-            btn.disabled = false;
-            btn.innerHTML = 'Hủy vé';
-          }
-        }
-      })
-      .catch(err => {
-        console.error(err);
-        showToast('Không thể kết nối máy chủ để cập nhật dữ liệu.', 'danger');
-        if (btn) {
-          btn.disabled = false;
-          btn.innerHTML = 'Hủy vé';
-        }
-      });
-    }, 'Xác nhận hủy vé', 'Hủy vé', 'btn-danger');
-  }
-</script>
-@endpush
 @endsection
