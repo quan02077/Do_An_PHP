@@ -110,6 +110,10 @@
           $percent = min(100, round(($registered / max(1, $capacity)) * 100));
         @endphp
 
+        @php
+          $isFav = in_array($id, $userFavIds ?? []);
+        @endphp
+
         <div class="col-12 col-sm-6 col-lg-4">
           <div class="card h-100 border shadow-sm card-hover-scale overflow-hidden">
             <div class="position-relative overflow-hidden bg-light" style="height: 200px;">
@@ -135,16 +139,16 @@
                 @endif
               </div>
 
+              <!-- Nút Bookmark Trái tim: Kết nối CSDL bảng yeu_thich -->
               <button 
                 type="button"
-                data-id="{{ $id }}"
-                onclick="if(window.handleBookmarkClick) handleBookmarkClick(event, Number(this.dataset.id))"
-                class="bookmark-btn-{{ $id }} position-absolute top-0 end-0 m-3 btn btn-light rounded-circle shadow-sm p-0 d-flex align-items-center justify-content-center border text-secondary"
+                onclick="toggleIndexFavorite(event, {{ $id }})"
+                class="bookmark-btn-{{ $id }} position-absolute top-0 end-0 m-3 btn btn-light rounded-circle shadow-sm p-0 d-flex align-items-center justify-content-center border {{ $isFav ? 'text-danger' : 'text-secondary' }}"
                 style="width: 36px; height: 36px; z-index: 5;"
-                title="Lưu vào yêu thích"
+                title="{{ $isFav ? 'Bỏ lưu khỏi yêu thích' : 'Lưu vào yêu thích' }}"
                 aria-label="Lưu vào yêu thích"
               >
-                <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg id="icon-fav-{{ $id }}" style="width: 16px; height: 16px; fill: {{ $isFav ? 'currentColor' : 'none' }}; stroke: currentColor;" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                 </svg>
               </button>
@@ -212,4 +216,67 @@
       @endforelse
     </div>
   </section>
+
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+
+  @push('scripts')
+  <script>
+    function toggleIndexFavorite(e, eventId) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+      const btn = document.querySelector('.bookmark-btn-' + eventId);
+      const icon = document.getElementById('icon-fav-' + eventId);
+
+      fetch('{{ url("/favorite/toggle") }}/' + eventId, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrfToken,
+          'Accept': 'application/json'
+        }
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.login_required) {
+          showConfirmModal('Vui lòng đăng nhập để lưu sự kiện yêu thích. Bạn có muốn chuyển đến trang Đăng nhập không?', () => {
+            window.location.href = '{{ route("Auth.index") }}';
+          }, 'Yêu cầu đăng nhập', 'Đến trang đăng nhập', 'btn-dark');
+          return;
+        }
+        if (data.success) {
+          if (btn && icon) {
+            if (data.is_favorited) {
+              btn.classList.remove('text-secondary');
+              btn.classList.add('text-danger');
+              btn.title = 'Bỏ lưu khỏi yêu thích';
+              icon.style.fill = 'currentColor';
+            } else {
+              btn.classList.remove('text-danger');
+              btn.classList.add('text-secondary');
+              btn.title = 'Lưu vào yêu thích';
+              icon.style.fill = 'none';
+            }
+          }
+
+          const navBadge = document.getElementById('nav-fav-badge');
+          if (navBadge) {
+            navBadge.textContent = data.count;
+            if (data.count > 0) navBadge.classList.remove('d-none');
+            else navBadge.classList.add('d-none');
+          }
+
+          showToast(data.message, data.is_favorited ? 'success' : 'dark');
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        showToast('Không thể kết nối máy chủ để cập nhật CSDL.', 'danger');
+      });
+    }
+  </script>
+  @endpush
 @endsection

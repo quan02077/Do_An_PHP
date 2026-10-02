@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', $event->ten_su_kien . ' — QQQ')
 @section('content')
@@ -31,14 +31,15 @@
                     @endif
                 </div>
 
-                <!-- Nút Bookmark Trái tim -->
+                <!-- Nút Bookmark Trái tim (Kết nối CSDL bảng yeu_thich) -->
                 <button
                     id="event-bookmark-btn"
                     type="button"
+                    onclick="toggleDetailFavorite({{ $event->id }})"
                     class="position-absolute top-0 end-0 m-3 btn btn-light rounded-circle p-0 d-flex align-items-center justify-content-center shadow-sm border z-2"
                     style="width: 44px; height: 44px;"
-                    title="Lưu vào yêu thích">
-                    <svg id="detail-heart-icon" class="text-muted" style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    title="{{ $isFavorited ? 'Bỏ lưu khỏi yêu thích' : 'Lưu vào yêu thích' }}">
+                    <svg id="detail-heart-icon" class="{{ $isFavorited ? 'text-danger' : 'text-muted' }}" style="width: 22px; height: 22px; fill: {{ $isFavorited ? 'currentColor' : 'none' }}; stroke: currentColor;" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
                     </svg>
                 </button>
@@ -186,19 +187,34 @@
                     </div>
                 </div>
 
-                <!-- Action Button -->
-                @if($veConLai > 0)
-                <button
-                    type="button"
-                    id="register-action-btn"
-                    class="btn btn-dark w-100 py-2 fw-medium shadow-sm rounded-3">
-                    Đăng ký tham gia ngay
-                </button>
-                <p class="text-center text-muted mt-2 mb-0 small">Vé điện tử sẽ được cấp ngay sau khi đăng ký</p>
+                <!-- Action Button (Kết nối CSDL bảng dang_ky) -->
+                @if($userTicket && $userTicket->trang_thai !== 'da_huy')
+                <div class="alert alert-success d-flex align-items-center gap-2 mb-2 p-3 small rounded-3 border">
+                    <svg style="width: 20px; height: 20px; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                    <div>
+                        <div class="fw-bold">Bạn đã có vé sự kiện này!</div>
+                        <div class="font-monospace text-muted mt-0.5">Mã vé: {{ $userTicket->ma_ve }}</div>
+                    </div>
+                </div>
+                <a href="{{ route('Dashboard.myTicket') }}" class="btn btn-outline-dark w-100 py-2.5 fw-medium shadow-sm rounded-3">
+                    Xem vé trong "Vé của tôi"
+                </a>
+                @elseif($veConLai > 0)
+                <form method="POST" action="{{ route('Event.book', $event->id) }}">
+                    @csrf
+                    <button
+                        type="submit"
+                        id="register-action-btn"
+                        class="btn btn-dark w-100 py-2.5 fw-semibold shadow-sm rounded-3 d-flex align-items-center justify-content-center gap-2">
+                        <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg>
+                        <span>{{ ($userTicket && $userTicket->trang_thai === 'da_huy') ? 'Đăng ký lại vé tham dự' : 'Đăng ký tham gia ngay' }}</span>
+                    </button>
+                </form>
+                <p class="text-center text-muted mt-2 mb-0 small">Vé điện tử sẽ được cấp ngay vào CSDL sau khi đăng ký</p>
                 @else
                 <button
                     type="button"
-                    class="btn btn-secondary w-100 py-2 fw-medium shadow-sm rounded-3"
+                    class="btn btn-secondary w-100 py-2.5 fw-medium shadow-sm rounded-3"
                     disabled>
                     Đã hết vé
                 </button>
@@ -208,4 +224,59 @@
     </div>
 </div>
 
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
+@push('scripts')
+<script>
+  function toggleDetailFavorite(eventId) {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    const icon = document.getElementById('detail-heart-icon');
+    const btn = document.getElementById('event-bookmark-btn');
+
+    fetch('{{ url("/favorite/toggle") }}/' + eventId, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': csrfToken,
+        'Accept': 'application/json'
+      }
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.login_required) {
+        showConfirmModal('Vui lòng đăng nhập để lưu sự kiện yêu thích. Bạn có muốn chuyển đến trang Đăng nhập không?', () => {
+          window.location.href = '{{ route("Auth.index") }}';
+        }, 'Yêu cầu đăng nhập', 'Đến trang đăng nhập', 'btn-dark');
+        return;
+      }
+      if (data.success) {
+        if (data.is_favorited) {
+          icon.classList.remove('text-muted');
+          icon.classList.add('text-danger');
+          icon.style.fill = 'currentColor';
+          btn.title = 'Bỏ lưu khỏi yêu thích';
+        } else {
+          icon.classList.remove('text-danger');
+          icon.classList.add('text-muted');
+          icon.style.fill = 'none';
+          btn.title = 'Lưu vào yêu thích';
+        }
+
+        const navBadge = document.getElementById('nav-fav-badge');
+        if (navBadge) {
+          navBadge.textContent = data.count;
+          if (data.count > 0) navBadge.classList.remove('d-none');
+          else navBadge.classList.add('d-none');
+        }
+
+        showToast(data.message, data.is_favorited ? 'success' : 'dark');
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      showToast('Không thể kết nối máy chủ để cập nhật CSDL.', 'danger');
+    });
+  }
+</script>
+@endpush
 @endsection

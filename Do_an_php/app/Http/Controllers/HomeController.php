@@ -3,21 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Models\DanhMuc;
+use App\Models\NguoiDung;
 use App\Models\SuKien;
+use App\Models\YeuThich;
 use Illuminate\Http\Request;
-
-use function Laravel\Prompts\search;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $categories = DanhMuc::all();
         $events = SuKien::with(['danhMuc', 'dangKys'])->get();
 
-        $search = request('search');
-        $categoryId = request('category');
-        $status = request('status');
+        $search = $request->query('search');
+        $categoryId = $request->query('category');
+        $status = $request->query('status');
+
+        $user = Auth::user() ?? session('user') ?? NguoiDung::find(2) ?? NguoiDung::first();
+        $userFavIds = $user ? YeuThich::where('nguoi_dung_id', $user->id)->pluck('su_kien_id')->toArray() : [];
 
         if (!empty($search)) {
             $events = $events->filter(function ($item) use ($search) {
@@ -35,11 +39,17 @@ class HomeController extends Controller
         }
 
         if (!empty($status)) {
-            $events = $events->filter(function ($item) use ($status) {
-                return $item->trang_thai == $status;
-            });
+            if ($status === 'yeu_thich') {
+                $events = $events->filter(function ($item) use ($userFavIds) {
+                    return in_array($item->id, $userFavIds);
+                });
+            } else {
+                $events = $events->filter(function ($item) use ($status) {
+                    return $item->trang_thai == $status;
+                });
+            }
         }
 
-        return view('home.index', compact('categories', 'events'));
+        return view('home.index', compact('categories', 'events', 'userFavIds'));
     }
 }

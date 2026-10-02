@@ -14,11 +14,28 @@ class AppServiceProvider extends ServiceProvider
         //
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
-        //
+        view()->composer('*', function ($view) {
+            try {
+                $currentUser = auth()->user() ?? session('user') ?? \App\Models\NguoiDung::find(2) ?? \App\Models\NguoiDung::first();
+                $favCount = $currentUser ? \App\Models\YeuThich::where('nguoi_dung_id', $currentUser->id)->count() : 0;
+                $ticketCount = $currentUser ? \App\Models\DangKy::where('nguoi_dung_id', $currentUser->id)->where('trang_thai', '!=', 'da_huy')->count() : 0;
+                $allUsers = \App\Models\NguoiDung::orderBy('id')->get();
+                $view->with([
+                    'currentUser' => $currentUser,
+                    'favCount' => $favCount,
+                    'ticketCount' => $ticketCount,
+                    'allUsers' => $allUsers,
+                ]);
+            } catch (\Throwable $e) {
+                $view->with([
+                    'currentUser' => null,
+                    'favCount' => 0,
+                    'ticketCount' => 0,
+                    'allUsers' => collect(),
+                ]);
+            }
+        });
     }
 }
