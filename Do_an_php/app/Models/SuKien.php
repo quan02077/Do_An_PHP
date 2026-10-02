@@ -39,6 +39,17 @@ class SuKien extends Model
         ];
     }
 
+    protected static function booted(): void
+    {
+        // Rule: Sự kiện đã có người đăng ký vé thì không được xóa khỏi CSDL, chỉ chuyển trạng thái sang 'da_huy'
+        static::deleting(function ($suKien) {
+            if ($suKien->dangKys()->exists()) {
+                $suKien->update(['trang_thai' => 'da_huy']);
+                return false; // Hủy thao tác xóa cứng khỏi database
+            }
+        });
+    }
+
     /**
      * Sự kiện thuộc về 1 danh mục
      */

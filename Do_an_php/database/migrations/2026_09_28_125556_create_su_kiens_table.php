@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('su_kien', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('danh_muc_id')->constrained('danh_muc')->onDelete('cascade');
+            $table->foreignId('danh_muc_id')->constrained('danh_muc')->onDelete('restrict');
             $table->foreignId('nguoi_tao_id')->constrained('nguoi_dung')->onDelete('cascade');
             $table->string('ten_su_kien');
             $table->string('slug')->unique();

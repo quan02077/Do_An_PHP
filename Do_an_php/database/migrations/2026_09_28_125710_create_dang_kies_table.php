@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('dang_ky', function (Blueprint $table) {
             $table->id();
             $table->foreignId('nguoi_dung_id')->constrained('nguoi_dung')->onDelete('cascade');
-            $table->foreignId('su_kien_id')->constrained('su_kien')->onDelete('cascade');
+            $table->foreignId('su_kien_id')->constrained('su_kien')->onDelete('restrict');
             $table->string('ma_ve')->unique();
             $table->timestamp('thoi_gian_dang_ky')->useCurrent();
             $table->string('trang_thai')->default('da_xac_nhan');

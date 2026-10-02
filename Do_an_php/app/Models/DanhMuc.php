@@ -17,6 +17,16 @@ class DanhMuc extends Model
         'trang_thai',
     ];
 
+    protected static function booted(): void
+    {
+        // Rule: Chặn xóa danh mục nếu vẫn còn sự kiện thuộc danh mục đó
+        static::deleting(function ($danhMuc) {
+            if ($danhMuc->suKiens()->exists()) {
+                throw new \Exception("Không thể xóa danh mục '{$danhMuc->ten_danh_muc}' vì vẫn còn sự kiện thuộc danh mục này!");
+            }
+        });
+    }
+
     /**
      * Danh sách sự kiện thuộc danh mục này
      */
