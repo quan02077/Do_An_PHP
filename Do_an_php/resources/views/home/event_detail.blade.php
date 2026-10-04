@@ -42,9 +42,11 @@
 
                 <div class="position-absolute top-0 start-0 p-3 d-flex gap-2" id="event-badges-container">
                     <span class="badge text-bg-light fw-medium">{{ $event->danhMuc->ten_danh_muc ?? 'Chung' }}</span>
-                    @if($event->trang_thai === 'sap_dien_ra')
+                    @if($event->trang_thai === 'da_huy')
+                    <span class="badge bg-danger fw-medium">Đã hủy</span>
+                    @elseif($event->trang_thai_dien_ra === 'sap_dien_ra')
                     <span class="badge bg-primary fw-medium">Sắp diễn ra</span>
-                    @elseif($event->trang_thai === 'dang_dien_ra')
+                    @elseif($event->trang_thai_dien_ra === 'dang_dien_ra')
                     <span class="badge bg-success fw-medium">Đang diễn ra</span>
                     @else
                     <span class="badge bg-secondary fw-medium">Đã kết thúc</span>
@@ -59,7 +61,7 @@
                         class="btn btn-light rounded-circle p-0 d-flex align-items-center justify-content-center shadow-sm border"
                         style="width: 44px; height: 44px;"
                         title="{{ $isFavorited ? 'Bỏ lưu khỏi yêu thích' : 'Lưu vào yêu thích' }}">
-                        <svg class="{{ $isFavorited ? 'text-danger' : 'text-muted' }}" style="width: 22px; height: 22px; fill: {{ $isFavorited ? 'currentColor' : 'none' }}; stroke: currentColor;" viewBox="0 0 24 24">
+                        <svg class="{{ $isFavorited ? 'text-danger' : 'text-muted' }}" style="width: 22px; height: 22px;" fill="{{ $isFavorited ? 'currentColor' : 'none' }}" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
                         </svg>
                     </button>
@@ -209,7 +211,18 @@
                 </div>
 
                 <!-- Action Button (Kết nối CSDL bảng dang_ky) -->
-                @if($userTicket && $userTicket->trang_thai !== 'da_huy')
+                @if($event->trang_thai === 'da_huy')
+                <div class="alert alert-danger d-flex align-items-center gap-2 mb-2 p-3 small rounded-3 border">
+                    <svg style="width: 20px; height: 20px; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    <div>
+                        <div class="fw-bold">Sự kiện đã bị hủy!</div>
+                        <div class="text-muted mt-0.5">Ban tổ chức đã thông báo hủy sự kiện này. Không thể đặt vé.</div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-secondary w-100 py-2.5 fw-medium shadow-sm rounded-3" disabled>
+                    Sự kiện đã bị hủy
+                </button>
+                @elseif($userTicket && $userTicket->trang_thai !== 'da_huy')
                 <div class="alert alert-success d-flex align-items-center gap-2 mb-2 p-3 small rounded-3 border">
                     <svg style="width: 20px; height: 20px; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                     <div>

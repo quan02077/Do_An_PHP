@@ -50,6 +50,16 @@ class EventController extends Controller
 
         $event = SuKien::findOrFail($id);
 
+        // Kiểm tra sự kiện có bị hủy không
+        if ($event->trang_thai === 'da_huy') {
+            return back()->with('warning', 'Sự kiện này đã bị hủy, không thể đăng ký vé.');
+        }
+
+        // Kiểm tra tình trạng còn vé
+        if ($event->so_luong_toi_da > 0 && $event->so_luong_da_dang_ky >= $event->so_luong_toi_da) {
+            return back()->with('warning', 'Sự kiện này đã hết vé!');
+        }
+
         // Kiểm tra xem đã từng đăng ký chưa
         $existingTicket = DangKy::where('nguoi_dung_id', $user->id)
             ->where('su_kien_id', $id)
@@ -68,7 +78,7 @@ class EventController extends Controller
         }
 
         // Tạo mã vé duy nhất
-        $maVe = 'EVN-' . date('Y') . '-' . strtoupper(Str::random(6));
+        $maVe = 'QQQ-' . date('Y') . '-' . strtoupper(Str::random(6));
 
         $ticket = DangKy::create([
             'nguoi_dung_id' => $user->id,

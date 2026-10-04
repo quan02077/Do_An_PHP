@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('ban_to_chuc')->nullable();
             $table->integer('so_luong_toi_da')->default(0);
             $table->decimal('gia_ve', 12, 2)->default(0);
-            $table->string('trang_thai')->default('sap_dien_ra');
+            $table->string('trang_thai')->default('cong_khai'); // nhap, cong_khai, da_huy
             $table->boolean('noi_bat')->default(false);
             $table->timestamps();
         });

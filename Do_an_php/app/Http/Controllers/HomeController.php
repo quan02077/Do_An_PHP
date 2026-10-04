@@ -14,7 +14,9 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         $categories = DanhMuc::all();
-        $events = SuKien::with(['danhMuc', 'dangKys'])->get();
+        $events = SuKien::with(['danhMuc', 'dangKys'])
+            ->whereIn('trang_thai', ['cong_khai', 'da_huy'])
+            ->get();
 
         $search = $request->query('search');
         $categoryId = $request->query('category');
@@ -43,9 +45,13 @@ class HomeController extends Controller
                 $events = $events->filter(function ($item) use ($userFavIds) {
                     return in_array($item->id, $userFavIds);
                 });
+            } elseif ($status === 'da_huy') {
+                $events = $events->filter(function ($item) {
+                    return $item->trang_thai === 'da_huy';
+                });
             } else {
                 $events = $events->filter(function ($item) use ($status) {
-                    return $item->trang_thai == $status;
+                    return $item->trang_thai_dien_ra === $status;
                 });
             }
         }

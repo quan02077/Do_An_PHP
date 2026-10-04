@@ -41,14 +41,14 @@ class SuKien extends Model
 
     protected static function booted(): void
     {
-        // Rule: Sự kiện đã có người đăng ký vé thì không được xóa khỏi CSDL, chỉ chuyển trạng thái sang 'da_huy'
         static::deleting(function ($suKien) {
             if ($suKien->dangKys()->exists()) {
                 $suKien->update(['trang_thai' => 'da_huy']);
-                return false; // Hủy thao tác xóa cứng khỏi database
+                return false; // Chặn xóa cứng, tự động chuyển thành 'da_huy'
             }
         });
     }
+
 
     /**
      * Sự kiện thuộc về 1 danh mục
@@ -80,8 +80,8 @@ class SuKien extends Model
     public function nguoiThamGias()
     {
         return $this->belongsToMany(NguoiDung::class, 'dang_ky', 'su_kien_id', 'nguoi_dung_id')
-                    ->withPivot('ma_ve', 'thoi_gian_dang_ky', 'trang_thai', 'ghi_chu')
-                    ->withTimestamps();
+            ->withPivot('ma_ve', 'thoi_gian_dang_ky', 'trang_thai', 'ghi_chu')
+            ->withTimestamps();
     }
 
     /**
@@ -98,7 +98,7 @@ class SuKien extends Model
     public function nguoiYeuThichs()
     {
         return $this->belongsToMany(NguoiDung::class, 'yeu_thich', 'su_kien_id', 'nguoi_dung_id')
-                    ->withTimestamps();
+            ->withTimestamps();
     }
 
     /**
@@ -147,5 +147,52 @@ class SuKien extends Model
             return $this->dangKys->count();
         }
         return $this->dangKys()->count();
+    }
+
+    public function getTrangThaiDienRaAttribute(): string
+    {
+        // 1. Sự kiện bản nháp (Admin đang soạn thảo, chưa xuất bản)
+        if ($this->trang_thai === 'nhap') {
+            return 'nhap';
+        }
+
+        // 2. Sự kiện đã bị hủy bỏ
+        if ($this->trang_thai === 'da_huy') {
+            return 'da_huy';
+        }
+
+        // 3. Sự kiện đã công khai ('cong_khai') -> Tính tiến trình theo dòng thời gian thực
+        $now = now();
+        if ($this->thoi_gian_bat_dau > $now) {
+            return 'sap_dien_ra'; // Sắp diễn ra
+        }
+        if ($this->thoi_gian_ket_thuc >= $now) {
+            return 'dang_dien_ra'; // Đang diễn ra
+        }
+        return 'da_ket_thuc'; // Đã kết thúc
+    }
+
+    public function getTenTrangThaiAttribute(): string
+    {
+        return match ($this->trang_thai_dien_ra) {
+            'nhap' => 'Bản nháp',
+            'da_huy' => 'Đã hủy',
+            'sap_dien_ra' => 'Sắp diễn ra',
+            'dang_dien_ra' => 'Đang diễn ra',
+            'da_ket_thuc' => 'Đã kết thúc',
+            default => 'Chưa xác định',
+        };
+    }
+
+    public function getBadgeClassAttribute(): string
+    {
+        return match ($this->trang_thai_dien_ra) {
+            'nhap' => 'bg-secondary-subtle text-secondary border border-secondary-subtle',
+            'da_huy' => 'bg-danger-subtle text-danger border border-danger-subtle',
+            'sap_dien_ra' => 'bg-success-subtle text-success border border-success-subtle',
+            'dang_dien_ra' => 'bg-primary-subtle text-primary border border-primary-subtle',
+            'da_ket_thuc' => 'bg-secondary-subtle text-secondary border border-secondary-subtle',
+            default => 'bg-light text-dark',
+        };
     }
 }

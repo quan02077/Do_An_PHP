@@ -9,7 +9,6 @@ use App\Models\SuKien;
 use App\Models\YeuThich;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class DatabaseSeeder extends Seeder
@@ -62,7 +61,7 @@ class DatabaseSeeder extends Seeder
             'tieu_su' => 'Chuyên viên phát triển phần mềm và đam mê chạy marathon.',
         ]);
 
-        // 3. Tạo Danh mục sự kiện (DanhMuc)
+        // 3. Tạo Danh mục sự kiện (DanhMuc) - 6 danh mục đáp ứng tiêu chí tối thiểu
         $dmCongNghe = DanhMuc::create([
             'ten_danh_muc' => 'Công nghệ',
             'mo_ta' => 'Hội thảo công nghệ, trí tuệ nhân tạo, lập trình và chuyển đổi số.',
@@ -93,7 +92,15 @@ class DatabaseSeeder extends Seeder
             'trang_thai' => 'hoat_dong',
         ]);
 
-        // 4. Tạo Danh sách Sự kiện (SuKien) - Dùng đúng ảnh từ 001.jpg đến 010.jpg
+        $dmGiaoDuc = DanhMuc::create([
+            'ten_danh_muc' => 'Giáo dục & Du học',
+            'mo_ta' => 'Hội thảo săn học bổng, triển lãm du học quốc tế, tư vấn tuyển sinh và phát triển kỹ năng mềm.',
+            'trang_thai' => 'hoat_dong',
+        ]);
+
+        // 4. Tạo Danh sách Sự kiện (SuKien)
+        // Lưu ý nghiệp vụ: trang_thai trong CSDL lưu vòng đời ('nhap', 'cong_khai', 'da_huy')
+        // Trạng thái theo thời gian ('sap_dien_ra', 'dang_dien_ra', 'da_ket_thuc') được tính động từ thời gian bắt đầu/kết thúc
         $eventsData = [
             [
                 'danh_muc_id' => $dmCongNghe->id,
@@ -108,7 +115,7 @@ class DatabaseSeeder extends Seeder
                 'ban_to_chuc' => 'Hiệp hội Công nghệ & Đổi mới sáng tạo VN',
                 'so_luong_toi_da' => 500,
                 'gia_ve' => 0,
-                'trang_thai' => 'sap_dien_ra',
+                'trang_thai' => 'cong_khai',
                 'noi_bat' => true,
             ],
             [
@@ -118,13 +125,13 @@ class DatabaseSeeder extends Seeder
                 'slug' => 'dem-nhac-acoustic-mua-thu-cho-em',
                 'mo_ta' => "Một buổi tối lắng đọng cùng những thanh âm mộc mạc của guitar và piano, đưa bạn qua những bản tình ca vượt thời gian.\n\nNghệ sĩ tham gia:\n- Ban nhạc Mộc Acoustic\n- Ca sĩ khách mời đặc biệt từ Indie Underground.",
                 'hinh_anh' => '002.jpg',
-                'thoi_gian_bat_dau' => Carbon::now()->addHours(2),
-                'thoi_gian_ket_thuc' => Carbon::now()->addHours(5),
+                'thoi_gian_bat_dau' => Carbon::now()->subHours(1),
+                'thoi_gian_ket_thuc' => Carbon::now()->addHours(3),
                 'dia_diem' => 'Nhà Hát Lớn Hà Nội, Số 1 Tràng Tiền, Hoàn Kiếm, Hà Nội',
                 'ban_to_chuc' => 'Nhà Hát Ca Múa Nhạc Trẻ',
                 'so_luong_toi_da' => 150,
                 'gia_ve' => 250000,
-                'trang_thai' => 'dang_dien_ra',
+                'trang_thai' => 'cong_khai',
                 'noi_bat' => true,
             ],
             [
@@ -140,7 +147,7 @@ class DatabaseSeeder extends Seeder
                 'ban_to_chuc' => 'Quỹ Khởi nghiệp Việt Nam (VSV)',
                 'so_luong_toi_da' => 200,
                 'gia_ve' => 150000,
-                'trang_thai' => 'sap_dien_ra',
+                'trang_thai' => 'cong_khai',
                 'noi_bat' => true,
             ],
             [
@@ -156,7 +163,7 @@ class DatabaseSeeder extends Seeder
                 'ban_to_chuc' => 'Green Smile Club & Liên đoàn Điền kinh',
                 'so_luong_toi_da' => 1000,
                 'gia_ve' => 350000,
-                'trang_thai' => 'sap_dien_ra',
+                'trang_thai' => 'cong_khai',
                 'noi_bat' => false,
             ],
             [
@@ -166,13 +173,13 @@ class DatabaseSeeder extends Seeder
                 'slug' => 'trien-lam-nghe-thuat-so-anh-sang-tuong-lai',
                 'mo_ta' => "Không gian trải nghiệm nghệ thuật thị giác đa chiều với hệ thống máy chiếu 3D mapping và âm thanh vòm đỉnh cao.\n\nNơi nghệ thuật thị giác giao thoa cùng công nghệ thực tế ảo.",
                 'hinh_anh' => '005.jpg',
-                'thoi_gian_bat_dau' => Carbon::now()->addDays(3)->setHour(10)->setMinute(0),
-                'thoi_gian_ket_thuc' => Carbon::now()->addDays(15)->setHour(21)->setMinute(0),
+                'thoi_gian_bat_dau' => Carbon::now()->subDays(1)->setHour(10)->setMinute(0),
+                'thoi_gian_ket_thuc' => Carbon::now()->addDays(14)->setHour(21)->setMinute(0),
                 'dia_diem' => 'Bảo tàng Mỹ thuật TP.HCM, Số 97A Phó Đức Chính, Q.1, TP.HCM',
                 'ban_to_chuc' => 'CLB Nghệ Thuật Hiện Đại Sài Gòn',
                 'so_luong_toi_da' => 300,
                 'gia_ve' => 80000,
-                'trang_thai' => 'sap_dien_ra',
+                'trang_thai' => 'cong_khai',
                 'noi_bat' => false,
             ],
             [
@@ -188,7 +195,7 @@ class DatabaseSeeder extends Seeder
                 'ban_to_chuc' => 'Cộng đồng Lập trình viên Việt Nam',
                 'so_luong_toi_da' => 120,
                 'gia_ve' => 0,
-                'trang_thai' => 'sap_dien_ra',
+                'trang_thai' => 'cong_khai',
                 'noi_bat' => true,
             ],
             [
@@ -204,7 +211,7 @@ class DatabaseSeeder extends Seeder
                 'ban_to_chuc' => 'Ban Quản Lý Du Lịch & Văn Hóa Ẩm Thực',
                 'so_luong_toi_da' => 800,
                 'gia_ve' => 50000,
-                'trang_thai' => 'dang_dien_ra',
+                'trang_thai' => 'cong_khai',
                 'noi_bat' => false,
             ],
             [
@@ -220,7 +227,7 @@ class DatabaseSeeder extends Seeder
                 'ban_to_chuc' => 'Hội Doanh Nhân Trẻ TP.HCM',
                 'so_luong_toi_da' => 300,
                 'gia_ve' => 500000,
-                'trang_thai' => 'da_ket_thuc',
+                'trang_thai' => 'cong_khai',
                 'noi_bat' => false,
             ],
             [
@@ -236,7 +243,7 @@ class DatabaseSeeder extends Seeder
                 'ban_to_chuc' => 'Hội Thể thao Điện tử & Giải trí Việt Nam',
                 'so_luong_toi_da' => 600,
                 'gia_ve' => 0,
-                'trang_thai' => 'da_ket_thuc',
+                'trang_thai' => 'cong_khai',
                 'noi_bat' => false,
             ],
             [
@@ -252,8 +259,42 @@ class DatabaseSeeder extends Seeder
                 'ban_to_chuc' => 'Dàn nhạc Giao hưởng Vũ kịch TP.HCM (HBSO)',
                 'so_luong_toi_da' => 250,
                 'gia_ve' => 400000,
-                'trang_thai' => 'sap_dien_ra',
+                'trang_thai' => 'cong_khai',
                 'noi_bat' => true,
+            ],
+            // 11. Sự kiện ĐẦY CHỖ (Hết vé) - Dành riêng để test/demo nghiệp vụ hết vé
+            [
+                'danh_muc_id' => $dmGiaoDuc->id,
+                'nguoi_tao_id' => $admin->id,
+                'ten_su_kien' => 'Hội Thảo Hướng Nghiệp & Học Bổng Toàn Phần Du Học 2026',
+                'slug' => 'hoi-thao-huong-nghiep-hoc-bong-toan-phan-du-hoc-2026',
+                'mo_ta' => "Sự kiện đặc biệt giới thiệu hơn 100 suất học bổng toàn phần từ các trường đại học hàng đầu Anh, Úc, Mỹ và Canada.\n\nSự kiện đã kín toàn bộ số lượng chỗ tham gia của đợt 1.",
+                'hinh_anh' => '006.jpg',
+                'thoi_gian_bat_dau' => Carbon::now()->addDays(9)->setHour(8)->setMinute(30),
+                'thoi_gian_ket_thuc' => Carbon::now()->addDays(9)->setHour(12)->setMinute(0),
+                'dia_diem' => 'Khách sạn Caravelle Sài Gòn, 19 Công Trường Lam Sơn, Q.1, TP.HCM',
+                'ban_to_chuc' => 'Tổ Chức Giáo Dục Quốc Tế & Hợp Tác Du Học',
+                'so_luong_toi_da' => 2, // Chỉ giới hạn 2 chỗ để test đầy vé (100%)
+                'gia_ve' => 0,
+                'trang_thai' => 'cong_khai',
+                'noi_bat' => true,
+            ],
+            // 12. Sự kiện ĐÃ HỦY - Dành riêng để test/demo nghiệp vụ hủy sự kiện
+            [
+                'danh_muc_id' => $dmAmNhac->id,
+                'nguoi_tao_id' => $admin->id,
+                'ten_su_kien' => '[ĐÃ HỦY] Festival Âm Nhạc Bãi Biển Mùa Hè 2026',
+                'slug' => 'festival-am-nhac-bai-bien-mua-he-2026-da-huy',
+                'mo_ta' => "THÔNG BÁO HỦY CHÍNH THỨC: Do điều kiện thời tiết mưa bão bất thường và để đảm bảo an toàn tuyệt đối cho người tham gia, Ban Tổ Chức xin thông báo chính thức hủy sự kiện này. Toàn bộ người đăng ký sẽ được xử lý hoàn tiền hoặc nhận voucher ưu tiên cho sự kiện tiếp theo.",
+                'hinh_anh' => '002.jpg',
+                'thoi_gian_bat_dau' => Carbon::now()->addDays(14)->setHour(16)->setMinute(0),
+                'thoi_gian_ket_thuc' => Carbon::now()->addDays(14)->setHour(23)->setMinute(0),
+                'dia_diem' => 'Bãi Sau, TP. Vũng Tàu, Bà Rịa - Vũng Tàu',
+                'ban_to_chuc' => 'Công Ty Giải Trí Sóng Xanh',
+                'so_luong_toi_da' => 1000,
+                'gia_ve' => 300000,
+                'trang_thai' => 'da_huy',
+                'noi_bat' => false,
             ],
         ];
 
@@ -262,35 +303,64 @@ class DatabaseSeeder extends Seeder
             $createdEvents[] = SuKien::create($item);
         }
 
-        // 5. Tạo Vé đăng ký mẫu (DangKy) cho User 1 (Minh Quân) và User 2 (Hoàng Nam)
+        // 5. Tạo Vé đăng ký mẫu (DangKy)
+        // Vé cho Sự kiện Tech Summit (Sự kiện 0)
         DangKy::create([
             'nguoi_dung_id' => $user1->id,
-            'su_kien_id' => $createdEvents[0]->id, // Tech Summit
-            'ma_ve' => 'VE-TECH2026A',
+            'su_kien_id' => $createdEvents[0]->id,
+            'ma_ve' => 'QQQ-2026-TECH01',
             'trang_thai' => 'da_xac_nhan',
             'ghi_chu' => 'Đăng ký vé tham dự hội thảo công nghệ AI.',
         ]);
 
         DangKy::create([
+            'nguoi_dung_id' => $user2->id,
+            'su_kien_id' => $createdEvents[0]->id,
+            'ma_ve' => 'QQQ-2026-TECH02',
+            'trang_thai' => 'da_xac_nhan',
+        ]);
+
+        // Vé cho Sự kiện Acoustic Night (Sự kiện 1)
+        DangKy::create([
             'nguoi_dung_id' => $user1->id,
-            'su_kien_id' => $createdEvents[1]->id, // Acoustic Night
-            'ma_ve' => 'VE-ACOU098B',
+            'su_kien_id' => $createdEvents[1]->id,
+            'ma_ve' => 'QQQ-2026-ACOU01',
             'trang_thai' => 'da_xac_nhan',
             'ghi_chu' => 'Vé hàng ghế VIP.',
         ]);
 
+        // Vé cho Sự kiện Marathon (Sự kiện 3)
         DangKy::create([
             'nguoi_dung_id' => $user2->id,
-            'su_kien_id' => $createdEvents[0]->id,
-            'ma_ve' => 'VE-TECH889C',
+            'su_kien_id' => $createdEvents[3]->id,
+            'ma_ve' => 'QQQ-2026-MARA01',
             'trang_thai' => 'da_xac_nhan',
+        ]);
+
+        // LÀM ĐẦY CHỖ Sự kiện 10 (Hội thảo du học - max 2 chỗ): Đăng ký đủ 2 người (100% full)
+        DangKy::create([
+            'nguoi_dung_id' => $user1->id,
+            'su_kien_id' => $createdEvents[10]->id,
+            'ma_ve' => 'QQQ-2026-DUHOC1',
+            'trang_thai' => 'da_xac_nhan',
+            'ghi_chu' => 'Học bổng du học Anh Quốc.',
         ]);
 
         DangKy::create([
             'nguoi_dung_id' => $user2->id,
-            'su_kien_id' => $createdEvents[3]->id, // Marathon
-            'ma_ve' => 'VE-MARA112D',
+            'su_kien_id' => $createdEvents[10]->id,
+            'ma_ve' => 'QQQ-2026-DUHOC2',
             'trang_thai' => 'da_xac_nhan',
+            'ghi_chu' => 'Học bổng du học Úc.',
+        ]);
+
+        // Vé của Sự kiện Đã Hủy (Sự kiện 11): Có 1 vé của user2 ở trạng thái 'da_huy'
+        DangKy::create([
+            'nguoi_dung_id' => $user2->id,
+            'su_kien_id' => $createdEvents[11]->id,
+            'ma_ve' => 'QQQ-2026-FEST01',
+            'trang_thai' => 'da_huy',
+            'ghi_chu' => 'Vé đã hủy do sự kiện bị hủy bởi ban tổ chức.',
         ]);
 
         // 6. Tạo Danh sách Yêu thích mẫu (YeuThich)
@@ -310,10 +380,15 @@ class DatabaseSeeder extends Seeder
         ]);
 
         YeuThich::create([
+            'nguoi_dung_id' => $user1->id,
+            'su_kien_id' => $createdEvents[10]->id, // Yêu thích sự kiện du học
+        ]);
+
+        YeuThich::create([
             'nguoi_dung_id' => $user2->id,
             'su_kien_id' => $createdEvents[3]->id,
         ]);
 
-        $this->command->info('Đã nạp thành công toàn bộ dữ liệu mẫu (Users, Danh mục, Sự kiện, Vé và Yêu thích)!');
+        $this->command->info('Đã nạp thành công toàn bộ dữ liệu mẫu (Users, 6 Danh mục, 12 Sự kiện gồm Đầy chỗ & Đã hủy, Vé và Yêu thích)!');
     }
 }
