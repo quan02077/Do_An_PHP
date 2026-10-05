@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\DangKy;
+use App\Models\DanhMuc;
 use App\Models\NguoiDung;
 use App\Models\SuKien;
 use App\Models\YeuThich;
+use App\Http\Requests\StoreEventRequest;
+use App\Http\Requests\UpdateEventRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -16,7 +19,25 @@ class EventController extends Controller
     {
         return Auth::user() ?? session('user');
     }
+    /**
+     * Form tạo mới sự kiện (Resource create)
+     */
+    public function create()
+    {
+        //
+    }
 
+    /**
+     * Lưu sự kiện mới vào CSDL (Resource store)
+     */
+    public function store(StoreEventRequest $request)
+    {
+        //
+    }
+
+    /**
+     * Chi tiết sự kiện (Resource show)
+     */
     public function show($id)
     {
         $event = SuKien::with(['danhMuc', 'nguoiTao', 'dangKys'])->findOrFail($id);
@@ -36,6 +57,30 @@ class EventController extends Controller
         }
 
         return view('home.event_detail', compact('event', 'user', 'isFavorited', 'userTicket'));
+    }
+
+    /**
+     * Form chỉnh sửa sự kiện (Resource edit)
+     */
+    public function edit($id)
+    {
+        //
+    }
+
+    /**
+     * Cập nhật thông tin sự kiện (Resource update)
+     */
+    public function update(UpdateEventRequest $request, $id)
+    {
+        //
+    }
+
+    /**
+     * Xóa sự kiện (Resource destroy)
+     */
+    public function destroy($id)
+    {
+        //
     }
 
     /**

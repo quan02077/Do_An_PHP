@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Route;
 // Trang chủ & Danh sách sự kiện
 Route::get('/', [HomeController::class, 'index'])->name('Home.index');
 
-// Chi tiết sự kiện & Đặt vé
-Route::get('/event/{id}', [EventController::class, 'show'])->name('Event.show');
+// Quản lý Sự kiện (Resource Controller) & Đặt vé
+Route::resource('event', EventController::class)->names('Event');
 Route::post('/event/{id}/book', [EventController::class, 'bookTicket'])->name('Event.book');
 
 // Vé của tôi & Hủy vé
@@ -19,7 +19,6 @@ Route::post('/tickets/{id}/cancel', [DashboardController::class, 'cancelTicket']
 
 // Trang yêu thích & Lưu / Bỏ lưu yêu thích
 Route::get('/favorite', [DashboardController::class, 'favorite'])->name('Dashboard.favorite');
-Route::post('/favorite/remove/{eventId}', [DashboardController::class, 'removeFavorite'])->name('Favorite.remove');
 Route::post('/favorite/toggle/{eventId}', [DashboardController::class, 'toggleFavorite'])->name('Favorite.toggle');
 
 // Hồ sơ cá nhân & Bảo mật tài khoản

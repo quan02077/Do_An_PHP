@@ -83,23 +83,6 @@ class DashboardController extends Controller
     }
 
     /**
-     * Bỏ lưu sự kiện khỏi Yêu thích: Xóa bản ghi trong bảng yeu_thich theo đúng người dùng
-     */
-    public function removeFavorite(Request $request, $eventId)
-    {
-        $user = $this->getCurrentUser();
-        if (!$user) {
-            return redirect()->route('Auth.index')->with('warning', 'Vui lòng đăng nhập để thực hiện.');
-        }
-
-        YeuThich::where('nguoi_dung_id', $user->id)
-            ->where('su_kien_id', $eventId)
-            ->delete();
-
-        return back()->with('success', 'Đã xóa sự kiện khỏi danh sách yêu thích!');
-    }
-
-    /**
      * Thêm / Bỏ yêu thích (Toggle): Thao tác bấm nút trái tim ở Trang chủ hoặc Chi tiết sự kiện
      */
     public function toggleFavorite(Request $request, $eventId)
@@ -153,23 +136,7 @@ class DashboardController extends Controller
      */
     public function updateProfile(UpdateProfileRequest $request)
     {
-        $user = $this->getCurrentUser();
-        if (!$user) {
-            return redirect()->route('Auth.index')->with('warning', 'Vui lòng đăng nhập để thực hiện.');
-        }
-
-        $user->update([
-            'ho_ten'        => $request->ho_ten,
-            'so_dien_thoai' => $request->so_dien_thoai,
-            'gioi_tinh'     => $request->gioi_tinh,
-            'ngay_sinh'     => $request->ngay_sinh,
-            'dia_chi'       => $request->dia_chi,
-            'tieu_su'       => $request->tieu_su,
-        ]);
-
-        session(['user' => $user->fresh()]);
-
-        return back()->with('success', 'Đã lưu thông tin hồ sơ cá nhân thành công!');
+        //
     }
 
     /**
@@ -177,27 +144,6 @@ class DashboardController extends Controller
      */
     public function changePassword(ChangePasswordRequest $request)
     {
-        $user = $this->getCurrentUser();
-        if (!$user) {
-            return redirect()->route('Auth.index')->with('warning', 'Vui lòng đăng nhập để thực hiện.');
-        }
-
-        $passwordValid = false;
-        if (Hash::check($request->current_password, $user->mat_khau)) {
-            $passwordValid = true;
-        } elseif ($user->mat_khau === $request->current_password || md5($request->current_password) === $user->mat_khau) {
-            $passwordValid = true;
-        }
-
-        if (!$passwordValid) {
-            return back()->withErrors(['current_password' => 'Mật khẩu hiện tại không chính xác!'])->with('active_tab', 'security');
-        }
-
-        $user->mat_khau = Hash::make($request->password);
-        $user->save();
-
-        session(['user' => $user->fresh()]);
-
-        return back()->with('success', 'Đã thay đổi mật khẩu thành công!')->with('active_tab', 'security');
+        //
     }
 }
