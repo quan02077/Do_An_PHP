@@ -155,6 +155,16 @@
             </div>
           </div>
 
+          <div class="mb-3">
+            <label for="reg-password-confirmation" class="form-label small fw-medium text-dark mb-1">Xác nhận mật khẩu <span class="text-danger">*</span></label>
+            <div class="input-group">
+              <span class="input-group-text bg-light text-muted border-end-0">
+                <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </span>
+              <input type="password" id="reg-password-confirmation" name="password_confirmation" required placeholder="Nhập lại mật khẩu" class="form-control border-start-0" />
+            </div>
+          </div>
+
           <div class="form-check mb-4">
             <input type="checkbox" id="reg-agree" required class="form-check-input" checked />
             <label for="reg-agree" class="form-check-label small text-secondary">

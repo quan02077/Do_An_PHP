@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\NguoiDung;
+use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\LoginRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -17,17 +19,8 @@ class AuthController extends Controller
         return view('auth.auth');
     }
 
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ], [
-            'email.required' => 'Vui lòng nhập địa chỉ email.',
-            'email.email' => 'Địa chỉ email không đúng định dạng.',
-            'password.required' => 'Vui lòng nhập mật khẩu.',
-        ]);
-
         $user = NguoiDung::where('email', $request->email)->first();
 
         if (!$user) {
@@ -60,21 +53,8 @@ class AuthController extends Controller
         return redirect()->intended(route('Dashboard.myTicket'))->with('success', 'Đăng nhập thành công! Chào mừng ' . $user->ho_ten . '.');
     }
 
-    public function register(Request $request)
+    public function register(RegisterRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:100',
-            'email' => 'required|email|max:150|unique:nguoi_dung,email',
-            'phone' => 'nullable|string|max:20',
-            'password' => 'required|min:6',
-        ], [
-            'name.required' => 'Vui lòng nhập họ và tên.',
-            'email.required' => 'Vui lòng nhập địa chỉ email.',
-            'email.unique' => 'Địa chỉ email này đã được sử dụng.',
-            'password.required' => 'Vui lòng nhập mật khẩu.',
-            'password.min' => 'Mật khẩu phải có tối thiểu 6 ký tự.',
-        ]);
-
         $user = NguoiDung::create([
             'ho_ten' => $request->name,
             'email' => $request->email,
