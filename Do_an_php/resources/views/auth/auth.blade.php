@@ -97,19 +97,6 @@
           <button type="submit" class="btn btn-dark w-100 py-2.5 mt-2 fw-medium shadow-sm rounded-3">
             Đăng nhập vào tài khoản
           </button>
-
-          <!-- Đăng nhập 1-chạm Demo -->
-          <div class="mt-4 pt-3 border-top text-center">
-            <div class="small text-muted mb-2" style="font-size: 12px;">Đăng nhập nhanh 1-chạm (Test CSDL):</div>
-            <div class="d-flex gap-2">
-              <a href="{{ route('Auth.switch', 2) }}" class="btn btn-sm btn-outline-primary flex-grow-1 rounded-3 py-1.5 small">
-                Thành viên (ID: 2)
-              </a>
-              <a href="{{ route('Auth.switch', 1) }}" class="btn btn-sm btn-outline-dark flex-grow-1 rounded-3 py-1.5 small">
-                Quản trị viên (ID: 1)
-              </a>
-            </div>
-          </div>
         </form>
         @else
         <!-- ─── FORM ĐĂNG KÝ ──────────────────────────────────────────────── -->

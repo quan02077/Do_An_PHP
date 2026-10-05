@@ -69,22 +69,6 @@
                 </a>
               </li>
 
-              <!-- Đổi nhanh tài khoản để test theo yêu cầu của bạn -->
-              @if(isset($allUsers) && count($allUsers) > 1)
-              <li class="dropdown-header text-uppercase text-muted" style="font-size: 10px;">Chuyển tài khoản (Test CSDL)</li>
-              @foreach($allUsers as $u)
-              <li>
-                <a class="dropdown-item small rounded-2 py-1.5 d-flex align-items-center justify-content-between {{ $u->id === $currentUser->id ? 'active fw-semibold' : '' }}" href="{{ route('Auth.switch', $u->id) }}">
-                  <span>{{ $u->ho_ten }}</span>
-                  <span class="badge text-bg-light border" style="font-size: 10px;">ID: {{ $u->id }}</span>
-                </a>
-              </li>
-              @endforeach
-              <li>
-                <hr class="dropdown-divider my-2">
-              </li>
-              @endif
-
               <li>
                 <a class="dropdown-item small rounded-2 py-1.5 {{ request()->routeIs('Dashboard.profile') ? 'active fw-semibold' : '' }}" href="{{ route('Dashboard.profile') }}">
                   <svg class="me-1.5" style="width: 14px; height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
