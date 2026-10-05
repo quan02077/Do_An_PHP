@@ -27,6 +27,8 @@ class UpdateProfileRequest extends FormRequest
                 Rule::unique('nguoi_dung', 'email')->ignore($userId),
             ],
             'so_dien_thoai' => ['nullable', 'string', 'max:15'],
+            'gioi_tinh'     => ['nullable', 'string', 'in:Nam,Nữ,Khác'],
+            'ngay_sinh'     => ['nullable', 'date'],
             'dia_chi'       => ['nullable', 'string', 'max:255'],
             'tieu_su'       => ['nullable', 'string', 'max:500'],
             'anh_dai_dien'  => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],

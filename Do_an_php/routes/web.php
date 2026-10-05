@@ -22,6 +22,11 @@ Route::get('/favorite', [DashboardController::class, 'favorite'])->name('Dashboa
 Route::post('/favorite/remove/{eventId}', [DashboardController::class, 'removeFavorite'])->name('Favorite.remove');
 Route::post('/favorite/toggle/{eventId}', [DashboardController::class, 'toggleFavorite'])->name('Favorite.toggle');
 
+// Hồ sơ cá nhân & Bảo mật tài khoản
+Route::get('/profile', [DashboardController::class, 'profile'])->name('Dashboard.profile');
+Route::post('/profile', [DashboardController::class, 'updateProfile'])->name('Dashboard.updateProfile');
+Route::post('/profile/change-password', [DashboardController::class, 'changePassword'])->name('Dashboard.changePassword');
+
 // Xác thực & Tài khoản người dùng
 Route::get('/auth', [AuthController::class, 'index'])->name('Auth.index');
 Route::post('/login', [AuthController::class, 'login'])->name('Auth.login');
