@@ -22,7 +22,7 @@ class HomeController extends Controller
         $categoryId = $request->query('category');
         $status = $request->query('status');
 
-        $user = Auth::user() ?? session('user') ?? NguoiDung::find(2) ?? NguoiDung::first();
+        $user = Auth::user() ?? session('user');
         $userFavIds = $user ? YeuThich::where('nguoi_dung_id', $user->id)->pluck('su_kien_id')->toArray() : [];
 
         if (!empty($search)) {

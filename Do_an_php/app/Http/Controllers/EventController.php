@@ -14,7 +14,7 @@ class EventController extends Controller
 {
     protected function getCurrentUser()
     {
-        return Auth::user() ?? session('user') ?? NguoiDung::find(2) ?? NguoiDung::first();
+        return Auth::user() ?? session('user');
     }
 
     public function show($id)
