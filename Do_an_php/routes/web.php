@@ -30,5 +30,5 @@ Route::post('/profile/change-password', [DashboardController::class, 'changePass
 Route::get('/auth', [AuthController::class, 'index'])->name('Auth.index');
 Route::post('/login', [AuthController::class, 'login'])->name('Auth.login');
 Route::post('/register', [AuthController::class, 'register'])->name('Auth.register');
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('Auth.resetPassword');
 Route::match(['get', 'post'], '/logout', [AuthController::class, 'logout'])->name('Auth.logout');
-Route::get('/switch-user/{id}', [AuthController::class, 'switchUser'])->name('Auth.switch');

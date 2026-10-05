@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\NguoiDung;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\LoginRequest;
+use App\Http\Requests\ResetPasswordRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -80,12 +81,20 @@ class AuthController extends Controller
         return redirect()->route('Home.index')->with('success', 'Đã đăng xuất khỏi tài khoản.');
     }
 
-    public function switchUser($id)
+    public function resetPassword(ResetPasswordRequest $request)
     {
-        $user = NguoiDung::findOrFail($id);
-        Auth::login($user);
-        session(['user' => $user]);
+        $user = NguoiDung::where('email', $request->email)
+            ->where('so_dien_thoai', $request->phone)
+            ->first();
 
-        return back()->with('success', 'Đã chuyển sang tài khoản: ' . $user->ho_ten . ' (' . $user->email . ')');
+        if (!$user) {
+            return back()->withErrors(['email' => 'Email hoặc số điện thoại không chính xác.'])->withInput();
+        }
+
+        $user->update([
+            'mat_khau' => Hash::make($request->password),
+        ]);
+
+        return redirect()->route('Auth.index')->with('success', 'Đặt lại mật khẩu thành công! Bạn có thể đăng nhập ngay.');
     }
 }
