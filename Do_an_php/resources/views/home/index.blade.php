@@ -17,12 +17,11 @@ $events = $events ?? collect();
       </h1>
       <div class="mx-auto position-relative" style="max-width: 560px;">
         <form method="GET" action="{{ route('Home.index') }}">
-          <div class="shadow-sm rounded-3">
-            <x-input type="text" name="search" id="search-input" :value="request('search')" aria-label="Tìm kiếm sự kiện" placeholder="Tìm theo tên sự kiện, địa điểm, chủ đề..." class="fs-6 py-2.5 ps-1">
-              <x-slot:icon>
-                <i class="fa-solid fa-magnifying-glass text-secondary"></i>
-              </x-slot:icon>
-            </x-input>
+          <div class="input-group shadow-sm rounded-3 overflow-hidden">
+            <span class="input-group-text bg-white border-end-0 text-muted ps-3 pe-2">
+              <i class="fa-solid fa-magnifying-glass text-secondary"></i>
+            </span>
+            <input type="text" name="search" id="search-input" value="{{ request('search') }}" aria-label="Tìm kiếm sự kiện" placeholder="Tìm theo tên sự kiện, địa điểm, chủ đề..." class="form-control border-start-0 ps-1 py-2.5 fs-6" />
           </div>
         </form>
       </div>

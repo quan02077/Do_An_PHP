@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\DangKy;
-use App\Models\DanhMuc;
-use App\Models\NguoiDung;
 use App\Models\SuKien;
 use App\Models\YeuThich;
 use App\Http\Requests\StoreEventRequest;

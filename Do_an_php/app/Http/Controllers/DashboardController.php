@@ -3,14 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\DangKy;
-use App\Models\NguoiDung;
-use App\Models\SuKien;
 use App\Models\YeuThich;
 use App\Http\Requests\UpdateProfileRequest;
 use App\Http\Requests\ChangePasswordRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 
 class DashboardController extends Controller
 {

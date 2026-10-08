@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\DanhMuc;
-use App\Models\NguoiDung;
 use App\Models\SuKien;
 use App\Models\YeuThich;
 use Illuminate\Http\Request;
