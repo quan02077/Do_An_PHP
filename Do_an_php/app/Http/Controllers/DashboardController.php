@@ -26,6 +26,11 @@ class DashboardController extends Controller
     {
         $user = $this->getCurrentUser();
 
+        // Nếu là Admin thì không có vé tham gia, chuyển hướng về trang chủ
+        if ($user && $user->vai_tro === 'admin') {
+            return redirect()->route('Home.index');
+        }
+
         $tickets = collect();
         if ($user) {
             $tickets = DangKy::with(['suKien.danhMuc'])
@@ -34,7 +39,7 @@ class DashboardController extends Controller
                 ->get();
         }
 
-        return view('home.myTicket', compact('user', 'tickets'));
+        return view('home.User.myTicket', compact('user', 'tickets'));
     }
 
     /**
@@ -68,6 +73,11 @@ class DashboardController extends Controller
     {
         $user = $this->getCurrentUser();
 
+        // Nếu là Admin thì chuyển hướng về trang chủ
+        if ($user && $user->vai_tro === 'admin') {
+            return redirect()->route('Home.index');
+        }
+
         $favorites = collect();
         if ($user) {
             $favorites = YeuThich::with(['suKien.danhMuc'])
@@ -76,7 +86,7 @@ class DashboardController extends Controller
                 ->get();
         }
 
-        return view('home.favorite', compact('user', 'favorites'));
+        return view('home.User.favorite', compact('user', 'favorites'));
     }
 
     /**

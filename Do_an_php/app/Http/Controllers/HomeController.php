@@ -12,6 +12,14 @@ class HomeController extends Controller
 {
     public function index(Request $request)
     {
+        $user = Auth::user() ?? session('user');
+
+        // Phân quyền: Nếu là Quản trị viên (Admin) -> Hiển thị trang quản trị Admin
+        if ($user && $user->vai_tro === 'admin') {
+            return view('home.Admin.admin', compact('user'));
+        }
+
+        // Nếu là Thành viên (User) hoặc Khách -> Hiển thị trang danh sách sự kiện (User index)
         $categories = DanhMuc::all();
         $events = SuKien::with(['danhMuc', 'dangKys'])
             ->whereIn('trang_thai', ['cong_khai', 'da_huy'])
@@ -21,7 +29,6 @@ class HomeController extends Controller
         $categoryId = $request->query('category');
         $status = $request->query('status');
 
-        $user = Auth::user() ?? session('user');
         $userFavIds = $user ? YeuThich::where('nguoi_dung_id', $user->id)->pluck('su_kien_id')->toArray() : [];
 
         if (!empty($search)) {
@@ -55,6 +62,6 @@ class HomeController extends Controller
             }
         }
 
-        return view('home.index', compact('categories', 'events', 'userFavIds'));
+        return view('home.User.index', compact('categories', 'events', 'userFavIds', 'user'));
     }
 }
