@@ -24,6 +24,7 @@
           <li class="nav-item">
             <a href="{{ route('Home.index') }}" class="nav-link {{ request()->routeIs('Home.index') ? 'active fw-semibold text-dark bg-light' : 'text-secondary' }} px-3 py-2 rounded-pill small">Trang chủ</a>
           </li>
+          @if(!$currentUser || $currentUser->vai_tro !== 'admin')
           <li class="nav-item">
             <a href="{{ route('Dashboard.myTicket') }}" class="nav-link {{ request()->routeIs('Dashboard.myTicket') ? 'active fw-semibold text-dark bg-light' : 'text-secondary' }} px-3 py-2 rounded-pill small d-flex align-items-center gap-1.5">
               <span>Vé của tôi</span>
@@ -39,10 +40,11 @@
               <span id="nav-fav-badge" class="badge rounded-pill bg-danger text-white ms-1 {{ (isset($favCount) && $favCount > 0) ? '' : 'd-none' }}" style="font-size: 11px;">{{ $favCount ?? 0 }}</span>
             </a>
           </li>
+          @endif
         </ul>
 
         <!-- Tài khoản người dùng & Phân quyền -->
-        <div class="d-flex align-items-center gap-2 pt-2 pt-md-0">
+        <div class="d-flex align-items-center gap-2 pt-2 pt-md-0 ms-auto">
           @if(isset($currentUser) && $currentUser)
           <!-- Dropdown người dùng -->
           <div class="dropdown">
@@ -71,21 +73,27 @@
                   Hồ sơ cá nhân
                 </a>
               </li>
+
+              {{-- Chỉ Thành viên (User) mới có Vé của tôi và Sự kiện yêu thích --}}
+              @if($currentUser->vai_tro === 'user')
               <li>
-                <a class="dropdown-item small rounded-2 py-1.5" href="{{ route('Dashboard.myTicket') }}">
+                <a class="dropdown-item small rounded-2 py-1.5 {{ request()->routeIs('Dashboard.myTicket') ? 'active fw-semibold' : '' }}" href="{{ route('Dashboard.myTicket') }}">
                   <i class="fa-solid fa-ticket me-2 text-secondary"></i>
                   Vé của tôi
                 </a>
               </li>
               <li>
-                <a class="dropdown-item small rounded-2 py-1.5" href="{{ route('Dashboard.favorite') }}">
+                <a class="dropdown-item small rounded-2 py-1.5 {{ request()->routeIs('Dashboard.favorite') ? 'active fw-semibold' : '' }}" href="{{ route('Dashboard.favorite') }}">
                   <i class="fa-solid fa-heart me-2 text-danger"></i>
                   Sự kiện yêu thích
                 </a>
               </li>
+              @endif
+
               <li>
                 <hr class="dropdown-divider my-2">
               </li>
+
               <li>
                 <a class="dropdown-item small rounded-2 py-1.5 text-danger" href="{{ route('Auth.logout') }}">
                   <i class="fa-solid fa-arrow-right-from-bracket me-2 text-danger"></i>
