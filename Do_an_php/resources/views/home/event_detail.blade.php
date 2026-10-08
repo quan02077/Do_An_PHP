@@ -18,7 +18,7 @@
     @if (session('success'))
       <div class="alert alert-success alert-dismissible fade show rounded-3 mb-4 shadow-sm" role="alert">
         <div class="d-flex align-items-center gap-2">
-          <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          <i class="fa-solid fa-circle-check fs-6"></i>
           <span>{{ session('success') }}</span>
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -27,7 +27,7 @@
     @if (session('warning'))
       <div class="alert alert-warning alert-dismissible fade show rounded-3 mb-4 shadow-sm" role="alert">
         <div class="d-flex align-items-center gap-2">
-          <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+          <i class="fa-solid fa-triangle-exclamation fs-6"></i>
           <span>{{ session('warning') }}</span>
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -53,7 +53,7 @@
                     @endif
                 </div>
 
-                <!-- Nút Bookmark Trái tim: Form POST thông thường (không dùng AJAX) -->
+                <!-- Nút Bookmark Trái tim -->
                 <form action="{{ route('Favorite.toggle', $event->id) }}" method="POST" class="position-absolute top-0 end-0 m-3 z-2">
                     @csrf
                     <button
@@ -61,9 +61,7 @@
                         class="btn btn-light rounded-circle p-0 d-flex align-items-center justify-content-center shadow-sm border"
                         style="width: 44px; height: 44px;"
                         title="{{ $isFavorited ? 'Bỏ lưu khỏi yêu thích' : 'Lưu vào yêu thích' }}">
-                        <svg class="{{ $isFavorited ? 'text-danger' : 'text-muted' }}" style="width: 22px; height: 22px;" fill="{{ $isFavorited ? 'currentColor' : 'none' }}" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-                        </svg>
+                        <i class="{{ $isFavorited ? 'fa-solid fa-heart text-danger' : 'fa-regular fa-heart text-secondary' }} fs-5"></i>
                     </button>
                 </form>
 
@@ -71,20 +69,12 @@
                     <h1 id="event-title" class="fw-bold tracking-tight mb-2 display-6">{{ $event->ten_su_kien }}</h1>
                     <div class="d-flex flex-wrap align-items-center gap-3 small text-white-50">
                         <div class="d-flex align-items-center gap-2" id="event-time-badge">
-                            <svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <rect width="18" height="18" x="3" y="4" rx="2" />
-                                <line x1="16" x2="16" y1="2" y2="6" />
-                                <line x1="8" x2="8" y1="2" y2="6" />
-                                <line x1="3" x2="21" y1="10" y2="10" />
-                            </svg>
-                            {{ \Carbon\Carbon::parse($event->thoi_gian_bat_dau)->format('H:i - d/m/Y') }}
+                            <i class="fa-regular fa-calendar"></i>
+                            <span>{{ \Carbon\Carbon::parse($event->thoi_gian_bat_dau)->format('H:i - d/m/Y') }}</span>
                         </div>
                         <div class="d-flex align-items-center gap-2" id="event-location-badge">
-                            <svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
-                                <circle cx="12" cy="10" r="3" />
-                            </svg>
-                            {{ $event->dia_diem }}
+                            <i class="fa-solid fa-location-dot"></i>
+                            <span>{{ $event->dia_diem }}</span>
                         </div>
                     </div>
                 </div>
@@ -106,19 +96,14 @@
                         <div class="d-flex flex-wrap gap-3 small text-secondary">
                             @if(!empty($event->nguoiTao->email))
                             <span class="d-flex align-items-center gap-2">
-                                <svg style="width: 14px; height: 14px;" class="text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <rect width="20" height="16" x="2" y="4" rx="2" />
-                                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-                                </svg>
-                                {{ $event->nguoiTao->email }}
+                                <i class="fa-regular fa-envelope text-muted"></i>
+                                <span>{{ $event->nguoiTao->email }}</span>
                             </span>
                             @endif
                             @if(!empty($event->nguoiTao->so_dien_thoai))
                             <span class="d-flex align-items-center gap-2">
-                                <svg style="width: 14px; height: 14px;" class="text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                                </svg>
-                                {{ $event->nguoiTao->so_dien_thoai }}
+                                <i class="fa-solid fa-phone text-muted"></i>
+                                <span>{{ $event->nguoiTao->so_dien_thoai }}</span>
                             </span>
                             @endif
                         </div>
@@ -167,12 +152,7 @@
                 <div class="py-3 border-top border-bottom mb-4 d-flex flex-column gap-3 small">
                     <div class="d-flex align-items-start gap-3">
                         <div class="text-muted mt-1">
-                            <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <rect width="18" height="18" x="3" y="4" rx="2" />
-                                <line x1="16" x2="16" y1="2" y2="6" />
-                                <line x1="8" x2="8" y1="2" y2="6" />
-                                <line x1="3" x2="21" y1="10" y2="10" />
-                            </svg>
+                            <i class="fa-regular fa-calendar"></i>
                         </div>
                         <div>
                             <div class="fw-medium text-dark">Ngày diễn ra</div>
@@ -182,10 +162,7 @@
 
                     <div class="d-flex align-items-start gap-3">
                         <div class="text-muted mt-1">
-                            <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <circle cx="12" cy="12" r="10" />
-                                <polyline points="12 6 12 12 16 14" />
-                            </svg>
+                            <i class="fa-regular fa-clock"></i>
                         </div>
                         <div>
                             <div class="fw-medium text-dark">Thời gian</div>
@@ -198,10 +175,7 @@
 
                     <div class="d-flex align-items-start gap-3">
                         <div class="text-muted mt-1">
-                            <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
-                                <circle cx="12" cy="10" r="3" />
-                            </svg>
+                            <i class="fa-solid fa-location-dot"></i>
                         </div>
                         <div>
                             <div class="fw-medium text-dark">Địa điểm</div>
@@ -213,7 +187,7 @@
                 <!-- Action Button (Kết nối CSDL bảng dang_ky) -->
                 @if($event->trang_thai === 'da_huy')
                 <div class="alert alert-danger d-flex align-items-center gap-2 mb-2 p-3 small rounded-3 border">
-                    <svg style="width: 20px; height: 20px; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    <i class="fa-solid fa-circle-xmark fs-5 text-danger flex-shrink-0"></i>
                     <div>
                         <div class="fw-bold">Sự kiện đã bị hủy!</div>
                         <div class="text-muted mt-0.5">Ban tổ chức đã thông báo hủy sự kiện này. Không thể đặt vé.</div>
@@ -224,7 +198,7 @@
                 </button>
                 @elseif($userTicket && $userTicket->trang_thai !== 'da_huy')
                 <div class="alert alert-success d-flex align-items-center gap-2 mb-2 p-3 small rounded-3 border">
-                    <svg style="width: 20px; height: 20px; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                    <i class="fa-solid fa-circle-check fs-5 text-success flex-shrink-0"></i>
                     <div>
                         <div class="fw-bold">Bạn đã có vé sự kiện này!</div>
                         <div class="font-monospace text-muted mt-0.5">Mã vé: {{ $userTicket->ma_ve }}</div>
@@ -240,7 +214,7 @@
                         type="submit"
                         id="register-action-btn"
                         class="btn btn-dark w-100 py-2.5 fw-semibold shadow-sm rounded-3 d-flex align-items-center justify-content-center gap-2">
-                        <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg>
+                        <i class="fa-solid fa-ticket"></i>
                         <span>{{ ($userTicket && $userTicket->trang_thai === 'da_huy') ? 'Đăng ký lại vé tham dự' : 'Đăng ký tham gia ngay' }}</span>
                     </button>
                 </form>

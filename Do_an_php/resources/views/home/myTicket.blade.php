@@ -9,9 +9,7 @@
   @if (session('success'))
   <div class="alert alert-success alert-dismissible fade show rounded-3 mb-4 shadow-sm" role="alert">
     <div class="d-flex align-items-center gap-2">
-      <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-      </svg>
+      <i class="fa-solid fa-circle-check fs-6"></i>
       <span>{{ session('success') }}</span>
     </div>
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -21,16 +19,14 @@
   @if (session('warning'))
   <div class="alert alert-warning alert-dismissible fade show rounded-3 mb-4 shadow-sm" role="alert">
     <div class="d-flex align-items-center gap-2">
-      <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-      </svg>
+      <i class="fa-solid fa-triangle-exclamation fs-6"></i>
       <span>{{ session('warning') }}</span>
     </div>
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
   </div>
   @endif
 
-  <!-- Banner thông tin tài khoản đang thao tác CSDL -->
+  <!-- Banner thông tin tài khoản -->
   @if(isset($user) && $user)
   <div class="bg-white rounded-4 border shadow-sm p-4 mb-4 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
     <div class="d-flex align-items-center gap-3">
@@ -51,10 +47,8 @@
     </div>
 
     <div class="d-flex align-items-center gap-2">
-      <a href="{{ route('Dashboard.favorite') }}" class="btn btn-sm btn-outline-secondary rounded-3 px-3 py-2 fw-medium small d-flex align-items-center gap-1.5">
-        <svg class="text-danger" style="width: 14px; height: 14px;" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-        </svg>
+      <a href="{{ route('Dashboard.favorite') }}" class="btn btn-sm btn-outline-secondary rounded-3 px-3 py-2 fw-medium small d-flex align-items-center gap-2">
+        <i class="fa-solid fa-heart text-danger"></i>
         <span>Xem yêu thích</span>
       </a>
       <a href="{{ route('Home.index') }}" class="btn btn-sm btn-dark rounded-3 px-3 py-2 fw-medium small">
@@ -89,7 +83,7 @@
       <div class="d-flex align-items-center gap-3">
         <img src="{{ $img }}" alt="{{ $ev->ten_su_kien ?? 'Sự kiện' }}" class="rounded-3 object-fit-cover flex-shrink-0" style="width: 80px; height: 80px;" />
         <div>
-          <div class="d-flex align-items-center gap-2 mb-1.5 flex-wrap">
+          <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
             <span class="badge rounded-pill bg-light text-dark border font-monospace" style="font-size: 12px; letter-spacing: 0.5px;">{{ $code }}</span>
             <span id="badge-status-{{ $ticket->id }}">
               @if ($ticket->trang_thai === 'da_check_in')
@@ -139,9 +133,7 @@
               type="submit"
               class="btn btn-sm btn-outline-danger rounded-3 px-3 py-2 flex-grow-1 flex-md-grow-0 fw-medium d-flex align-items-center gap-1"
               id="btn-cancel-{{ $ticket->id }}">
-              <svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <i class="fa-solid fa-xmark"></i>
               <span>Hủy vé</span>
             </button>
           </form>
@@ -154,9 +146,7 @@
     @empty
     <div class="text-center py-5 bg-white rounded-4 border shadow-sm p-4">
       <div class="rounded-circle bg-light text-muted d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 56px; height: 56px;">
-        <svg style="width: 28px; height: 28px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
-        </svg>
+        <i class="fa-solid fa-ticket fs-3"></i>
       </div>
       <h3 class="fs-6 fw-bold text-dark mb-1">Tài khoản này chưa có vé đăng ký nào</h3>
       <p class="small text-muted mb-3">Hãy khám phá các sự kiện hấp dẫn và đăng ký tham gia ngay hôm nay.</p>

@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>@yield('title', 'QQQ — Nền tảng Đặt vé & Quản lý Sự kiện')</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <link rel="stylesheet" href="{{ asset('css/style.css') }}" />
   @stack('styles')
 </head>
@@ -27,9 +28,7 @@
       <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
         <div class="modal-body p-4 text-center">
           <div class="rounded-circle bg-danger-subtle text-danger d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 54px; height: 54px;">
-            <svg style="width: 26px; height: 26px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-            </svg>
+            <i class="fa-solid fa-triangle-exclamation fs-4"></i>
           </div>
           <h5 class="modal-title fw-bold text-dark mb-2 fs-5" id="appConfirmModalTitle">Xác nhận thao tác</h5>
           <p class="text-secondary small mb-4 fs-6" id="appConfirmModalMessage">Bạn có chắc chắn Không!</p>
@@ -84,8 +83,8 @@
 
       const bgClass = type === 'success' ? 'bg-dark text-white' : (type === 'danger' || type === 'error' ? 'bg-danger text-white' : 'bg-primary text-white');
       const icon = type === 'success' 
-        ? '<svg style="width: 18px; height: 18px; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>'
-        : '<svg style="width: 18px; height: 18px; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
+        ? '<i class="fa-solid fa-check fs-6 me-1"></i>' 
+        : '<i class="fa-solid fa-circle-exclamation fs-6 me-1"></i>';
 
       const toastEl = document.createElement('div');
       toastEl.className = `toast align-items-center ${bgClass} border-0 shadow-lg rounded-3 mb-2 show`;

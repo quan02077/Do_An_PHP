@@ -51,7 +51,7 @@ class AuthController extends Controller
         Auth::login($user);
         session(['user' => $user]);
 
-        return redirect()->intended(route('Dashboard.myTicket'))->with('success', 'Đăng nhập thành công! Chào mừng ' . $user->ho_ten . '.');
+        return redirect()->intended(route('Home.index'))->with('success', 'Đăng nhập thành công! Chào mừng ' . $user->ho_ten . '.');
     }
 
     public function register(RegisterRequest $request)

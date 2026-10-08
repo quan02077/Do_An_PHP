@@ -20,10 +20,7 @@ $events = $events ?? collect();
           <div class="shadow-sm rounded-3">
             <x-input type="text" name="search" id="search-input" :value="request('search')" aria-label="Tìm kiếm sự kiện" placeholder="Tìm theo tên sự kiện, địa điểm, chủ đề..." class="fs-6 py-2.5 ps-1">
               <x-slot:icon>
-                <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <circle cx="11" cy="11" r="8"></circle>
-                  <path d="m21 21-4.3-4.3"></path>
-                </svg>
+                <i class="fa-solid fa-magnifying-glass text-secondary"></i>
               </x-slot:icon>
             </x-input>
           </div>
@@ -37,44 +34,42 @@ $events = $events ?? collect();
   @if (session('success'))
   <div class="alert alert-success alert-dismissible fade show rounded-3 mb-4 shadow-sm" role="alert">
     <div class="d-flex align-items-center gap-2">
-      <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-      </svg>
+      <i class="fa-solid fa-circle-check fs-6"></i>
       <span>{{ session('success') }}</span>
     </div>
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
   </div>
   @endif
+
   @if (session('warning'))
   <div class="alert alert-warning alert-dismissible fade show rounded-3 mb-4 shadow-sm" role="alert">
     <div class="d-flex align-items-center gap-2">
-      <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-      </svg>
+      <i class="fa-solid fa-triangle-exclamation fs-6"></i>
       <span>{{ session('warning') }}</span>
     </div>
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
   </div>
   @endif
+
   <div class="mb-4">
     <div class="d-flex align-items-center gap-2 overflow-x-auto pb-2" id="category-pills-container">
       <a
         href="{{ route('Home.index') }}"
-        class="btn btn-sm rounded-pill px-3 py-1.5 fw-medium {{ !request('category') ? 'btn-dark shadow-xs' : 'btn-outline-secondary' }}">
+        class="btn btn-sm rounded-pill px-3 py-1.5 fw-medium {{ !request('category') ? 'btn-dark shadow-sm' : 'btn-outline-secondary' }}">
         Tất cả
       </a>
 
       @foreach ($categories as $cat)
       <a
         href="{{ route('Home.index', ['category' => $cat->id]) }}"
-        class="btn btn-sm rounded-pill px-3 py-1.5 fw-medium {{ request('category') == $cat->id ? 'btn-dark shadow-xs' : 'btn-outline-secondary' }}">
+        class="btn btn-sm rounded-pill px-3 py-1.5 fw-medium {{ request('category') == $cat->id ? 'btn-dark shadow-sm' : 'btn-outline-secondary' }}">
         {{ $cat->ten_danh_muc }}
       </a>
       @endforeach
     </div>
 
-    <div class="d-flex flex-column flex-sm-row sm:align-items-center justify-content-between gap-3 pt-3 border-top mt-2">
-      <div class="btn-group btn-group-sm rounded-pill p-1 bg-white border shadow-sm w-auto align-self-start align-self-sm-auto" role="group">
+    <div class="d-flex flex-column flex-sm-row justify-content-between gap-3 pt-3 border-top mt-2">
+      <div class="btn-group btn-group-sm rounded-pill p-1 bg-white border shadow-sm w-auto align-self-start" role="group">
         <a
           href="{{ route('Home.index') }}"
           class="status-filter-tab btn btn-sm rounded-pill px-3 {{ !request('status') ? 'btn-dark active' : 'btn-outline-secondary border-0' }}">
@@ -97,7 +92,9 @@ $events = $events ?? collect();
         </a>
         <a
           href="{{ route('Home.index', ['status' => 'yeu_thich']) }}"
-          class="status-filter-tab btn btn-sm rounded-pill px-3 {{ request('status') === 'yeu_thich' ? 'btn-dark active' : 'btn-outline-secondary border-0' }} d-flex align-items-center gap-1">Yêu thích
+          class="status-filter-tab btn btn-sm rounded-pill px-3 {{ request('status') === 'yeu_thich' ? 'btn-dark active' : 'btn-outline-secondary border-0' }} d-flex align-items-center gap-1">
+          <i class="fa-solid fa-heart text-danger"></i>
+          <span>Yêu thích</span>
         </a>
       </div>
 
@@ -123,9 +120,6 @@ $events = $events ?? collect();
     $dateFormatted = $rawDate ? date('d/m/Y - H:i', strtotime($rawDate)) : 'Đang cập nhật';
 
     $percent = min(100, round(($registered / max(1, $capacity)) * 100));
-    @endphp
-
-    @php
     $isFav = in_array($id, $userFavIds ?? []);
     @endphp
 
@@ -158,7 +152,7 @@ $events = $events ?? collect();
             @endif
           </div>
 
-          <!-- Nút Bookmark Trái tim: Form POST thông thường (không dùng AJAX) -->
+          <!-- Nút Bookmark Trái tim -->
           <form action="{{ route('Favorite.toggle', $id) }}" method="POST" class="position-absolute top-0 end-0 m-3" style="z-index: 5;">
             @csrf
             <button
@@ -167,9 +161,7 @@ $events = $events ?? collect();
               style="width: 36px; height: 36px;"
               title="{{ $isFav ? 'Bỏ lưu khỏi yêu thích' : 'Lưu vào yêu thích' }}"
               aria-label="Lưu vào yêu thích">
-              <svg style="width: 16px; height: 16px;" fill="{{ $isFav ? 'currentColor' : 'none' }}" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-              </svg>
+              <i class="{{ $isFav ? 'fa-solid fa-heart' : 'fa-regular fa-heart' }} fs-6"></i>
             </button>
           </form>
         </div>
@@ -177,12 +169,7 @@ $events = $events ?? collect();
         <div class="card-body d-flex flex-column justify-content-between p-4">
           <div>
             <div class="d-flex align-items-center gap-2 text-muted small mb-2">
-              <svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
-                <line x1="16" x2="16" y1="2" y2="6"></line>
-                <line x1="8" x2="8" y1="2" y2="6"></line>
-                <line x1="3" x2="21" y1="10" y2="10"></line>
-              </svg>
+              <i class="fa-regular fa-calendar"></i>
               <span>{{ $dateFormatted }}</span>
             </div>
 
@@ -192,11 +179,8 @@ $events = $events ?? collect();
               </a>
             </h3>
 
-            <div class="d-flex align-items-center gap-1 text-muted small mb-3 line-clamp-1">
-              <svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
-                <circle cx="12" cy="10" r="3"></circle>
-              </svg>
+            <div class="d-flex align-items-center gap-2 text-muted small mb-3 line-clamp-1">
+              <i class="fa-solid fa-location-dot"></i>
               <span>{{ $location }}</span>
             </div>
           </div>
@@ -230,9 +214,7 @@ $events = $events ?? collect();
     @empty
     <div class="col-12 text-center py-5 px-3 bg-white rounded-4 border shadow-sm my-3">
       <div class="mx-auto mb-3 bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
-        <svg style="width: 24px; height: 24px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-        </svg>
+        <i class="fa-solid fa-magnifying-glass fs-4 text-muted"></i>
       </div>
       <h3 class="fs-5 fw-bold text-dark mb-1">Không tìm thấy sự kiện nào</h3>
       <p class="small text-secondary mb-3">Hãy thử tìm kiếm với từ khóa khác hoặc xóa bớt bộ lọc.</p>
