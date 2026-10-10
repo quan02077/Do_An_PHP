@@ -4,10 +4,14 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 
 // Trang chủ & Danh sách sự kiện
 Route::get('/', [HomeController::class, 'index'])->name('Home.index');
+
+//Trang admin
+Route::get('/admin', [AdminController::class, 'index'])->name('Admin.index');
 
 // Quản lý Sự kiện (Resource Controller) & Đặt vé
 Route::resource('event', EventController::class)->names('Event');

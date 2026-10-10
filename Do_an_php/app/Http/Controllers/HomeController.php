@@ -18,19 +18,7 @@ class HomeController extends Controller
 
         // Phân quyền: Nếu là Quản trị viên (Admin) -> Hiển thị trang quản trị Admin
         if ($user && $user->vai_tro === 'admin') {
-            $now = now();
-            $totalEvents = SuKien::count();
-            $upcomingEvents = SuKien::where('trang_thai', 'cong_khai')->where('thoi_gian_bat_dau', '>', $now)->count();
-            $totalBookings = DangKy::where('trang_thai', '!=', 'da_huy')->count();
-            $totalMembers = NguoiDung::where('vai_tro', 'user')->count();
-
-            return view('home.Admin.admin', compact(
-                'user',
-                'totalEvents',
-                'upcomingEvents',
-                'totalBookings',
-                'totalMembers'
-            ));
+            return redirect()->route('Admin.index');
         }
 
         // Nếu là Thành viên (User) hoặc Khách -> Hiển thị trang danh sách sự kiện (User index)
