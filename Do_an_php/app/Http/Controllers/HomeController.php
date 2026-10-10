@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DangKy;
 use App\Models\DanhMuc;
+use App\Models\NguoiDung;
 use App\Models\SuKien;
 use App\Models\YeuThich;
 use Illuminate\Http\Request;
@@ -16,7 +18,19 @@ class HomeController extends Controller
 
         // Phân quyền: Nếu là Quản trị viên (Admin) -> Hiển thị trang quản trị Admin
         if ($user && $user->vai_tro === 'admin') {
-            return view('home.Admin.admin', compact('user'));
+            $now = now();
+            $totalEvents = SuKien::count();
+            $upcomingEvents = SuKien::where('trang_thai', 'cong_khai')->where('thoi_gian_bat_dau', '>', $now)->count();
+            $totalBookings = DangKy::where('trang_thai', '!=', 'da_huy')->count();
+            $totalMembers = NguoiDung::where('vai_tro', 'user')->count();
+
+            return view('home.Admin.admin', compact(
+                'user',
+                'totalEvents',
+                'upcomingEvents',
+                'totalBookings',
+                'totalMembers'
+            ));
         }
 
         // Nếu là Thành viên (User) hoặc Khách -> Hiển thị trang danh sách sự kiện (User index)
