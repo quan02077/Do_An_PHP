@@ -10,7 +10,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body p-3 p-sm-4">
-        <form method="POST" action="{{ route('Event.store') }}">
+        <form method="POST" action="{{ route('Event.store') }}" enctype="multipart/form-data">
           @csrf
           <div class="mb-3">
             <label for="new-ev-title" class="form-label small fw-medium text-dark mb-1">Tên sự kiện <span class="text-danger">*</span></label>
@@ -60,8 +60,20 @@
           </div>
 
           <div class="mb-3">
-            <label for="new-ev-image" class="form-label small fw-medium text-dark mb-1">Link ảnh thumbnail</label>
-            <input type="url" name="hinh_anh" id="new-ev-image" value="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800" class="form-control form-control-sm py-2" />
+            <label for="new-ev-image" class="form-label small fw-medium text-dark mb-1">Chọn ảnh thumbnail có sẵn</label>
+            <select name="hinh_anh" id="new-ev-image" class="form-select form-select-sm py-2" onchange="previewPublicImage('new-ev-image', 'new-ev-image-preview')">
+              <option value="">Dùng ảnh mặc định</option>
+              @foreach($eventImages ?? [] as $image)
+                <option value="{{ $image }}">{{ $image }}</option>
+              @endforeach
+            </select>
+            <img id="new-ev-image-preview" class="d-none mt-2 rounded-3 border object-fit-cover" alt="Xem trước ảnh thumbnail" style="width: 112px; height: 72px;" />
+          </div>
+
+          <div class="mb-3">
+            <label for="new-ev-image-upload" class="form-label small fw-medium text-dark mb-1">Hoặc tải ảnh mới từ máy tính</label>
+            <input type="file" name="hinh_anh_tai_len" id="new-ev-image-upload" accept="image/jpeg,image/png,image/jpg,image/webp" class="form-control form-control-sm py-2" onchange="previewUploadedImage(this, 'new-ev-image-preview')" />
+            <div class="form-text">Chấp nhận JPG, PNG, WEBP; tối đa 2MB. Ảnh tải lên sẽ được ưu tiên hơn ảnh đã chọn.</div>
           </div>
 
           <div class="mb-4">
@@ -93,7 +105,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body p-3 p-sm-4">
-        <form id="edit-event-form" method="POST" action="">
+        <form id="edit-event-form" method="POST" action="" enctype="multipart/form-data">
           @csrf
           @method('PUT')
           <input type="hidden" id="edit-ev-id" name="id" />
@@ -116,6 +128,12 @@
               <label for="edit-ev-capacity" class="form-label small fw-medium text-dark mb-1">Quy mô chỗ ngồi <span class="text-danger">*</span></label>
               <input type="number" name="so_luong_toi_da" id="edit-ev-capacity" required min="1" class="form-control form-control-sm py-2" />
             </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="edit-ev-image-upload" class="form-label small fw-medium text-dark mb-1">Thay ảnh bằng tệp từ máy tính</label>
+            <input type="file" name="hinh_anh_tai_len" id="edit-ev-image-upload" accept="image/jpeg,image/png,image/jpg,image/webp" class="form-control form-control-sm py-2" onchange="previewUploadedImage(this, 'edit-ev-image-preview')" />
+            <div class="form-text">Để trống nếu vẫn dùng link ảnh hiện tại. JPG, PNG, WEBP; tối đa 2MB.</div>
           </div>
 
           <div class="row g-3 mb-3">
@@ -142,8 +160,14 @@
 
           <div class="row g-3 mb-3">
             <div class="col-sm-8">
-              <label for="edit-ev-image" class="form-label small fw-medium text-dark mb-1">Link ảnh thumbnail</label>
-              <input type="url" name="hinh_anh" id="edit-ev-image" class="form-control form-control-sm py-2" />
+              <label for="edit-ev-image" class="form-label small fw-medium text-dark mb-1">Chọn ảnh thumbnail có sẵn</label>
+              <select name="hinh_anh" id="edit-ev-image" class="form-select form-select-sm py-2" onchange="previewPublicImage('edit-ev-image', 'edit-ev-image-preview')">
+                <option value="">Giữ ảnh hiện tại</option>
+                @foreach($eventImages ?? [] as $image)
+                  <option value="{{ $image }}">{{ $image }}</option>
+                @endforeach
+              </select>
+              <img id="edit-ev-image-preview" class="d-none mt-2 rounded-3 border object-fit-cover" alt="Xem trước ảnh thumbnail" style="width: 112px; height: 72px;" />
             </div>
             <div class="col-sm-4">
               <label for="edit-ev-status" class="form-label small fw-medium text-dark mb-1">Trạng thái sự kiện</label>

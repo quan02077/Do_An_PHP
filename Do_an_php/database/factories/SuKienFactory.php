@@ -28,7 +28,8 @@ class SuKienFactory extends Factory
             'ban_to_chuc' => fake()->company(),
             'so_luong_toi_da' => fake()->numberBetween(50, 500),
             'gia_ve' => fake()->randomElement([0, 100000, 200000, 500000]),
-            'trang_thai' => fake()->randomElement(['sap_dien_ra', 'dang_dien_ra', 'da_ket_thuc']),
+            // Vòng đời lưu trong DB; trạng thái theo thời gian được Model tính tự động.
+            'trang_thai' => 'cong_khai',
             'noi_bat' => fake()->boolean(20),
         ];
     }

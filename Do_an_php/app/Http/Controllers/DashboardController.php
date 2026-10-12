@@ -6,8 +6,10 @@ use App\Models\DangKy;
 use App\Models\YeuThich;
 use App\Http\Requests\UpdateProfileRequest;
 use App\Http\Requests\ChangePasswordRequest;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class DashboardController extends Controller
 {
@@ -58,6 +60,14 @@ class DashboardController extends Controller
 
         if (!$ticket) {
             return back()->with('warning', 'Không tìm thấy vé hoặc bạn không có quyền hủy vé này.');
+        }
+
+        if ($ticket->trang_thai === 'da_huy') {
+            return back()->with('warning', 'Vé này đã được hủy trước đó.');
+        }
+
+        if ($ticket->suKien && $ticket->suKien->thoi_gian_bat_dau <= now()) {
+            return back()->with('warning', 'Không thể hủy vé khi sự kiện đã bắt đầu.');
         }
 
         $ticket->trang_thai = 'da_huy';
@@ -143,7 +153,21 @@ class DashboardController extends Controller
      */
     public function updateProfile(UpdateProfileRequest $request)
     {
-        //
+        $user = $this->getCurrentUser();
+        if (!$user) {
+            return redirect()->route('Auth.index')->with('warning', 'Vui lòng đăng nhập để cập nhật hồ sơ.');
+        }
+
+        $data = $request->validated();
+        if (!empty($data['ngay_sinh'])) {
+            $data['ngay_sinh'] = Carbon::createFromFormat('d/m/Y', $data['ngay_sinh'])->format('Y-m-d');
+        }
+
+        $user->update($data);
+        Auth::login($user->fresh());
+        session(['user' => $user->fresh()]);
+
+        return redirect()->route('Dashboard.profile')->with('success', 'Đã cập nhật thông tin cá nhân.');
     }
 
     /**
@@ -151,6 +175,19 @@ class DashboardController extends Controller
      */
     public function changePassword(ChangePasswordRequest $request)
     {
-        //
+        $user = $this->getCurrentUser();
+        if (!$user) {
+            return redirect()->route('Auth.index')->with('warning', 'Vui lòng đăng nhập để đổi mật khẩu.');
+        }
+
+        if (!Hash::check($request->input('current_password'), $user->mat_khau)) {
+            return back()->withErrors(['current_password' => 'Mật khẩu hiện tại không chính xác.'])->withInput();
+        }
+
+        $user->update(['mat_khau' => Hash::make($request->input('password'))]);
+        Auth::login($user->fresh());
+        session(['user' => $user->fresh()]);
+
+        return redirect()->route('Dashboard.profile')->with('success', 'Đổi mật khẩu thành công.');
     }
 }

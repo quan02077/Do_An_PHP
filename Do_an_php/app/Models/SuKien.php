@@ -144,9 +144,9 @@ class SuKien extends Model
     public function getSoLuongDaDangKyAttribute(): int
     {
         if ($this->relationLoaded('dangKys')) {
-            return $this->dangKys->count();
+            return $this->dangKys->where('trang_thai', '!=', 'da_huy')->count();
         }
-        return $this->dangKys()->count();
+        return $this->dangKys()->where('trang_thai', '!=', 'da_huy')->count();
     }
 
     public function getTrangThaiDienRaAttribute(): string
