@@ -57,8 +57,7 @@
 
                     <div class="mb-3">
                         <label class="form-label small fw-medium text-dark">Địa chỉ Email</label>
-                        <input type="email" class="form-control form-control-sm py-2 bg-light text-muted" value="{{ $user->email }}" readonly>
-                        <div class="form-text text-muted" style="font-size: 12px;">Email tài khoản không thể thay đổi</div>
+                        <input type="email" class="form-control form-control-sm py-2 bg-light text-muted" value="{{ $user->email }}">
                     </div>
 
                     <div class="row g-3 mb-3">
