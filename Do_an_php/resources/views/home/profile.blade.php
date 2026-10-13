@@ -26,7 +26,7 @@
             <div class="bg-white rounded-3 border p-4 shadow-sm">
                 <h2 class="fs-5 fw-bold text-dark mb-3 pb-2 border-bottom">Thông tin cá nhân</h2>
 
-                <form method="POST" action="{{ route('Dashboard.updateProfile') }}">
+                <form method="POST" action="{{ route('Dashboard.updateProfile') }}" onsubmit="return confirm('Bạn có chắc chắn muốn thay đổi thông tin cá nhân không?');">
                     @csrf
                     <div class="mb-3">
                         <label class="form-label small fw-medium text-dark">Họ và tên <span class="text-danger">*</span></label>
@@ -34,8 +34,8 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label small fw-medium text-dark">Địa chỉ Email</label>
-                        <input type="email" class="form-control form-control-sm py-2 bg-light text-muted" value="{{ $user->email }}">
+                        <label class="form-label small fw-medium text-dark">Địa chỉ Email <span class="text-danger">*</span></label>
+                        <input type="email" name="email" class="form-control form-control-sm py-2" value="{{ old('email', $user->email) }}" required placeholder="name@example.com">
                     </div>
 
                     <div class="row g-3 mb-3">
@@ -48,7 +48,7 @@
                             <select name="gioi_tinh" class="form-select form-select-sm py-2">
                                 <option value="Nam" {{ old('gioi_tinh', $user->gioi_tinh) === 'Nam' ? 'selected' : '' }}>Nam</option>
                                 <option value="Nữ" {{ old('gioi_tinh', $user->gioi_tinh) === 'Nữ' ? 'selected' : '' }}>Nữ</option>
-                                <option value="Không biết" {{ old('gioi_tinh', $user->gioi_tinh) === 'Không biết' ? 'selected' : '' }}>Không biết</option>
+                                <option value="Khác" {{ (old('gioi_tinh', $user->gioi_tinh) === 'Khác' || old('gioi_tinh', $user->gioi_tinh) === 'Không biết') ? 'selected' : '' }}>Khác</option>
                             </select>
                         </div>
                     </div>
@@ -98,7 +98,7 @@
             <div class="bg-white rounded-3 border p-4 shadow-sm">
                 <h2 class="fs-5 fw-bold text-dark mb-3 pb-2 border-bottom">Đổi mật khẩu</h2>
 
-                <form method="POST" action="{{ route('Dashboard.changePassword') }}">
+                <form method="POST" action="{{ route('Dashboard.changePassword') }}" onsubmit="return confirm('Bạn có chắc chắn muốn đổi mật khẩu không?');">
                     @csrf
                     <div class="mb-3">
                         <label class="form-label small fw-medium text-dark">Mật khẩu hiện tại <span class="text-danger">*</span></label>

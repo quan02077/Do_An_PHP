@@ -212,16 +212,14 @@
                 </div>
 
                 <div class="col-sm-6">
-                  <label for="input-email" class="form-label small fw-medium text-dark mb-1">Địa chỉ Email</label>
-                  <div class="input-group">
-                    <input 
-                      type="email" 
-                      id="input-email" 
-                      readonly 
-                      class="form-control form-control-sm py-2 bg-light text-muted font-monospace"
-                    />
-                    <span class="input-group-text bg-success-subtle text-success border small fw-medium">Đã xác minh</span>
-                  </div>
+                  <label for="input-email" class="form-label small fw-medium text-dark mb-1">Địa chỉ Email <span class="text-danger">*</span></label>
+                  <input 
+                    type="email" 
+                    id="input-email" 
+                    required 
+                    class="form-control form-control-sm py-2"
+                    placeholder="name@example.com"
+                  />
                 </div>
 
                 <div class="col-sm-6">
@@ -476,14 +474,29 @@
         e.preventDefault();
         if (!currentProfileUser) return;
 
+        const isConfirmed = confirm("Bạn có chắc chắn muốn thay đổi thông tin cá nhân không?");
+        if (!isConfirmed) return;
+
         const updatedName = document.getElementById("input-name").value.trim();
+        const updatedEmail = document.getElementById("input-email").value.trim();
         const updatedPhone = document.getElementById("input-phone").value.trim();
         const updatedGender = document.getElementById("input-gender").value;
         const updatedBirth = document.getElementById("input-birthdate").value;
         const updatedLoc = document.getElementById("input-location").value.trim();
         const updatedBio = document.getElementById("input-bio").value.trim();
 
+        if (!updatedName) {
+          alert("Vui lòng nhập họ và tên của bạn.");
+          return;
+        }
+
+        if (!updatedEmail) {
+          alert("Vui lòng nhập địa chỉ email của bạn.");
+          return;
+        }
+
         currentProfileUser.name = updatedName;
+        currentProfileUser.email = updatedEmail;
         currentProfileUser.phone = updatedPhone;
         currentProfileUser.gender = updatedGender;
         currentProfileUser.birthdate = updatedBirth;
@@ -506,6 +519,9 @@
       function handleChangePassword(e) {
         e.preventDefault();
         if (!currentProfileUser) return;
+
+        const isConfirmed = confirm("Bạn có chắc chắn muốn đổi mật khẩu không?");
+        if (!isConfirmed) return;
 
         const currentPwd = document.getElementById("pwd-current").value;
         const newPwd = document.getElementById("pwd-new").value;

@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\DangKy;
 use App\Models\YeuThich;
+use App\Models\NguoiDung;
 use App\Http\Requests\UpdateProfileRequest;
 use App\Http\Requests\ChangePasswordRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class DashboardController extends Controller
 {
@@ -139,18 +141,73 @@ class DashboardController extends Controller
     }
 
     /**
-     * Cập nhật thông tin cá nhân: Lưu họ tên, số điện thoại, ngày sinh, địa chỉ, tiểu sử
+     * Cập nhật thông tin cá nhân: Lưu họ tên, email, số điện thoại, ngày sinh, địa chỉ, tiểu sử
      */
-    public function updateProfile(UpdateProfileRequest $request)
-    {
-        //
-    }
+     public function updateProfile(UpdateProfileRequest $request)
+     {
+         $user = $this->getCurrentUser();
+         if (!$user) {
+             return redirect()->route('Auth.index')->with('warning', 'Vui lòng đăng nhập để thực hiện.');
+         }
+
+         $userModel = NguoiDung::find($user->id);
+         if (!$userModel) {
+             return back()->with('error', 'Không tìm thấy thông tin tài khoản người dùng.');
+         }
+
+         $userModel->ho_ten = $request->ho_ten;
+         $userModel->email = $request->email;
+         $userModel->so_dien_thoai = $request->so_dien_thoai;
+         $userModel->gioi_tinh = $request->gioi_tinh;
+         $userModel->ngay_sinh = $request->ngay_sinh;
+         $userModel->dia_chi = $request->dia_chi;
+         $userModel->tieu_su = $request->tieu_su;
+         $userModel->save();
+
+         // Đồng bộ lại thông tin mới vào session và auth
+         session(['user' => $userModel]);
+         if (Auth::check()) {
+             Auth::setUser($userModel);
+         }
+
+         return back()->with('success', 'Cập nhật thông tin cá nhân thành công!');
+     }
 
     /**
      * Đổi mật khẩu đăng nhập của tài khoản
      */
-    public function changePassword(ChangePasswordRequest $request)
-    {
-        //
-    }
+     public function changePassword(ChangePasswordRequest $request)
+     {
+         $user = $this->getCurrentUser();
+         if (!$user) {
+             return redirect()->route('Auth.index')->with('warning', 'Vui lòng đăng nhập để thực hiện.');
+         }
+
+         $userModel = NguoiDung::find($user->id);
+         if (!$userModel) {
+             return back()->with('error', 'Không tìm thấy thông tin tài khoản người dùng.');
+         }
+
+         // Kiểm tra tính hợp lệ của mật khẩu hiện tại
+         $currentValid = false;
+         if (Hash::check($request->current_password, $userModel->mat_khau)) {
+             $currentValid = true;
+         } elseif ($userModel->mat_khau === $request->current_password || md5($request->current_password) === $userModel->mat_khau) {
+             $currentValid = true;
+         }
+
+         if (!$currentValid) {
+             return back()->withErrors(['current_password' => 'Mật khẩu hiện tại không chính xác.']);
+         }
+
+         $userModel->mat_khau = Hash::make($request->password);
+         $userModel->save();
+
+         session(['user' => $userModel]);
+         if (Auth::check()) {
+             Auth::setUser($userModel);
+         }
+
+         return back()->with('success', 'Đổi mật khẩu tài khoản thành công!');
+     }
 }

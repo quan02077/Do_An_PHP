@@ -15,7 +15,8 @@ class UpdateProfileRequest extends FormRequest
 
     public function rules(): array
     {
-        $userId = Auth::id() ?? session('user')?->id;
+        $user = Auth::user() ?? session('user');
+        $userId = is_object($user) ? ($user->id ?? null) : ($user['id'] ?? null);
 
         return [
             'ho_ten'        => ['required', 'string', 'max:100'],
@@ -27,7 +28,7 @@ class UpdateProfileRequest extends FormRequest
                 Rule::unique('nguoi_dung', 'email')->ignore($userId),
             ],
             'so_dien_thoai' => ['nullable', 'string', 'max:15'],
-            'gioi_tinh'     => ['nullable', 'string', 'in:Nam,Nữ,Khác'],
+            'gioi_tinh'     => ['nullable', 'string', 'in:Nam,Nữ,Khác,Không biết'],
             'ngay_sinh'     => ['nullable', 'date'],
             'dia_chi'       => ['nullable', 'string', 'max:255'],
             'tieu_su'       => ['nullable', 'string', 'max:500'],
