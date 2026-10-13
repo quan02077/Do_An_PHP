@@ -1,6 +1,6 @@
 # Hướng Dẫn Sử Dụng Thư Mục Website (Cần Thiết)
 
-Thư mục **`website/`** này chứa toàn bộ mã nguồn cần thiết để chạy ứng dụng quản lý sự kiện **EventVN** độc lập, không cần cài đặt Node.js hay chạy lệnh npm.
+Thư mục **`website/`** này chứa toàn bộ mã nguồn cần thiết để chạy ứng dụng quản lý sự kiện **QQQ** độc lập, không cần cài đặt Node.js hay chạy lệnh npm.
 
 ---
 

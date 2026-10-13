@@ -1,9 +1,11 @@
 @extends('layouts.app')
 
-@section('title', 'Bảng Quản trị — EventVN Admin Portal')
+@section('title', 'Bảng Quản trị — QQQ Admin Portal')
 
 @section('content')
 <div class="container-fluid px-3 px-lg-4 py-4">
+    @include('partials.alerts')
+
 
     <!-- Top Overview Stats -->
     <div class="row g-3 mb-4" id="admin-stats-grid">

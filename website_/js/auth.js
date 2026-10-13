@@ -79,7 +79,7 @@ function register(name, email, phone, password) {
     active: true,
     avatar: initials || "TV",
     password: password,
-    bio: "Thành viên mới tham gia cộng đồng EventVN.",
+    bio: "Thành viên mới tham gia cộng đồng QQQ.",
     location: "Hà Nội, Việt Nam",
     gender: "Nam",
     birthdate: "2000-01-01",

@@ -30,25 +30,8 @@ $events = $events ?? collect();
 </section>
 
 <section class="container-xl py-5">
-  @if (session('success'))
-  <div class="alert alert-success alert-dismissible fade show rounded-3 mb-4 shadow-sm" role="alert">
-    <div class="d-flex align-items-center gap-2">
-      <i class="fa-solid fa-circle-check fs-6"></i>
-      <span>{{ session('success') }}</span>
-    </div>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>
-  @endif
+  @include('partials.alerts')
 
-  @if (session('warning'))
-  <div class="alert alert-warning alert-dismissible fade show rounded-3 mb-4 shadow-sm" role="alert">
-    <div class="d-flex align-items-center gap-2">
-      <i class="fa-solid fa-triangle-exclamation fs-6"></i>
-      <span>{{ session('warning') }}</span>
-    </div>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>
-  @endif
 
   <div class="mb-4">
     <div class="d-flex align-items-center gap-2 overflow-x-auto pb-2" id="category-pills-container">
