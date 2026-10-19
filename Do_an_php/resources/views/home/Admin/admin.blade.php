@@ -1,9 +1,11 @@
 @extends('layouts.app')
 
-@section('title', 'Bảng Quản trị — EventVN Admin Portal')
+@section('title', 'Bảng Quản trị — QQQ Admin Portal')
 
 @section('content')
 <div class="container-fluid px-3 px-lg-4 py-4">
+    @include('partials.alerts')
+
 
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">{{ session('success') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>

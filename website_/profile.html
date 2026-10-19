@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hồ sơ cá nhân — EventVN</title>
+    <title>Hồ sơ cá nhân — QQQ</title>
     <!-- Bootstrap 5.3.3 CSS CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/style.css" />
@@ -14,9 +14,9 @@
       <div class="container">
         <a href="index.html" class="navbar-brand d-flex align-items-center gap-2 m-0 p-0 text-decoration-none">
           <div class="rounded-3 bg-dark text-white d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 36px; height: 36px; font-size: 1.15rem;">
-            E
+            Q
           </div>
-          <span class="fs-5 fw-bold tracking-tight text-dark m-0">Event<span class="text-secondary fw-normal">VN</span></span>
+          <span class="fs-5 fw-bold tracking-tight text-dark m-0">QQQ</span>
         </a>
 
         <button class="navbar-toggler border-0 p-2 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
@@ -212,16 +212,14 @@
                 </div>
 
                 <div class="col-sm-6">
-                  <label for="input-email" class="form-label small fw-medium text-dark mb-1">Địa chỉ Email</label>
-                  <div class="input-group">
-                    <input 
-                      type="email" 
-                      id="input-email" 
-                      readonly 
-                      class="form-control form-control-sm py-2 bg-light text-muted font-monospace"
-                    />
-                    <span class="input-group-text bg-success-subtle text-success border small fw-medium">Đã xác minh</span>
-                  </div>
+                  <label for="input-email" class="form-label small fw-medium text-dark mb-1">Địa chỉ Email <span class="text-danger">*</span></label>
+                  <input 
+                    type="email" 
+                    id="input-email" 
+                    required 
+                    class="form-control form-control-sm py-2"
+                    placeholder="name@example.com"
+                  />
                 </div>
 
                 <div class="col-sm-6">
@@ -274,7 +272,7 @@
               </div>
 
               <div class="pt-3 border-top d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3">
-                <span class="small text-muted">Thông tin được bảo mật theo chính sách quyền riêng tư của EventVN</span>
+                <span class="small text-muted">Thông tin được bảo mật theo chính sách quyền riêng tư của QQQ</span>
                 <button 
                   type="submit" 
                   class="btn btn-dark btn-sm rounded-3 px-4 py-2 fw-medium d-flex align-items-center gap-1.5 justify-content-center"
@@ -476,14 +474,29 @@
         e.preventDefault();
         if (!currentProfileUser) return;
 
+        const isConfirmed = confirm("Bạn có chắc chắn muốn thay đổi thông tin cá nhân không?");
+        if (!isConfirmed) return;
+
         const updatedName = document.getElementById("input-name").value.trim();
+        const updatedEmail = document.getElementById("input-email").value.trim();
         const updatedPhone = document.getElementById("input-phone").value.trim();
         const updatedGender = document.getElementById("input-gender").value;
         const updatedBirth = document.getElementById("input-birthdate").value;
         const updatedLoc = document.getElementById("input-location").value.trim();
         const updatedBio = document.getElementById("input-bio").value.trim();
 
+        if (!updatedName) {
+          alert("Vui lòng nhập họ và tên của bạn.");
+          return;
+        }
+
+        if (!updatedEmail) {
+          alert("Vui lòng nhập địa chỉ email của bạn.");
+          return;
+        }
+
         currentProfileUser.name = updatedName;
+        currentProfileUser.email = updatedEmail;
         currentProfileUser.phone = updatedPhone;
         currentProfileUser.gender = updatedGender;
         currentProfileUser.birthdate = updatedBirth;
@@ -506,6 +519,9 @@
       function handleChangePassword(e) {
         e.preventDefault();
         if (!currentProfileUser) return;
+
+        const isConfirmed = confirm("Bạn có chắc chắn muốn đổi mật khẩu không?");
+        if (!isConfirmed) return;
 
         const currentPwd = document.getElementById("pwd-current").value;
         const newPwd = document.getElementById("pwd-new").value;

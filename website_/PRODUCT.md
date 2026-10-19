@@ -14,7 +14,7 @@ Mã nguồn thuần HTML/CSS/JS (Bootstrap 5 CDN, Vanilla JS) phục vụ đồ 
 - **Ban tổ chức / Quản trị viên (Organizers / Admins)**: Quản trị viên quản lý danh mục sự kiện (thêm, sửa, xóa), theo dõi danh sách đăng ký và duyệt vé người tham dự.
 
 ## Product Purpose
-EventVN là nền tảng quản lý và đặt vé sự kiện trực tuyến tại Việt Nam, mang lại trải nghiệm duyệt tìm và đăng ký vé mượt mà, tiện lợi cho người tham gia, đồng thời cung cấp bảng điều khiển quản trị trực quan cho ban tổ chức trong phạm vi đồ án môn học PHP.
+QQQ là nền tảng quản lý và đặt vé sự kiện trực tuyến tại Việt Nam, mang lại trải nghiệm duyệt tìm và đăng ký vé mượt mà, tiện lợi cho người tham gia, đồng thời cung cấp bảng điều khiển quản trị trực quan cho ban tổ chức trong phạm vi đồ án môn học PHP.
 
 ## Positioning
 Nền tảng đặt vé sự kiện giao diện hiện đại, dễ tiếp cận, giữ cấu trúc thuần gọn nhẹ để kết hợp hoàn hảo với backend PHP/MySQL, không đòi hỏi cấu hình môi trường phức tạp mà vẫn đảm bảo tính thẩm mỹ và trải nghiệm người dùng thực tế.
@@ -36,7 +36,7 @@ Nền tảng đặt vé sự kiện giao diện hiện đại, dễ tiếp cận
   - Ngôn ngữ giao diện chính là tiếng Việt.
 
 ## Brand Commitments
-- Tên thương hiệu: **EventVN** (Slogan: "Sự kiện & Hội thảo", "Khám phá & Đặt vé sự kiện Dễ dàng, Nhanh chóng").
+- Tên thương hiệu: **QQQ** (Slogan: "Sự kiện & Hội thảo", "Khám phá & Đặt vé sự kiện Dễ dàng, Nhanh chóng").
 - Nhận diện trực quan: Phông chữ Outfit (`Outfit, sans-serif`), gam màu chủ đạo Slate tối (`#0F172A`), màu nhấn Rose (`#F43F5E`) cho tương tác yêu thích và các nhãn trạng thái trực quan.
 
 ## Evidence on Hand

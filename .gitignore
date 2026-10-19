@@ -81,14 +81,14 @@ public/uploads/
 **/uploads/
 
 # ------------------------------------------------------------------------------
-# 4. TESTING & CODE QUALITY
+# 5. TESTING & CODE QUALITY
 # ------------------------------------------------------------------------------
 .phpunit.result.cache
 /.phpunit.cache
 .phpactor.json
 
 # ------------------------------------------------------------------------------
-# 5. IDE, EDITOR & AI ASSISTANT CONFIGURATIONS (Chứa đường dẫn cá nhân)
+# 6. IDE, EDITOR & AI ASSISTANT CONFIGURATIONS (Chứa đường dẫn cá nhân)
 # ------------------------------------------------------------------------------
 .vscode/
 .idea/
@@ -106,7 +106,7 @@ public/uploads/
 *.local.json
 
 # ------------------------------------------------------------------------------
-# 6. HỆ ĐIỀU HÀNH & FILE TẠM (OS & Temporary files)
+# 7. HỆ ĐIỀU HÀNH & FILE TẠM (OS & Temporary files)
 # ------------------------------------------------------------------------------
 # Windows
 Thumbs.db

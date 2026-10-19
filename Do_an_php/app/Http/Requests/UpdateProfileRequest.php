@@ -15,7 +15,8 @@ class UpdateProfileRequest extends FormRequest
 
     public function rules(): array
     {
-        $userId = Auth::id() ?? session('user')?->id;
+        $user = Auth::user() ?? session('user');
+        $userId = is_object($user) ? ($user->id ?? null) : ($user['id'] ?? null);
 
         return [
             'ho_ten'        => ['required', 'string', 'max:100'],

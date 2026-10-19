@@ -6,25 +6,8 @@
 <div class="container-xl py-4">
 
   <!-- Alert thông báo -->
-  @if (session('success'))
-  <div class="alert alert-success alert-dismissible fade show rounded-3 mb-4 shadow-sm" role="alert">
-    <div class="d-flex align-items-center gap-2">
-      <i class="fa-solid fa-circle-check fs-6"></i>
-      <span>{{ session('success') }}</span>
-    </div>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>
-  @endif
+  @include('partials.alerts')
 
-  @if (session('warning'))
-  <div class="alert alert-warning alert-dismissible fade show rounded-3 mb-4 shadow-sm" role="alert">
-    <div class="d-flex align-items-center gap-2">
-      <i class="fa-solid fa-triangle-exclamation fs-6"></i>
-      <span>{{ session('warning') }}</span>
-    </div>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>
-  @endif
 
   <!-- Banner thông tin tài khoản -->
   @if(isset($user) && $user)
