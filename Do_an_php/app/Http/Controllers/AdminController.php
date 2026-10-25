@@ -30,12 +30,14 @@ class AdminController extends Controller
         $categories = DanhMuc::withCount('suKiens')->get();
         $events = SuKien::with(['danhMuc', 'dangKys'])->orderByDesc('id')->get();
         $registrations = DangKy::with(['nguoiDung', 'suKien'])->orderByDesc('id')->get();
-        $eventImages = collect(File::files(public_path('uploads/su_kien')))
+        $uploadDir = public_path('uploads/su_kien');
+        File::ensureDirectoryExists($uploadDir);
+        $eventImages = collect(File::files($uploadDir))
             ->filter(fn ($file) => in_array(strtolower($file->getExtension()), ['jpg', 'jpeg', 'png', 'webp']))
             ->map(fn ($file) => $file->getFilename())
             ->values();
 
-        return view('home.Admin.admin', compact(
+        return view('admin.admin', compact(
             'user',
             'currentTab',
             'totalEvents',
@@ -63,7 +65,7 @@ class AdminController extends Controller
 
         DanhMuc::create($data);
 
-        return redirect()->route('Admin.index', ['tab' => 'categories'])->with('success', 'Đã thêm danh mục.');
+        return redirect()->route('admin.index', ['tab' => 'categories'])->with('success', 'Đã thêm danh mục.');
     }
 
     public function updateCategory(Request $request, $id)
@@ -81,7 +83,7 @@ class AdminController extends Controller
 
         $category->update($data);
 
-        return redirect()->route('Admin.index', ['tab' => 'categories'])->with('success', 'Đã cập nhật danh mục.');
+        return redirect()->route('admin.index', ['tab' => 'categories'])->with('success', 'Đã cập nhật danh mục.');
     }
 
     public function destroyCategory($id)
@@ -92,13 +94,13 @@ class AdminController extends Controller
 
         $category = DanhMuc::findOrFail($id);
         if ($category->suKiens()->exists()) {
-            return redirect()->route('Admin.index', ['tab' => 'categories'])
+            return redirect()->route('admin.index', ['tab' => 'categories'])
                 ->with('warning', 'Không thể xóa danh mục đang có sự kiện. Hãy chuyển hoặc xóa các sự kiện trước.');
         }
 
         $category->delete();
 
-        return redirect()->route('Admin.index', ['tab' => 'categories'])->with('success', 'Đã xóa danh mục.');
+        return redirect()->route('admin.index', ['tab' => 'categories'])->with('success', 'Đã xóa danh mục.');
     }
 
     public function updateRegistrationStatus(Request $request, $id)
@@ -114,7 +116,7 @@ class AdminController extends Controller
         $registration = DangKy::findOrFail($id);
         $registration->update($data);
 
-        return redirect()->route('Admin.index', ['tab' => 'registrations'])->with('success', 'Đã cập nhật trạng thái đăng ký.');
+        return redirect()->route('admin.index', ['tab' => 'registrations'])->with('success', 'Đã cập nhật trạng thái đăng ký.');
     }
 
     private function requireAdmin()

@@ -10,7 +10,7 @@
         <button type="button" class="btn-close align-self-start" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body p-3 p-sm-4">
-        <form id="add-category-form" method="POST" action="{{ route('Admin.categories.store') }}">
+        <form id="add-category-form" method="POST" action="{{ route('admin.categories.store') }}">
           @csrf
           <div class="mb-3">
             <label for="new-cat-name" class="form-label small fw-medium text-dark mb-1">Tên danh mục <span class="text-danger">*</span></label>

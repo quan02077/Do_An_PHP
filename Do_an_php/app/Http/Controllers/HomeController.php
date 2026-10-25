@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DangKy;
 use App\Models\DanhMuc;
-use App\Models\NguoiDung;
 use App\Models\SuKien;
 use App\Models\YeuThich;
 use Illuminate\Http\Request;
@@ -18,7 +16,7 @@ class HomeController extends Controller
 
         // Phân quyền: Nếu là Quản trị viên (Admin) -> Hiển thị trang quản trị Admin
         if ($user && $user->vai_tro === 'admin') {
-            return redirect()->route('Admin.index');
+            return redirect()->route('admin.index');
         }
 
         // Nếu là Thành viên (User) hoặc Khách -> Hiển thị trang danh sách sự kiện (User index)
@@ -64,6 +62,6 @@ class HomeController extends Controller
             }
         }
 
-        return view('home.User.index', compact('categories', 'events', 'userFavIds', 'user'));
+        return view('user.index', compact('categories', 'events', 'userFavIds', 'user'));
     }
 }

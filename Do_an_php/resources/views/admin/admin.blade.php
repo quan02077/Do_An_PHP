@@ -6,17 +6,6 @@
 <div class="container-fluid px-3 px-lg-4 py-4">
     @include('partials.alerts')
 
-
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">{{ session('success') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
-    @endif
-    @if(session('warning'))
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">{{ session('warning') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
-    @endif
-    @if($errors->any())
-        <div class="alert alert-danger" role="alert"><ul class="mb-0 ps-3">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>
-    @endif
-
     <!-- Top Overview Stats -->
     <div class="row g-3 mb-4" id="admin-stats-grid">
         <div class="col-12 col-sm-6 col-lg-3">
@@ -146,7 +135,7 @@
                                         <i class="fa-regular fa-pen-to-square" style="font-size: 14px;"></i>
                                     </button>
                                     <!-- Nút Xóa sự kiện -->
-                                    <form method="POST" action="{{ route('Event.destroy', $event->id) }}" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa sự kiện này?')">
+                                    <form method="POST" action="{{ route('admin.event.destroy', $event->id) }}" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa sự kiện này?')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-outline-danger p-1 rounded-2" title="Xóa sự kiện">
@@ -205,7 +194,7 @@
                             </td>
                             <td class="py-3 px-3 text-end">
                                 @if($reg->trang_thai !== 'da_xac_nhan')
-                                <form method="POST" action="{{ route('Admin.registrations.status', $reg->id) }}" class="d-inline">
+                                <form method="POST" action="{{ route('admin.registrations.status', $reg->id) }}" class="d-inline">
                                     @csrf
                                     @method('PUT')
                                     <input type="hidden" name="trang_thai" value="da_xac_nhan">
@@ -213,7 +202,7 @@
                                 </form>
                                 @endif
                                 @if($reg->trang_thai !== 'da_huy')
-                                <form method="POST" action="{{ route('Admin.registrations.status', $reg->id) }}" class="d-inline" onsubmit="return confirm('Xác nhận hủy đăng ký vé này?')">
+                                <form method="POST" action="{{ route('admin.registrations.status', $reg->id) }}" class="d-inline" onsubmit="return confirm('Xác nhận hủy đăng ký vé này?')">
                                     @csrf
                                     @method('PUT')
                                     <input type="hidden" name="trang_thai" value="da_huy">
@@ -281,7 +270,7 @@
                                         <i class="fa-regular fa-pen-to-square" style="font-size: 14px;"></i>
                                     </button>
                                     <!-- Nút Xóa danh mục -->
-                                    <form method="POST" action="{{ route('Admin.categories.destroy', $cat->id) }}" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa danh mục này?')">
+                                    <form method="POST" action="{{ route('admin.categories.destroy', $cat->id) }}" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa danh mục này?')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-outline-danger p-1 rounded-2" title="Xóa danh mục">
@@ -308,8 +297,8 @@
 </div>
 
 <!-- ─── TÁCH MODALS RA FILE RIÊNG (THEO YÊU CẦU) ───────────────────────── -->
-@include('home.Admin.modal_event')
-@include('home.Admin.modal_category')
+@include('admin.modal_event')
+@include('admin.modal_category')
 
 @endsection
 
@@ -330,9 +319,9 @@
         });
     }
 
-    const eventBaseUrl = @json(url('event'));
-    const categoryBaseUrl = @json(url('admin/categories'));
-    const publicEventImagesUrl = @json(asset('uploads/su_kien'));
+    const eventBaseUrl = "{{ url('admin/event') }}";
+    const categoryBaseUrl = "{{ url('admin/categories') }}";
+    const publicEventImagesUrl = "{{ asset('uploads/su_kien') }}";
 
     function showModal(id) {
         bootstrap.Modal.getOrCreateInstance(document.getElementById(id)).show();
@@ -397,6 +386,6 @@
         showModal('edit-category-modal');
     }
 
-    switchAdminTab(@json($currentTab));
+    switchAdminTab("{{ $currentTab }}");
 </script>
 @endpush

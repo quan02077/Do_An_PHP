@@ -19,14 +19,6 @@ class EventController extends Controller
         return Auth::user() ?? session('user');
     }
     /**
-     * Form tạo mới sự kiện (Resource create)
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Lưu sự kiện mới vào CSDL (Resource store)
      */
     public function store(StoreEventRequest $request)
@@ -44,7 +36,7 @@ class EventController extends Controller
 
         SuKien::create($data);
 
-        return redirect()->route('Admin.index', ['tab' => 'events'])
+        return redirect()->route('admin.index', ['tab' => 'events'])
             ->with('success', 'Đã tạo sự kiện mới.');
     }
 
@@ -69,15 +61,7 @@ class EventController extends Controller
                 ->first();
         }
 
-        return view('home.event_detail', compact('event', 'user', 'isFavorited', 'userTicket'));
-    }
-
-    /**
-     * Form chỉnh sửa sự kiện (Resource edit)
-     */
-    public function edit($id)
-    {
-        //
+        return view('user.event_detail', compact('event', 'user', 'isFavorited', 'userTicket'));
     }
 
     /**
@@ -100,7 +84,7 @@ class EventController extends Controller
 
         $event->update($data);
 
-        return redirect()->route('Admin.index', ['tab' => 'events'])
+        return redirect()->route('admin.index', ['tab' => 'events'])
             ->with('success', 'Đã cập nhật sự kiện.');
     }
 
@@ -118,7 +102,7 @@ class EventController extends Controller
         $hasRegistrations = $event->dangKys()->exists();
         $event->delete();
 
-        return redirect()->route('Admin.index', ['tab' => 'events'])->with(
+        return redirect()->route('admin.index', ['tab' => 'events'])->with(
             $hasRegistrations ? 'warning' : 'success',
             $hasRegistrations
                 ? 'Sự kiện đã có người đăng ký nên không bị xóa; hệ thống đã chuyển sự kiện sang trạng thái đã hủy.'

@@ -10,7 +10,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body p-3 p-sm-4">
-        <form method="POST" action="{{ route('Event.store') }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('admin.event.store') }}" enctype="multipart/form-data">
           @csrf
           <div class="mb-3">
             <label for="new-ev-title" class="form-label small fw-medium text-dark mb-1">Tên sự kiện <span class="text-danger">*</span></label>

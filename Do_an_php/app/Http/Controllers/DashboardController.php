@@ -42,7 +42,7 @@ class DashboardController extends Controller
                 ->get();
         }
 
-        return view('home.User.myTicket', compact('user', 'tickets'));
+        return view('user.myTicket', compact('user', 'tickets'));
     }
 
     /**
@@ -97,7 +97,7 @@ class DashboardController extends Controller
                 ->get();
         }
 
-        return view('home.User.favorite', compact('user', 'favorites'));
+        return view('user.favorite', compact('user', 'favorites'));
     }
 
     /**
@@ -146,7 +146,7 @@ class DashboardController extends Controller
             })
             ->count();
 
-        return view('home.profile', compact('user', 'registeredCount', 'bookmarksCount', 'attendedCount'));
+        return view('user.profile', compact('user', 'registeredCount', 'bookmarksCount', 'attendedCount'));
     }
 
     /**

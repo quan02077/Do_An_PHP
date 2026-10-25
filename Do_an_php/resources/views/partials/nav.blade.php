@@ -40,6 +40,13 @@
               <span id="nav-fav-badge" class="badge rounded-pill bg-danger text-white ms-1 {{ (isset($favCount) && $favCount > 0) ? '' : 'd-none' }}" style="font-size: 11px;">{{ $favCount ?? 0 }}</span>
             </a>
           </li>
+          @else
+          <li class="nav-item">
+            <a href="{{ route('admin.index') }}" class="nav-link {{ request()->routeIs('admin.*') ? 'active fw-semibold text-dark bg-light' : 'text-secondary' }} px-3 py-2 rounded-pill small d-flex align-items-center gap-1.5">
+              <i class="fa-solid fa-gauge-high text-danger"></i>
+              <span>Quản trị hệ thống</span>
+            </a>
+          </li>
           @endif
         </ul>
 
@@ -66,6 +73,15 @@
                   <div class="text-muted small text-truncate" style="font-size: 12px;">{{ $currentUser->email }}</div>
                 </a>
               </li>
+
+              @if($currentUser->vai_tro === 'admin')
+              <li>
+                <a class="dropdown-item small rounded-2 py-1.5 {{ request()->routeIs('admin.*') ? 'active fw-semibold' : '' }}" href="{{ route('admin.index') }}">
+                  <i class="fa-solid fa-gauge-high me-2 text-danger"></i>
+                  Bảng quản trị (Admin)
+                </a>
+              </li>
+              @endif
 
               <li>
                 <a class="dropdown-item small rounded-2 py-1.5 {{ request()->routeIs('Dashboard.profile') ? 'active fw-semibold' : '' }}" href="{{ route('Dashboard.profile') }}">
