@@ -10,7 +10,7 @@
         <button type="button" class="btn-close align-self-start" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body p-3 p-sm-4">
-        <form id="add-category-form" method="POST" action="#">
+        <form id="add-category-form" method="POST" action="{{ route('Admin.categories.store') }}">
           @csrf
           <div class="mb-3">
             <label for="new-cat-name" class="form-label small fw-medium text-dark mb-1">Tên danh mục <span class="text-danger">*</span></label>
@@ -25,8 +25,8 @@
           <div class="mb-4">
             <label for="new-cat-status" class="form-label small fw-medium text-dark mb-1">Trạng thái hiển thị</label>
             <select name="trang_thai" id="new-cat-status" class="form-select form-select-sm py-2">
-              <option value="1">Đang hoạt động (Hiển thị công khai)</option>
-              <option value="0">Tạm dừng (Ẩn khỏi bộ lọc)</option>
+              <option value="hoat_dong">Đang hoạt động (Hiển thị công khai)</option>
+              <option value="tam_dung">Tạm dừng (Ẩn khỏi bộ lọc)</option>
             </select>
           </div>
 
@@ -72,8 +72,8 @@
           <div class="mb-4">
             <label for="edit-cat-status" class="form-label small fw-medium text-dark mb-1">Trạng thái hiển thị</label>
             <select name="trang_thai" id="edit-cat-status" class="form-select form-select-sm py-2">
-              <option value="1">Đang hoạt động (Hiển thị công khai)</option>
-              <option value="0">Tạm dừng (Ẩn khỏi bộ lọc)</option>
+              <option value="hoat_dong">Đang hoạt động (Hiển thị công khai)</option>
+              <option value="tam_dung">Tạm dừng (Ẩn khỏi bộ lọc)</option>
             </select>
           </div>
 

@@ -56,7 +56,7 @@
                     <div class="row g-3 mb-3">
                         <div class="col-sm-6">
                             <label class="form-label small fw-medium text-dark">Ngày sinh</label>
-                            <input type="date" name="ngay_sinh" class="form-control form-control-sm py-2" value="{{ old('ngay_sinh', $user->ngay_sinh ? \Carbon\Carbon::parse($user->ngay_sinh)->format('Y-m-d') : '') }}">
+                            <input type="text" name="ngay_sinh" class="form-control form-control-sm py-2" value="{{ old('ngay_sinh', $user->ngay_sinh ? \Carbon\Carbon::parse($user->ngay_sinh)->format('d/m/Y') : '') }}" placeholder="dd/mm/yyyy" inputmode="numeric" pattern="\d{2}/\d{2}/\d{4}">
                         </div>
                         <div class="col-sm-6">
                             <label class="form-label small fw-medium text-dark">Địa chỉ</label>

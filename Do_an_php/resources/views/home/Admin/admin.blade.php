@@ -7,6 +7,16 @@
     @include('partials.alerts')
 
 
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">{{ session('success') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+    @endif
+    @if(session('warning'))
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">{{ session('warning') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+    @endif
+    @if($errors->any())
+        <div class="alert alert-danger" role="alert"><ul class="mb-0 ps-3">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>
+    @endif
+
     <!-- Top Overview Stats -->
     <div class="row g-3 mb-4" id="admin-stats-grid">
         <div class="col-12 col-sm-6 col-lg-3">
@@ -53,11 +63,11 @@
 
             <!-- Action Buttons -->
             <div id="admin-action-btn-container" class="d-flex align-items-center gap-2">
-                <button type="button" class="btn btn-sm btn-outline-secondary rounded-3 px-3 py-2 fw-medium small d-flex align-items-center gap-1.5">
+                <button type="button" onclick="openAddCategoryModal()" class="btn btn-sm btn-outline-secondary rounded-3 px-3 py-2 fw-medium small d-flex align-items-center gap-1.5">
                     <i class="fa-solid fa-plus me-1"></i>
                     <span>Thêm danh mục</span>
                 </button>
-                <button type="button" class="btn btn-sm btn-dark rounded-3 px-3 py-2 fw-medium small d-flex align-items-center gap-1.5 shadow-xs">
+                <button type="button" onclick="openAddEventModal()" class="btn btn-sm btn-dark rounded-3 px-3 py-2 fw-medium small d-flex align-items-center gap-1.5 shadow-xs">
                     <i class="fa-solid fa-plus me-1"></i>
                     <span>Thêm sự kiện mới</span>
                 </button>
@@ -87,7 +97,7 @@
                         $name_category = $event->danhMuc->ten_danh_muc ?? 'Chung';
                         $date = $event->thoi_gian_bat_dau ? $event->thoi_gian_bat_dau->format('d/m/Y H:i') : 'N/A';
                         $location = $event->dia_diem ?? 'N/A';
-                        $registered = $event->dangKys->count();
+                        $registered = $event->so_luong_da_dang_ky;
                         $capacity = $event->so_luong_toi_da;
                         $status = $event->trang_thai_dien_ra;
                         @endphp
@@ -120,6 +130,18 @@
                                     <!-- Nút Sửa sự kiện -->
                                     <button type="button"
                                         class="btn btn-sm btn-outline-primary p-1 rounded-2"
+                                        data-id="{{ $event->id }}"
+                                        data-title="{{ $event->ten_su_kien }}"
+                                        data-category="{{ $event->danh_muc_id }}"
+                                        data-capacity="{{ $event->so_luong_toi_da }}"
+                                        data-start="{{ optional($event->thoi_gian_bat_dau)->format('Y-m-d\\TH:i') }}"
+                                        data-end="{{ optional($event->thoi_gian_ket_thuc)->format('Y-m-d\\TH:i') }}"
+                                        data-location="{{ $event->dia_diem }}"
+                                        data-price="{{ $event->gia_ve }}"
+                                        data-image="{{ $event->hinh_anh }}"
+                                        data-status="{{ $event->trang_thai }}"
+                                        data-description="{{ $event->mo_ta }}"
+                                        onclick="openEditEventModal(this)"
                                         title="Chỉnh sửa sự kiện">
                                         <i class="fa-regular fa-pen-to-square" style="font-size: 14px;"></i>
                                     </button>
@@ -183,10 +205,20 @@
                             </td>
                             <td class="py-3 px-3 text-end">
                                 @if($reg->trang_thai !== 'da_xac_nhan')
-                                <button type="button" class="btn btn-sm btn-outline-success py-1 px-2.5 rounded-2 me-1">Duyệt</button>
+                                <form method="POST" action="{{ route('Admin.registrations.status', $reg->id) }}" class="d-inline">
+                                    @csrf
+                                    @method('PUT')
+                                    <input type="hidden" name="trang_thai" value="da_xac_nhan">
+                                    <button type="submit" class="btn btn-sm btn-outline-success py-1 px-2.5 rounded-2 me-1">Duyệt</button>
+                                </form>
                                 @endif
                                 @if($reg->trang_thai !== 'da_huy')
-                                <button type="button" class="btn btn-sm btn-outline-danger py-1 px-2.5 rounded-2">Hủy</button>
+                                <form method="POST" action="{{ route('Admin.registrations.status', $reg->id) }}" class="d-inline" onsubmit="return confirm('Xác nhận hủy đăng ký vé này?')">
+                                    @csrf
+                                    @method('PUT')
+                                    <input type="hidden" name="trang_thai" value="da_huy">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger py-1 px-2.5 rounded-2">Hủy</button>
+                                </form>
                                 @endif
                             </td>
                         </tr>
@@ -231,8 +263,8 @@
                             <td class="py-3 px-3 text-muted text-truncate" style="max-width: 240px;">{{ $cat->mo_ta ?: '—' }}</td>
                             <td class="py-3 px-3 fw-medium text-secondary">{{ $cat->su_kiens_count ?? 0 }} sự kiện</td>
                             <td class="py-3 px-3">
-                                <span class="badge rounded-pill border bg-success-subtle text-success border-success-subtle">
-                                    Hoạt động
+                                <span class="badge rounded-pill border {{ $cat->trang_thai === 'hoat_dong' ? 'bg-success-subtle text-success border-success-subtle' : 'bg-secondary-subtle text-secondary border-secondary-subtle' }}">
+                                    {{ $cat->trang_thai === 'hoat_dong' ? 'Hoạt động' : 'Tạm dừng' }}
                                 </span>
                             </td>
                             <td class="py-3 px-3 text-end">
@@ -240,13 +272,22 @@
                                     <!-- Nút Sửa danh mục -->
                                     <button type="button"
                                         class="btn btn-sm btn-outline-primary p-1 rounded-2"
+                                        data-id="{{ $cat->id }}"
+                                        data-name="{{ $cat->ten_danh_muc }}"
+                                        data-description="{{ $cat->mo_ta }}"
+                                        data-status="{{ $cat->trang_thai }}"
+                                        onclick="openEditCategoryModal(this)"
                                         title="Chỉnh sửa danh mục">
                                         <i class="fa-regular fa-pen-to-square" style="font-size: 14px;"></i>
                                     </button>
                                     <!-- Nút Xóa danh mục -->
-                                    <button type="button" class="btn btn-sm btn-outline-danger p-1 rounded-2" title="Xóa danh mục">
-                                        <i class="fa-regular fa-trash-can" style="font-size: 14px;"></i>
-                                    </button>
+                                    <form method="POST" action="{{ route('Admin.categories.destroy', $cat->id) }}" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa danh mục này?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-outline-danger p-1 rounded-2" title="Xóa danh mục">
+                                            <i class="fa-regular fa-trash-can" style="font-size: 14px;"></i>
+                                        </button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>
@@ -288,5 +329,74 @@
             }
         });
     }
+
+    const eventBaseUrl = @json(url('event'));
+    const categoryBaseUrl = @json(url('admin/categories'));
+    const publicEventImagesUrl = @json(asset('uploads/su_kien'));
+
+    function showModal(id) {
+        bootstrap.Modal.getOrCreateInstance(document.getElementById(id)).show();
+    }
+
+    function openAddEventModal() {
+        showModal('add-event-modal');
+    }
+
+    function openAddCategoryModal() {
+        showModal('add-category-modal');
+    }
+
+    function showImagePreview(previewId, source) {
+        const preview = document.getElementById(previewId);
+        if (!source) {
+            preview.removeAttribute('src');
+            preview.classList.add('d-none');
+            return;
+        }
+
+        preview.src = source;
+        preview.classList.remove('d-none');
+    }
+
+    function previewPublicImage(selectId, previewId) {
+        const filename = document.getElementById(selectId).value;
+        showImagePreview(previewId, filename ? `${publicEventImagesUrl}/${filename}` : '');
+    }
+
+    function previewUploadedImage(input, previewId) {
+        const file = input.files[0];
+        showImagePreview(previewId, file ? URL.createObjectURL(file) : '');
+    }
+
+    function openEditEventModal(button) {
+        const data = button.dataset;
+        document.getElementById('edit-event-form').action = `${eventBaseUrl}/${data.id}`;
+        document.getElementById('edit-ev-id').value = data.id;
+        document.getElementById('edit-ev-title').value = data.title || '';
+        document.getElementById('edit-ev-category').value = data.category || '';
+        document.getElementById('edit-ev-capacity').value = data.capacity || '';
+        document.getElementById('edit-ev-start').value = data.start || '';
+        document.getElementById('edit-ev-end').value = data.end || '';
+        document.getElementById('edit-ev-location').value = data.location || '';
+        document.getElementById('edit-ev-price').value = data.price || 0;
+        const imageSelect = document.getElementById('edit-ev-image');
+        imageSelect.value = [...imageSelect.options].some(option => option.value === data.image) ? data.image : '';
+        previewPublicImage('edit-ev-image', 'edit-ev-image-preview');
+        document.getElementById('edit-ev-status').value = data.status || 'cong_khai';
+        document.getElementById('edit-ev-desc').value = data.description || '';
+        showModal('edit-event-modal');
+    }
+
+    function openEditCategoryModal(button) {
+        const data = button.dataset;
+        document.getElementById('edit-category-form').action = `${categoryBaseUrl}/${data.id}`;
+        document.getElementById('edit-cat-id').value = data.id;
+        document.getElementById('edit-cat-name').value = data.name || '';
+        document.getElementById('edit-cat-desc').value = data.description || '';
+        document.getElementById('edit-cat-status').value = data.status || 'hoat_dong';
+        showModal('edit-category-modal');
+    }
+
+    switchAdminTab(@json($currentTab));
 </script>
 @endpush

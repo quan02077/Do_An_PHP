@@ -1,6 +1,8 @@
 *.log
 .DS_Store
 .env
+.env.*
+!.env.example
 .env.backup
 .env.production
 .phpactor.json
@@ -22,3 +24,38 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+desktop.ini
+
+# Images & Uploads (Không commit ảnh)
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.webp
+*.bmp
+*.avif
+*.tiff
+public/uploads/
+**/uploads/
+
+# Database & Credentials
+*.sql
+*.sqlite
+*.sqlite-journal
+*.db
+*.dump
+ConnectionDB.local.php
+config.local.php
+
+# AI Tools & Local settings
+.claude/
+.codex/
+.impeccable/
+.gemini/
+*.local.json
+
+# Backup & Temp
+*.bak
+*.tmp
+*.temp
+*~
