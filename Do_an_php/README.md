@@ -10,14 +10,14 @@
 
 ---
 
-## 2. Thông tin Nhóm Sinh viên & Phân công nhiệm vụ
-*(Dựa theo Bảng phân công công việc chi tiết `PCCV_EventVN.xlsx`)*
+## 2. Thông tin Nhóm Sinh viên & Bảng phân công nhiệm vụ
+*(Căn cứ theo Bảng phân công công việc chi tiết PCCV_EventVN.xlsx)*
 
-| STT | Thành viên | Vai trò | Công việc phụ trách chính | Tỷ lệ hoàn thành |
+| STT | Họ và tên | Công việc phân công chi tiết | Kết quả bàn giao (Deliverable) | Tiến độ |
 |:---:|:---|:---|:---|:---:|
-| **1** | **Nguyễn Nhật Minh Quân** | Trưởng nhóm / Backend | • Thiết lập nền tảng, môi trường, `.env.example`<br>• Thiết kế CSDL tiếng Việt (5 Migration, Khóa ngoại, Unique)<br>• Xây dựng 5 Eloquent Model, quan hệ 1-n, n-n, casting dữ liệu<br>• Tạo DatabaseSeeder & Factory nạp dữ liệu mẫu đa dạng<br>• Xây dựng quy tắc ràng buộc toàn vẹn xóa dữ liệu | **100%** |
-| **2** | **Nguyễn Minh Quan** | Frontend / UI-UX | • Chuyển đổi mã nguồn HTML sang Blade Template<br>• Thiết kế Master Layout (`layouts/app`), Navbar, Footer dùng chung<br>• Xây dựng giao diện công khai: Trang chủ, Chi tiết sự kiện<br>• Xây dựng giao diện người dùng: Vé của tôi, Yêu thích, Hồ sơ<br>• Tối ưu Responsive trên Mobile/Tablet và chuẩn hóa giao diện | **100%** |
-| **3** | **Trịnh Kiến Quốc** | Backend / Security | • Xây dựng hệ thống Xác thực (Đăng nhập, Đăng ký, Đăng xuất, Bcrypt)<br>• Phân quyền người dùng bằng Middleware (`auth.custom`, `admin`)<br>• Xây dựng chức năng CRUD Sự kiện & Danh mục cho Admin<br>• Xây dựng bộ lọc tìm kiếm đa tiêu chí kết hợp phân trang<br>• Nghiệp vụ Đặt vé sinh mã tự động & Hủy vé bảo lưu lịch sử | **100%** |
+| **1** | **Nguyễn Nhật Minh Quân** | • Cài Laragon, PHP/Composer; tạo database `quan_ly_su_kien`; cấu hình `.env.example`<br>• Hoàn thiện migration tiếng Việt: `nguoi_dung`, `danh_muc`, `su_kien`, `dang_ky`, `yeu_thich`; khóa ngoại và unique<br>• Khai báo Model Eloquent, `$fillable`, casts và quan hệ 1-n, n-n<br>• Tạo Seeder/Factory: admin, user, danh mục, sự kiện, đăng ký và yêu thích mẫu<br>• Cài rule xóa: chặn xóa danh mục còn event; event có đăng ký chỉ được chuyển đã hủy | • Laravel kết nối MySQL và chạy trang chủ<br>• `php artisan migrate:fresh --seed` chạy không lỗi<br>• Model truy xuất đúng quan hệ<br>• Dữ liệu demo đủ để trình bày<br>• Ràng buộc xóa đúng nghiệp vụ | **Hoàn thành** |
+| **2** | **Lương Văn Quan** | • Lập bảng map HTML mockup sang layout, partial, component và Blade view<br>• Tạo `layouts/app`, navbar, footer, alert và input component bằng Blade + Bootstrap<br>• Chuyển trang chủ, danh sách và chi tiết sự kiện sang Blade responsive<br>• Chuyển Vé của tôi, Yêu thích và Hồ sơ sang Blade<br>• Chụp ảnh màn hình chức năng; review responsive và thống nhất UI trước demo | • Danh sách chuyển đổi view rõ ràng<br>• Layout dùng chung cho toàn site<br>• Guest xem danh sách và chi tiết event<br>• Giao diện user hoàn chỉnh<br>• Bộ ảnh báo cáo và UI đã QA | **Hoàn thành** |
+| **3** | **Trịnh Hữu Kiến Quốc** | • Đăng ký, đăng nhập, đăng xuất với `NguoiDung`, Hash và Laravel Auth<br>• Tạo middleware `role:admin`; bảo vệ route và hiển thị quyền trong Blade<br>• CRUD đầy đủ `danh_muc` và `su_kien`: Resource Controller, Form Request, validate, upload poster tùy chọn<br>• Tìm kiếm, lọc danh mục/trạng thái, phân trang Bootstrap với `withQueryString`<br>• Đăng ký vé phía server: chặn trùng, hết chỗ, event chưa công khai/đã bắt đầu<br>• Vé của tôi, hủy vé, giữ trạng thái cancelled và cho phép đăng ký lại<br>• Test rule chính, README, ERD, Use Case, phân công, script demo và freeze tính năng | • User/Admin đăng nhập được<br>• User không truy cập được `/admin`<br>• Admin tạo/xem/sửa/xóa đúng hai bảng<br>• Danh sách có search/filter/pagination<br>• Đăng ký vé đúng quy tắc nghiệp vụ<br>• User quản lý vé của mình<br>• Bản demo ổn định và hồ sơ hoàn chỉnh | **Hoàn thành** |
 
 ---
 
