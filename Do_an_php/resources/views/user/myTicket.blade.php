@@ -56,6 +56,9 @@
     $code = $ticket->ma_ve ?: ('QQQ-2026-' . str_pad($ticket->id, 4, '0', STR_PAD_LEFT));
     $date = ($ev && $ev->thoi_gian_bat_dau) ? date('H:i - d/m/Y', strtotime($ev->thoi_gian_bat_dau)) : 'Đang cập nhật';
     $isCancelled = ($ticket->trang_thai === 'da_huy');
+    $ticketTitle = addslashes($ev->ten_su_kien ?? 'Sự kiện');
+    $ticketLocation = addslashes($ev->dia_diem ?? 'Địa điểm cập nhật');
+    $userName = addslashes($user->ho_ten ?? 'Khách');
     @endphp
 
     <div class="bg-white rounded-4 border shadow-sm p-3 p-sm-4 d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3 ticket-card {{ $isCancelled ? 'opacity-75 bg-light-subtle' : '' }}" id="ticket-item-{{ $ticket->id }}">
@@ -103,11 +106,7 @@
           type="button"
           class="btn btn-sm btn-dark rounded-3 px-3 py-2 fw-medium d-flex align-items-center gap-1.5 flex-grow-1 flex-md-grow-0 btn-show-ticket"
           data-ticket-code="{{ $code }}"
-          data-event-title="{{ $ev->ten_su_kien ?? 'Sự kiện' }}"
-          data-event-date="{{ $date }}"
-          data-event-location="{{ $ev->dia_diem ?? 'Địa điểm cập nhật' }}"
-          data-user-name="{{ $user->ho_ten ?? 'Khách' }}"
-          onclick="openTicketModal(this)">
+          onclick="openTicketModal('{{ $ticket->id }}', '{{ $code }}', '{{ $ticketTitle }}', '{{ $date }}', '{{ $ticketLocation }}', '{{ $userName }}')">
           <i class="fa-solid fa-qrcode"></i>
           <span>Xem vé & QR</span>
         </button>
@@ -192,16 +191,7 @@
 <script>
 let ticketModalInstance = null;
 
-function openTicketModal(btnOrId, code, title, date, location, name) {
-  // Nếu truyền 'this' (phần tử nút bấm), tự động lấy từ data-attributes (sạch đẹp, không sợ lỗi dấu nháy)
-  if (typeof btnOrId === 'object' && btnOrId !== null && btnOrId.dataset) {
-    code = btnOrId.dataset.ticketCode || '';
-    title = btnOrId.dataset.eventTitle || 'Sự kiện';
-    date = btnOrId.dataset.eventDate || '';
-    location = btnOrId.dataset.eventLocation || '';
-    name = btnOrId.dataset.userName || 'Khách';
-  }
-
+function openTicketModal(id, code, title, date, location, name) {
   // 1. Đổ dữ liệu vào Modal
   document.getElementById('modal-ticket-event-name').textContent = title;
   document.getElementById('modal-ticket-date').textContent = date;
