@@ -1,27 +1,23 @@
 <div id="adm-view-registrations" class="d-none">
 
-    <!-- Card: Quét mã QR Soát vé Check-in -->
+    <!-- Card: Quét mã QR Soát vé Check-in chuẩn theo Video Html5QrcodeScanner -->
     <div class="bg-light p-3 p-md-4 rounded-4 border mb-4">
         <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
             <i class="fa-solid fa-qrcode text-primary"></i>
             <span>Soát vé & Check-in QR</span>
         </h5>
         
-        <div class="row g-3">
-            <!-- Khung Camera -->
-            <div class="col-12 col-md-5 text-center">
-                <div id="reader" style="width: 100%; max-width: 280px; min-height: 180px;" class="mx-auto border rounded-3 overflow-hidden bg-white mb-2 d-flex align-items-center justify-content-center text-muted small">
-                    <span>Camera sẽ hiển thị tại đây</span>
-                </div>
-                <button type="button" id="btn-camera" class="btn btn-sm btn-dark" onclick="batCamera()">
-                    <i class="fa-solid fa-camera me-1"></i> Bật Camera Quét QR
-                </button>
+        <div class="row g-4 align-items-start">
+            <!-- Cột 1: Khung Scanner có sẵn UI (Camera + Nút + Chọn ảnh) như trong video -->
+            <div class="col-12 col-md-6">
+                <div id="reader" style="width: 100%; max-width: 380px;" class="mx-auto bg-white rounded-3 overflow-hidden shadow-xs border p-2"></div>
             </div>
 
-            <!-- Ô Nhập mã vé & Nơi hiện kết quả -->
-            <div class="col-12 col-md-7">
+            <!-- Cột 2: Nhập mã tay & Kết quả Check-in -->
+            <div class="col-12 col-md-6">
+                <label class="form-label small fw-semibold text-secondary">Hoặc nhập mã vé thủ công:</label>
                 <div class="input-group mb-2">
-                    <input type="text" id="inputMaVe" class="form-control font-monospace" placeholder="Nhập mã vé (VD: QQQ-2026-XXXXXX)">
+                    <input type="text" id="inputMaVe" class="form-control font-monospace" placeholder="VD: QQQ-2026-ABC123">
                     <button type="button" class="btn btn-dark" onclick="guiCheckIn(document.getElementById('inputMaVe').value)">
                         Check-in
                     </button>
@@ -107,54 +103,41 @@
     </div>
 </div>
 
-<!-- Thư viện Quét mã QR bằng Camera chuẩn HTML5 (CDN Cloudflare) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+<!-- Thư viện Quét mã QR chuẩn Html5-QRCode (y hệt trong video) -->
+<script src="https://unpkg.com/html5-qrcode"></script>
 
 <script>
-let scanner = null;
-let isScanning = false;
-let isThrottled = false;
+// 1. Hàm xử lý khi quét thành công mã QR (Y hệt trong video)
+function onScanSuccess(decodedText, decodedResult) {
+    guiCheckIn(decodedText);
+}
 
-// HÀM 1: Bật / Tắt camera của Laptop hoặc Điện thoại
-function batCamera() {
-    const btn = document.getElementById('btn-camera');
+// 2. Khởi tạo Scanner tự động tạo giao diện (Y hệt trong video)
+let html5QrcodeScanner = null;
 
-    if (!isScanning) {
-        if (!scanner) {
-            scanner = new Html5Qrcode("reader");
-        }
-
-        scanner.start(
-            { facingMode: "environment" },
-            { fps: 10, qrbox: { width: 220, height: 220 } },
-            (maVeQuetDuoc) => {
-                if (!isThrottled) {
-                    isThrottled = true;
-                    guiCheckIn(maVeQuetDuoc);
-                    setTimeout(() => { isThrottled = false; }, 3000); // Ngưng 3s tránh quét lặp liên tục
-                }
+function khoiTaoScanner() {
+    if (!html5QrcodeScanner && document.getElementById('reader')) {
+        html5QrcodeScanner = new Html5QrcodeScanner(
+            "reader", 
+            { 
+                fps: 10, 
+                qrbox: { width: 220, height: 220 } 
             }
-        ).then(() => {
-            isScanning = true;
-            btn.className = "btn btn-sm btn-outline-danger";
-            btn.innerHTML = '<i class="fa-solid fa-stop me-1"></i> Tắt Camera';
-        }).catch(err => {
-            alert('Không thể mở Camera: ' + err + '\n\nLưu ý: Bạn hãy kiểm tra xem trình duyệt Chrome có đang chặn quyền Camera không nhé!');
-        });
-    } else {
-        scanner.stop().then(() => {
-            isScanning = false;
-            btn.className = "btn btn-sm btn-dark";
-            btn.innerHTML = '<i class="fa-solid fa-camera me-1"></i> Bật Camera Quét QR';
-            document.getElementById('reader').innerHTML = '<span class="text-muted small">Camera đã tắt</span>';
-        });
+        );
+        html5QrcodeScanner.render(onScanSuccess);
     }
 }
 
-// HÀM 2: Gửi mã vé lên Server Laravel bằng hàm fetch()
+// Khởi chạy scanner
+setTimeout(khoiTaoScanner, 300);
+
+// 3. Hàm gửi mã vé lên Laravel API bằng fetch()
+let isProcessingCheckin = false;
 function guiCheckIn(maVe) {
     maVe = (maVe || '').trim();
     if (!maVe) return alert('Vui lòng nhập mã vé!');
+    if (isProcessingCheckin) return;
+    isProcessingCheckin = true;
 
     const hopKetQua = document.getElementById('hopKetQua');
     hopKetQua.className = 'alert alert-info mt-2 p-3 small rounded-3';
@@ -195,6 +178,9 @@ function guiCheckIn(maVe) {
     .catch(err => {
         hopKetQua.className = 'alert alert-danger mt-2 p-3 small rounded-3';
         hopKetQua.innerHTML = 'Lỗi kết nối khi gửi check-in!';
+    })
+    .finally(() => {
+        setTimeout(() => { isProcessingCheckin = false; }, 3000); // 3s sau mới cho quét tiếp
     });
 }
 </script>
