@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateEventRequest extends FormRequest
+class EventRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -13,18 +13,21 @@ class UpdateEventRequest extends FormRequest
 
     public function rules(): array
     {
+        $isUpdate = $this->isMethod('PUT') || $this->isMethod('PATCH');
+        $ruleReq = $isUpdate ? ['sometimes', 'required'] : ['required'];
+
         return [
-            'ten_su_kien'        => ['sometimes', 'required', 'string', 'max:255'],
-            'danh_muc_id'        => ['sometimes', 'required', 'integer', 'exists:danh_muc,id'],
+            'ten_su_kien'        => array_merge($ruleReq, ['string', 'max:255']),
+            'danh_muc_id'        => array_merge($ruleReq, ['integer', 'exists:danh_muc,id']),
             'mo_ta'              => ['nullable', 'string'],
             'hinh_anh'           => ['nullable', 'string', 'max:255'],
             'hinh_anh_tai_len'   => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
-            'thoi_gian_bat_dau'  => ['sometimes', 'required', 'date'],
-            'thoi_gian_ket_thuc' => ['sometimes', 'required', 'date'],
-            'dia_diem'           => ['sometimes', 'required', 'string', 'max:255'],
+            'thoi_gian_bat_dau'  => array_merge($ruleReq, ['date']),
+            'thoi_gian_ket_thuc' => array_merge($ruleReq, ['date']),
+            'dia_diem'           => array_merge($ruleReq, ['string', 'max:255']),
             'ban_to_chuc'        => ['nullable', 'string', 'max:255'],
-            'so_luong_toi_da'    => ['sometimes', 'required', 'integer', 'min:1'],
-            'gia_ve'             => ['sometimes', 'required', 'numeric', 'min:0'],
+            'so_luong_toi_da'    => array_merge($ruleReq, ['integer', 'min:1']),
+            'gia_ve'             => array_merge($ruleReq, ['numeric', 'min:0']),
             'trang_thai'         => ['nullable', 'in:nhap,cong_khai,da_huy'],
             'noi_bat'            => ['nullable', 'boolean'],
         ];
@@ -45,7 +48,6 @@ class UpdateEventRequest extends FormRequest
             'thoi_gian_bat_dau.date'      => 'Thời gian bắt đầu không đúng định dạng ngày giờ.',
             'thoi_gian_ket_thuc.required' => 'Vui lòng chọn thời gian kết thúc sự kiện.',
             'thoi_gian_ket_thuc.date'     => 'Thời gian kết thúc không đúng định dạng ngày giờ.',
-            'thoi_gian_ket_thuc.after'    => 'Thời gian kết thúc phải diễn ra sau thời gian bắt đầu.',
             'dia_diem.required'           => 'Vui lòng nhập địa điểm tổ chức sự kiện.',
             'so_luong_toi_da.required'    => 'Vui lòng nhập số lượng vé tối đa.',
             'so_luong_toi_da.integer'     => 'Số lượng vé phải là số nguyên.',

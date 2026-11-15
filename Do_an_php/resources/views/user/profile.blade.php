@@ -17,7 +17,6 @@
     </div>
 
     <!-- Thông báo Flash Messages & Validation -->
-    @include('partials.alerts')
 
 
     <div class="row g-4">

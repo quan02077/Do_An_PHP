@@ -5,8 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DangKy;
 use App\Models\SuKien;
 use App\Models\YeuThich;
-use App\Http\Requests\StoreEventRequest;
-use App\Http\Requests\UpdateEventRequest;
+use App\Http\Requests\EventRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -21,7 +20,7 @@ class EventController extends Controller
     /**
      * Lưu sự kiện mới vào CSDL (Resource store)
      */
-    public function store(StoreEventRequest $request)
+    public function store(EventRequest $request)
     {
         $user = $this->getCurrentUser();
         if (!$user || $user->vai_tro !== 'admin') {
@@ -67,7 +66,7 @@ class EventController extends Controller
     /**
      * Cập nhật thông tin sự kiện (Resource update)
      */
-    public function update(UpdateEventRequest $request, $id)
+    public function update(EventRequest $request, $id)
     {
         $user = $this->getCurrentUser();
         if (!$user || $user->vai_tro !== 'admin') {
@@ -100,7 +99,11 @@ class EventController extends Controller
 
         $event = SuKien::findOrFail($id);
         $hasRegistrations = $event->dangKys()->exists();
-        $event->delete();
+        if ($hasRegistrations) {
+            $event->update(['trang_thai' => 'da_huy']);
+        } else {
+            $event->delete();
+        }
 
         return redirect()->route('admin.index', ['tab' => 'events'])->with(
             $hasRegistrations ? 'warning' : 'success',

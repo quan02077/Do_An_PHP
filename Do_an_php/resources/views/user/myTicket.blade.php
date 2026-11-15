@@ -5,10 +5,6 @@
 @section('content')
 <div class="container-xl py-4">
 
-  <!-- Alert thông báo nếu có -->
-  @include('partials.alerts')
-
-
   <!-- Banner thông tin tài khoản -->
   @if(isset($user) && $user)
   <div class="bg-white rounded-4 border shadow-sm p-4 mb-4 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">

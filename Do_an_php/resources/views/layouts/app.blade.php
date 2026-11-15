@@ -15,6 +15,11 @@
   @include('partials.nav')
 
   <main class="grow">
+    @if(session('success') || session('warning') || session('error') || session('status') || (isset($errors) && $errors->any()))
+      <div class="container pt-3">
+        @include('partials.alerts')
+      </div>
+    @endif
     @yield('content')
   </main>
 

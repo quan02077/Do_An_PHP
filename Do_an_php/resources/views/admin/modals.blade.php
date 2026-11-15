@@ -1,4 +1,8 @@
-<!-- ─── MODAL 1: THÊM SỰ KIỆN MỚI ──────────────────────────────────────── -->
+{{-- ========================================================================= --}}
+{{-- 1. MODALS QUẢN LÝ SỰ KIỆN (THÊM MỚI & CHỈNH SỬA)                         --}}
+{{-- ========================================================================= --}}
+
+<!-- MODAL: THÊM SỰ KIỆN MỚI -->
 <div class="modal fade" id="add-event-modal" tabindex="-1" aria-labelledby="addEventModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content rounded-4 border-0 shadow position-relative p-2 p-sm-3">
@@ -93,19 +97,19 @@
   </div>
 </div>
 
-<!-- ─── MODAL 2: CHỈNH SỬA SỰ KIỆN ─────────────────────────────────────── -->
+<!-- MODAL: CHỈNH SỬA SỰ KIỆN -->
 <div class="modal fade" id="edit-event-modal" tabindex="-1" aria-labelledby="editEventModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content rounded-4 border-0 shadow position-relative p-2 p-sm-3">
       <div class="modal-header border-0 pb-0">
         <div>
           <h2 class="fs-5 fw-bold tracking-tight text-dark mb-0" id="editEventModalLabel">Chỉnh sửa sự kiện</h2>
-          <p class="small text-muted mb-0">Cập nhật thông tin chi tiết của sự kiện đã chọn.</p>
+          <p class="small text-muted mb-0">Cập nhật thông tin chi tiết của sự kiện.</p>
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body p-3 p-sm-4">
-        <form id="edit-event-form" method="POST" action="" enctype="multipart/form-data">
+        <form id="edit-event-form" method="POST" action="#" enctype="multipart/form-data">
           @csrf
           @method('PUT')
           <input type="hidden" id="edit-ev-id" name="id" />
@@ -125,15 +129,9 @@
               </select>
             </div>
             <div class="col-sm-6">
-              <label for="edit-ev-capacity" class="form-label small fw-medium text-dark mb-1">Quy mô chỗ ngồi <span class="text-danger">*</span></label>
+              <label for="edit-ev-capacity" class="form-label small fw-medium text-dark mb-1">Quy mô chỗ ngồi (Số vé tối đa) <span class="text-danger">*</span></label>
               <input type="number" name="so_luong_toi_da" id="edit-ev-capacity" required min="1" class="form-control form-control-sm py-2" />
             </div>
-          </div>
-
-          <div class="mb-3">
-            <label for="edit-ev-image-upload" class="form-label small fw-medium text-dark mb-1">Thay ảnh bằng tệp từ máy tính</label>
-            <input type="file" name="hinh_anh_tai_len" id="edit-ev-image-upload" accept="image/jpeg,image/png,image/jpg,image/webp" class="form-control form-control-sm py-2" onchange="previewUploadedImage(this, 'edit-ev-image-preview')" />
-            <div class="form-text">Để trống nếu vẫn dùng link ảnh hiện tại. JPG, PNG, WEBP; tối đa 2MB.</div>
           </div>
 
           <div class="row g-3 mb-3">
@@ -158,23 +156,30 @@
             </div>
           </div>
 
+          <div class="mb-3">
+            <label for="edit-ev-image" class="form-label small fw-medium text-dark mb-1">Chọn ảnh thumbnail có sẵn</label>
+            <select name="hinh_anh" id="edit-ev-image" class="form-select form-select-sm py-2" onchange="previewPublicImage('edit-ev-image', 'edit-ev-image-preview')">
+              <option value="">Dùng ảnh mặc định</option>
+              @foreach($eventImages ?? [] as $image)
+                <option value="{{ $image }}">{{ $image }}</option>
+              @endforeach
+            </select>
+            <img id="edit-ev-image-preview" class="d-none mt-2 rounded-3 border object-fit-cover" alt="Xem trước ảnh thumbnail" style="width: 112px; height: 72px;" />
+          </div>
+
+          <div class="mb-3">
+            <label for="edit-ev-image-upload" class="form-label small fw-medium text-dark mb-1">Hoặc tải ảnh mới từ máy tính</label>
+            <input type="file" name="hinh_anh_tai_len" id="edit-ev-image-upload" accept="image/jpeg,image/png,image/jpg,image/webp" class="form-control form-control-sm py-2" onchange="previewUploadedImage(this, 'edit-ev-image-preview')" />
+            <div class="form-text">Để trống nếu không muốn thay đổi ảnh sự kiện.</div>
+          </div>
+
           <div class="row g-3 mb-3">
-            <div class="col-sm-8">
-              <label for="edit-ev-image" class="form-label small fw-medium text-dark mb-1">Chọn ảnh thumbnail có sẵn</label>
-              <select name="hinh_anh" id="edit-ev-image" class="form-select form-select-sm py-2" onchange="previewPublicImage('edit-ev-image', 'edit-ev-image-preview')">
-                <option value="">Giữ ảnh hiện tại</option>
-                @foreach($eventImages ?? [] as $image)
-                  <option value="{{ $image }}">{{ $image }}</option>
-                @endforeach
-              </select>
-              <img id="edit-ev-image-preview" class="d-none mt-2 rounded-3 border object-fit-cover" alt="Xem trước ảnh thumbnail" style="width: 112px; height: 72px;" />
-            </div>
-            <div class="col-sm-4">
+            <div class="col-12">
               <label for="edit-ev-status" class="form-label small fw-medium text-dark mb-1">Trạng thái sự kiện</label>
               <select name="trang_thai" id="edit-ev-status" class="form-select form-select-sm py-2">
-                <option value="cong_khai">Công khai</option>
-                <option value="nhap">Bản nháp</option>
-                <option value="da_huy">Đã hủy</option>
+                <option value="nhap">Bản nháp (Chưa công khai)</option>
+                <option value="cong_khai">Công khai (Cho phép xem và đăng ký)</option>
+                <option value="da_huy">Đã hủy (Khóa đăng ký vé)</option>
               </select>
             </div>
           </div>
@@ -187,7 +192,103 @@
           <div class="d-flex gap-2 pt-2 border-top">
             <button type="button" class="btn btn-outline-secondary flex-grow-1 py-2 small fw-medium" data-bs-dismiss="modal">Hủy</button>
             <button type="submit" class="btn btn-primary flex-grow-1 py-2 small fw-medium">
-              <i class="fa-regular fa-floppy-disk me-1"></i> Cập nhật sự kiện
+              <i class="fa-regular fa-floppy-disk me-1"></i> Lưu thay đổi
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{{-- ========================================================================= --}}
+{{-- 2. MODALS QUẢN LÝ DANH MỤC (THÊM MỚI & CHỈNH SỬA)                         --}}
+{{-- ========================================================================= --}}
+
+<!-- MODAL: THÊM DANH MỤC MỚI -->
+<div class="modal fade" id="add-category-modal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true" style="z-index: 1060;">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4 border-0 shadow position-relative p-2 p-sm-3">
+      <div class="modal-header border-0 pb-0">
+        <div>
+          <h2 class="fs-5 fw-bold tracking-tight text-dark mb-1" id="addCategoryModalLabel">Thêm danh mục mới</h2>
+          <p class="small text-muted mb-0">Tạo nhóm danh mục mới để phân loại sự kiện hiệu quả hơn.</p>
+        </div>
+        <button type="button" class="btn-close align-self-start" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-3 p-sm-4">
+        <form id="add-category-form" method="POST" action="{{ route('admin.categories.store') }}">
+          @csrf
+          <div class="mb-3">
+            <label for="new-cat-name" class="form-label small fw-medium text-dark mb-1">Tên danh mục <span class="text-danger">*</span></label>
+            <input type="text" name="ten_danh_muc" id="new-cat-name" required class="form-control form-control-sm py-2" placeholder="Ví dụ: Triển lãm, Ẩm thực, Công nghệ..." />
+          </div>
+
+          <div class="mb-3">
+            <label for="new-cat-desc" class="form-label small fw-medium text-dark mb-1">Mô tả danh mục</label>
+            <textarea name="mo_ta" id="new-cat-desc" rows="3" class="form-control form-control-sm py-2" placeholder="Mô tả tóm tắt về loại hình sự kiện này..."></textarea>
+          </div>
+
+          <div class="mb-4">
+            <label for="new-cat-status" class="form-label small fw-medium text-dark mb-1">Trạng thái hiển thị</label>
+            <select name="trang_thai" id="new-cat-status" class="form-select form-select-sm py-2">
+              <option value="hoat_dong">Đang hoạt động (Hiển thị công khai)</option>
+              <option value="tam_dung">Tạm dừng (Ẩn khỏi bộ lọc)</option>
+            </select>
+          </div>
+
+          <div class="d-flex gap-2 pt-2 border-top">
+            <button type="button" class="btn btn-outline-secondary flex-grow-1 py-2 small fw-medium" data-bs-dismiss="modal">Hủy</button>
+            <button type="submit" class="btn btn-dark flex-grow-1 py-2 small fw-medium">
+              <i class="fa-solid fa-plus me-1"></i> Lưu danh mục
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: CHỈNH SỬA DANH MỤC -->
+<div class="modal fade" id="edit-category-modal" tabindex="-1" aria-labelledby="editCategoryModalLabel" aria-hidden="true" style="z-index: 1060;">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4 border-0 shadow position-relative p-2 p-sm-3">
+      <div class="modal-header border-0 pb-0">
+        <div>
+          <h2 class="fs-5 fw-bold tracking-tight text-dark mb-1" id="editCategoryModalLabel">Chỉnh sửa danh mục</h2>
+          <p class="small text-muted mb-0">Cập nhật thông tin chi tiết của danh mục sự kiện.</p>
+        </div>
+        <button type="button" class="btn-close align-self-start" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-3 p-sm-4">
+        <form id="edit-category-form" method="POST" action="#">
+          @csrf
+          @method('PUT')
+          <input type="hidden" id="edit-cat-id" name="id" />
+
+          <div class="mb-3">
+            <label for="edit-cat-name" class="form-label small fw-medium text-dark mb-1">Tên danh mục <span class="text-danger">*</span></label>
+            <input type="text" name="ten_danh_muc" id="edit-cat-name" required class="form-control form-control-sm py-2" />
+          </div>
+
+          <div class="mb-3">
+            <label for="edit-cat-desc" class="form-label small fw-medium text-dark mb-1">Mô tả danh mục</label>
+            <textarea name="mo_ta" id="edit-cat-desc" rows="3" class="form-control form-control-sm py-2"></textarea>
+          </div>
+
+          <div class="mb-4">
+            <label for="edit-cat-status" class="form-label small fw-medium text-dark mb-1">Trạng thái hiển thị</label>
+            <select name="trang_thai" id="edit-cat-status" class="form-select form-select-sm py-2">
+              <option value="hoat_dong">Đang hoạt động (Hiển thị công khai)</option>
+              <option value="tam_dung">Tạm dừng (Ẩn khỏi bộ lọc)</option>
+            </select>
+          </div>
+
+          <div class="d-flex gap-2 pt-2 border-top">
+            <button type="button" class="btn btn-outline-secondary flex-grow-1 py-2 small fw-medium" data-bs-dismiss="modal">Hủy</button>
+            <button type="submit" class="btn btn-primary flex-grow-1 py-2 small fw-medium">
+              <i class="fa-regular fa-floppy-disk me-1"></i> Cập nhật danh mục
             </button>
           </div>
         </form>
