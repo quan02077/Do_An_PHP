@@ -70,9 +70,6 @@
             if (t === tab) {
                 btn.className = "btn btn-sm rounded-pill fw-semibold btn-dark shadow-xs px-3 py-2";
                 view.classList.remove("d-none");
-                if (tab === 'registrations' && typeof khoiTaoScanner === 'function') {
-                    khoiTaoScanner();
-                }
             } else {
                 btn.className = "btn btn-sm rounded-pill fw-medium text-secondary px-3 py-2";
                 view.classList.add("d-none");

@@ -8,9 +8,21 @@
         </h5>
         
         <div class="row g-4 align-items-start">
-            <!-- Cột 1: Khung Scanner có sẵn UI (Camera + Nút + Chọn ảnh) như trong video -->
-            <div class="col-12 col-md-6">
-                <div id="reader" style="width: 100%; max-width: 380px;" class="mx-auto bg-white rounded-3 overflow-hidden shadow-xs border p-2"></div>
+            <!-- Cột 1: Khung Scanner có sẵn UI (Chỉ bật khi bấm nút) -->
+            <div class="col-12 col-md-6 text-center">
+                <div id="reader-container" class="d-none">
+                    <div id="reader" style="width: 100%; max-width: 380px;" class="mx-auto bg-white rounded-3 overflow-hidden shadow-xs border p-2 mb-2"></div>
+                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="tatCamera()">
+                        <i class="fa-solid fa-stop me-1"></i> Tắt Camera
+                    </button>
+                </div>
+                <div id="reader-placeholder" class="p-4 border rounded-3 bg-white text-center">
+                    <i class="fa-solid fa-camera-retro fs-3 text-secondary mb-2 d-block"></i>
+                    <div class="small text-muted mb-2">Camera đang ở chế độ chờ. Bấm nút bên dưới để mở máy quét QR.</div>
+                    <button type="button" class="btn btn-sm btn-dark" onclick="moCamera()">
+                        <i class="fa-solid fa-camera me-1"></i> Bật Camera Quét QR
+                    </button>
+                </div>
             </div>
 
             <!-- Cột 2: Nhập mã tay & Kết quả Check-in -->
@@ -104,19 +116,22 @@
 </div>
 
 <!-- Thư viện Quét mã QR chuẩn Html5-QRCode (y hệt trong video) -->
-<script src="https://unpkg.com/html5-qrcode"></script>
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
 <script>
 // 1. Hàm xử lý khi quét thành công mã QR (Y hệt trong video)
-function onScanSuccess(decodedText, decodedResult) {
+function onScanSuccess(decodedText) {
     guiCheckIn(decodedText);
 }
 
-// 2. Khởi tạo Scanner tự động tạo giao diện (Y hệt trong video)
+// 2. Khởi tạo Scanner theo yêu cầu (Chỉ mở khi bấm nút)
 let html5QrcodeScanner = null;
 
-function khoiTaoScanner() {
-    if (!html5QrcodeScanner && document.getElementById('reader')) {
+function moCamera() {
+    document.getElementById('reader-placeholder').classList.add('d-none');
+    document.getElementById('reader-container').classList.remove('d-none');
+
+    if (!html5QrcodeScanner) {
         html5QrcodeScanner = new Html5QrcodeScanner(
             "reader", 
             { 
@@ -124,12 +139,19 @@ function khoiTaoScanner() {
                 qrbox: { width: 220, height: 220 } 
             }
         );
-        html5QrcodeScanner.render(onScanSuccess);
     }
+    html5QrcodeScanner.render(onScanSuccess);
 }
 
-// Khởi chạy scanner
-setTimeout(khoiTaoScanner, 300);
+function tatCamera() {
+    if (html5QrcodeScanner) {
+        html5QrcodeScanner.clear().then(() => {
+            document.getElementById('reader-container').classList.add('d-none');
+            document.getElementById('reader-placeholder').classList.remove('d-none');
+            html5QrcodeScanner = null;
+        }).catch(err => console.error(err));
+    }
+}
 
 // 3. Hàm gửi mã vé lên Laravel API bằng fetch()
 let isProcessingCheckin = false;
