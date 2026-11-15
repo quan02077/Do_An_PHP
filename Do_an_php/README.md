@@ -32,13 +32,15 @@
 2. **Xem chi tiết sự kiện:**
    * Hiển thị đầy đủ banner poster, đơn vị tổ chức, thời gian bắt đầu/kết thúc, giá vé.
    * Thanh tiến độ (Progress bar) trực quan thể hiện tỷ lệ số chỗ đã đăng ký / quy mô tối đa.
+   * **Tích hợp API Bản đồ Google Maps:** Nhúng bản đồ vị trí trực quan theo địa điểm tổ chức, hỗ trợ liên kết mở ứng dụng Google Maps chỉ đường.
    * Danh sách các sự kiện liên quan cùng thể loại.
 3. **Đăng ký & Đặt vé sự kiện (Core Feature):**
    * Kiểm tra điều kiện ngặt nghèo: sự kiện đã hủy, sự kiện đã qua thời gian bắt đầu, sự kiện đã hết chỗ.
    * Chống trùng lặp: mỗi người dùng chỉ được đăng ký 1 vé cho mỗi sự kiện.
    * Tự động sinh mã vé ngẫu nhiên theo định dạng chuẩn: `QQQ-YYYY-XXXXXX` (Ví dụ: `QQQ-2026-B8D2F1`).
-4. **Quản lý Vé của tôi & Hủy vé:**
+4. **Quản lý Vé của tôi & Vé điện tử QR MoMo (E-Ticket):**
    * Danh sách toàn bộ vé đã đăng ký kèm mã vé, ngày đăng ký, trạng thái duyệt.
+   * **Vé điện tử phong cách MoMo / Ticketbox:** Tự động sinh mã QR động trực tiếp từ mã vé định danh, giao diện cuống vé răng cưa chuẩn thực tế, tích hợp nút **In / Tải vé PDF** (`window.print`).
    * Chức năng **Hủy vé an toàn**: cập nhật trạng thái `da_huy`, bảo lưu lịch sử giao dịch và cho phép đăng ký lại khi cần.
 5. **Sự kiện yêu thích (Bookmark):**
    * Nút tim lưu yêu thích tại tất cả các thẻ sự kiện.
@@ -48,8 +50,11 @@
    * Đổi mật khẩu tài khoản với cơ chế xác thực mật khẩu cũ và băm mật khẩu mới bằng thuật toán Bcrypt.
 
 ### Phân hệ Quản trị viên (Admin Portal)
-1. **Bảng điều khiển Thống kê (Dashboard Tab):**
+1. **Bảng điều khiển Thống kê & Biểu đồ trực quan (Dashboard Tab):**
    * Thẻ đo lường tức thời: Tổng số sự kiện, sự kiện sắp diễn ra, tổng số vé đã đặt, tổng số thành viên.
+   * **Trực quan hóa dữ liệu (Chart.js):**
+     * **Biểu đồ tròn (Doughnut Chart):** Phân bổ sự kiện theo từng thể loại danh mục.
+     * **Biểu đồ cột (Bar Chart):** Top các sự kiện thu hút số lượng lượt đăng ký vé cao nhất.
 2. **Quản lý Sự kiện (Events Tab - CRUD Modal):**
    * Danh sách bảng sự kiện trực quan có hình ảnh, danh mục, thời gian, số lượng vé và trạng thái.
    * **Thêm mới sự kiện:** Popup modal hỗ trợ upload ảnh poster trực tiếp từ máy tính hoặc chọn ảnh thumbnail có sẵn.
@@ -58,9 +63,13 @@
 3. **Quản lý Danh mục (Categories Tab - CRUD Modal):**
    * Quản lý phân loại sự kiện (Tên danh mục, mô tả, trạng thái hoạt động / tạm dừng).
    * Quy tắc nghiệp vụ chặn xóa danh mục khi đang có sự kiện trực thuộc.
-4. **Duyệt đăng ký vé (Registrations Tab):**
+4. **Duyệt đăng ký vé & Quét mã QR Check-in (Registrations Tab):**
    * Theo dõi danh sách tất cả các lượt đăng ký vé của người dùng trong hệ thống.
-   * Thao tác 1 chạm: **Duyệt** vé (`da_xac_nhan`) hoặc **Hủy** vé (`da_huy`).
+   * **Soát vé & Check-in QR trực tiếp (O2O Scanner & RESTful API):**
+     * Tích hợp máy quét Camera/Webcam chuẩn HTML5: Quét trực tiếp mã QR trên điện thoại của khách tại cổng sự kiện.
+     * Ô nhập nhanh mã vé hỗ trợ soát vé thủ công.
+     * Tự động xác thực qua API `POST /admin/check-in`, cập nhật trạng thái `da_tham_gia` theo thời gian thực và cảnh báo ngăn chặn hành vi sử dụng vé đã check-in.
+   * Thao tác 1 chạm: **Duyệt** vé (`da_xac_nhan`), **Check-in** vé (`da_tham_gia`) hoặc **Hủy** vé (`da_huy`).
 5. **Cơ chế Phân quyền (Security & Middleware):**
    * Middleware `AuthenticateCustom` (`auth.custom`): Chặn khách vãng lai truy cập vào các trang cá nhân và đặt vé.
    * Middleware `AdminMiddleware` (`admin`): Kiểm tra quyền hạn `vai_tro === 'admin'`, chặn người dùng thường truy cập trái phép vào URL `/admin`.
@@ -148,7 +157,7 @@ Do_an_php/
 │       │   ├── breadcrumb.blade.php        # Điều hướng phân cấp Breadcrumb
 │       │   ├── footer.blade.php            # Chân trang Web
 │       │   └── nav.blade.php               # Thanh điều hướng Navbar
-│       └── user/                           # GIAO DIỆN NGƯỜI DÙNG & CÔNG KHAI
+│       └── user/                           # GIAO DIỆN NGƯI DÙNG & CÔNG KHAI
 │           ├── card_event.blade.php        # Component Thẻ sự kiện dùng chung
 │           ├── event_detail.blade.php      # Trang Chi tiết sự kiện & Đặt vé
 │           ├── favorite.blade.php          # Trang Danh sách yêu thích

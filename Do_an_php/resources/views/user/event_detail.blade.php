@@ -91,6 +91,34 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Bản đồ địa điểm sự kiện (Google Maps Embed API) -->
+            <div class="mt-4 bg-white border shadow-sm rounded-4 p-4">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h3 class="fs-6 fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-map-location-dot text-danger"></i>
+                        <span>Vị trí sự kiện trên bản đồ</span>
+                    </h3>
+                    <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($event->dia_diem ?? 'Hồ Chí Minh') }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1 small">
+                        Mở Google Maps <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i>
+                    </a>
+                </div>
+                <div class="rounded-3 overflow-hidden border" style="height: 320px;">
+                    <iframe
+                        width="100%"
+                        height="100%"
+                        style="border:0;"
+                        loading="lazy"
+                        allowfullscreen
+                        referrerpolicy="no-referrer-when-downgrade"
+                        src="https://maps.google.com/maps?q={{ urlencode($event->dia_diem ?? 'Hồ Chí Minh') }}&t=&z=15&ie=UTF8&iwloc=&output=embed">
+                    </iframe>
+                </div>
+                <div class="d-flex align-items-center gap-2 mt-2 text-secondary small">
+                    <i class="fa-solid fa-location-dot text-danger flex-shrink-0"></i>
+                    <span class="text-truncate">{{ $event->dia_diem ?? 'Địa điểm đang được ban tổ chức cập nhật' }}</span>
+                </div>
+            </div>
         </div>
 
         <!-- Right 1 Col: Ticket Registration Card -->

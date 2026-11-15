@@ -150,7 +150,9 @@ class EventController extends Controller
                 $existingTicket->thoi_gian_dang_ky = now();
                 $existingTicket->save();
 
-                return redirect()->route('Dashboard.myTicket')->with('success', 'Bạn đã kích hoạt lại vé thành công! Mã vé: ' . $existingTicket->ma_ve);
+                return redirect()->route('Dashboard.myTicket')
+                    ->with('success', 'Bạn đã kích hoạt lại vé thành công! Mã vé: ' . $existingTicket->ma_ve)
+                    ->with('new_ticket_code', $existingTicket->ma_ve);
             }
 
             return redirect()->route('Dashboard.myTicket')->with('warning', 'Bạn đã đăng ký vé cho sự kiện này rồi! Mã vé: ' . $existingTicket->ma_ve);
@@ -168,7 +170,9 @@ class EventController extends Controller
             'ghi_chu' => 'Đăng ký vé trực tuyến trên website',
         ]);
 
-        return redirect()->route('Dashboard.myTicket')->with('success', 'Chúc mừng! Đăng ký vé thành công! Mã vé của bạn là ' . $maVe);
+        return redirect()->route('Dashboard.myTicket')
+            ->with('success', 'Chúc mừng! Đăng ký vé thành công! Mã vé của bạn là ' . $maVe)
+            ->with('new_ticket_code', $maVe);
     }
 
     /** Tạo slug không trùng để dùng cho URL và báo cáo. */

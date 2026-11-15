@@ -44,12 +44,16 @@ Route::prefix('admin')->name('admin.')->middleware(['auth.custom', 'admin'])->gr
     Route::put('/categories/{id}', [AdminController::class, 'updateCategory'])->name('categories.update');
     Route::delete('/categories/{id}', [AdminController::class, 'destroyCategory'])->name('categories.destroy');
 
-    // Quản lý đăng ký & duyệt vé
+    // Quản lý đăng ký, duyệt vé & Quét QR check-in
     Route::put('/registrations/{id}/status', [AdminController::class, 'updateRegistrationStatus'])->name('registrations.status');
+    Route::post('/check-in', [AdminController::class, 'checkInTicket'])->name('checkin');
 
     // Quản lý sự kiện (CRUD qua modal)
     Route::resource('event', EventController::class)->except(['show', 'create', 'edit']);
 });
+
+/* ==================== 4. RESTFUL API ==================== */
+Route::post('/api/check-in', [AdminController::class, 'checkInTicket'])->name('api.checkin');
 
 /* ==================== 4. AUTHENTICATION & TÀI KHOẢN ==================== */
 Route::get('/auth', [AuthController::class, 'index'])->name('Auth.index');

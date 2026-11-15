@@ -37,6 +37,24 @@ class AdminController extends Controller
             ->map(fn ($file) => $file->getFilename())
             ->values();
 
+        // Chuẩn bị dữ liệu cho Biểu đồ Chart.js
+        $categoryChart = [
+            'labels' => $categories->pluck('ten_danh_muc')->values(),
+            'counts' => $categories->pluck('su_kiens_count')->values(),
+        ];
+
+        $topEvents = SuKien::withCount(['dangKys' => function ($query) {
+            $query->where('trang_thai', '!=', 'da_huy');
+        }])
+        ->orderByDesc('dang_kys_count')
+        ->take(5)
+        ->get();
+
+        $eventBookingChart = [
+            'labels' => $topEvents->pluck('ten_su_kien')->map(fn($name) => \Illuminate\Support\Str::limit($name, 22))->values(),
+            'counts' => $topEvents->pluck('dang_kys_count')->values(),
+        ];
+
         return view('admin.admin', compact(
             'user',
             'currentTab',
@@ -47,7 +65,9 @@ class AdminController extends Controller
             'events',
             'registrations',
             'categories',
-            'eventImages'
+            'eventImages',
+            'categoryChart',
+            'eventBookingChart'
         ));
     }
 
@@ -110,13 +130,84 @@ class AdminController extends Controller
         }
 
         $data = $request->validate([
-            'trang_thai' => ['required', 'in:cho_duyet,da_xac_nhan,da_huy'],
+            'trang_thai' => ['required', 'in:cho_duyet,da_xac_nhan,da_tham_gia,da_huy'],
         ]);
 
         $registration = DangKy::findOrFail($id);
         $registration->update($data);
 
         return redirect()->route('admin.index', ['tab' => 'registrations'])->with('success', 'Đã cập nhật trạng thái đăng ký.');
+    }
+
+    /**
+     * RESTful API: Quét mã QR hoặc nhập mã vé để Check-in tại sự kiện
+     */
+    public function checkInTicket(Request $request)
+    {
+        $user = Auth::user() ?? session('user');
+        if (!$user || $user->vai_tro !== 'admin') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Bạn không có quyền quản trị để thực hiện soát vé.'
+            ], 403);
+        }
+
+        $ticketCode = trim($request->input('ma_ve', ''));
+
+        if (empty($ticketCode)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Vui lòng cung cấp mã vé hợp lệ.'
+            ], 422);
+        }
+
+        $ticket = DangKy::with(['nguoiDung', 'suKien'])->where('ma_ve', $ticketCode)->first();
+
+        if (!$ticket) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Không tìm thấy vé có mã "' . $ticketCode . '" trong hệ thống!'
+            ], 404);
+        }
+
+        if ($ticket->trang_thai === 'da_huy') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Vé này đã bị hủy, không thể sử dụng để check-in!'
+            ], 400);
+        }
+
+        if ($ticket->trang_thai === 'da_tham_gia' || $ticket->trang_thai === 'da_check_in') {
+            return response()->json([
+                'success' => false,
+                'status' => 'already_checked_in',
+                'message' => 'Cảnh báo: Vé này đã được check-in trước đó!',
+                'ticket' => [
+                    'id' => $ticket->id,
+                    'ma_ve' => $ticket->ma_ve,
+                    'ho_ten' => $ticket->nguoiDung->ho_ten ?? 'N/A',
+                    'ten_su_kien' => $ticket->suKien->ten_su_kien ?? 'N/A',
+                    'thoi_gian' => $ticket->updated_at ? $ticket->updated_at->format('H:i:s d/m/Y') : ''
+                ]
+            ], 400);
+        }
+
+        // Cập nhật trạng thái thành 'da_tham_gia'
+        $ticket->trang_thai = 'da_tham_gia';
+        $ticket->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Check-in thành công!',
+            'ticket' => [
+                'id' => $ticket->id,
+                'ma_ve' => $ticket->ma_ve,
+                'ho_ten' => $ticket->nguoiDung->ho_ten ?? 'Khách',
+                'email' => $ticket->nguoiDung->email ?? 'N/A',
+                'ten_su_kien' => $ticket->suKien->ten_su_kien ?? 'Sự kiện',
+                'thoi_gian' => now()->format('H:i:s d/m/Y')
+            ]
+        ]);
     }
 
     private function requireAdmin()
