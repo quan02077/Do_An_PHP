@@ -104,8 +104,7 @@
         @if(!$isCancelled)
         <button
           type="button"
-          class="btn btn-sm btn-dark rounded-3 px-3 py-2 fw-medium d-flex align-items-center gap-1.5 flex-grow-1 flex-md-grow-0 btn-show-ticket"
-          data-ticket-code="{{ $code }}"
+          class="btn btn-sm btn-dark rounded-3 px-3 py-2 fw-medium d-flex align-items-center gap-1.5"
           onclick="openTicketModal('{{ $ticket->id }}', '{{ $code }}', '{{ $ticketTitle }}', '{{ $date }}', '{{ $ticketLocation }}', '{{ $userName }}')">
           <i class="fa-solid fa-qrcode"></i>
           <span>Xem vé & QR</span>
@@ -192,16 +191,14 @@
 let ticketModalInstance = null;
 
 function openTicketModal(id, code, title, date, location, name) {
-  // 1. Đổ dữ liệu vào Modal
   document.getElementById('modal-ticket-event-name').textContent = title;
   document.getElementById('modal-ticket-date').textContent = date;
   document.getElementById('modal-ticket-user-name').textContent = name;
   document.getElementById('modal-ticket-location').textContent = location;
   document.getElementById('modal-ticket-code').textContent = code;
 
-  // 2. Dùng thư viện QRCode.js vẽ mã QR
   const qrContainer = document.getElementById('ticket-qr-code');
-  qrContainer.innerHTML = ''; // Xóa QR cũ nếu có
+  qrContainer.innerHTML = '';
   new QRCode(qrContainer, {
     text: code,
     width: 150,
@@ -210,7 +207,6 @@ function openTicketModal(id, code, title, date, location, name) {
     colorLight: "#ffffff"
   });
 
-  // 3. Mở Modal
   if (!ticketModalInstance) {
     ticketModalInstance = new bootstrap.Modal(document.getElementById('ticketModal'));
   }
