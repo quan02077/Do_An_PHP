@@ -103,7 +103,7 @@
           type="button"
           class="btn btn-sm btn-dark rounded-3 px-3 py-2 fw-medium d-flex align-items-center gap-1.5 flex-grow-1 flex-md-grow-0 btn-show-ticket"
           data-ticket-code="{{ $code }}"
-          onclick="openTicketModal('{{ $ticket->id }}', '{{ $code }}', '{{ addslashes($ev->ten_su_kien ?? 'Sự kiện') }}', '{{ addslashes($date) }}', '{{ addslashes($ev->dia_diem ?? 'Địa điểm cập nhật') }}', '{{ addslashes($user->ho_ten ?? 'Khách') }}', '{{ addslashes($user->email ?? '') }}', '{{ $img }}', '{{ $ticket->trang_thai }}')">
+          onclick="openTicketModal('{{ $ticket->id }}', '{{ $code }}', '{{ addslashes($ev->ten_su_kien ?? 'Sự kiện') }}', '{{ addslashes($date) }}', '{{ addslashes($ev->dia_diem ?? 'Địa điểm cập nhật') }}', '{{ addslashes($user->ho_ten ?? 'Khách') }}')">
           <i class="fa-solid fa-qrcode"></i>
           <span>Xem vé & QR</span>
         </button>
@@ -149,175 +149,69 @@
 
 </div>
 
-<!-- Modal Vé Điện Tử Phong Cách MoMo / Ticketbox -->
-<div class="modal fade" id="ticketModal" tabindex="-1" aria-labelledby="ticketModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" style="max-width: 440px;">
-    <div class="modal-content border-0 bg-transparent shadow-none">
-      <div class="modal-body p-0">
-        <!-- Ticket Container -->
-        <div id="momo-ticket-card" class="bg-white rounded-4 shadow-lg border overflow-hidden position-relative" style="background: #ffffff;">
-          
-          <!-- Top Header: Brand & Status -->
-          <div class="bg-dark text-white p-4 pb-3">
-            <div class="d-flex align-items-center justify-content-between mb-2">
-              <span class="small text-uppercase tracking-wider text-light opacity-75 font-monospace" style="font-size: 11px;">
-                <i class="fa-solid fa-ticket me-1"></i> EVENTVN • VÉ ĐIỆN TỬ
-              </span>
-              <span id="modal-ticket-badge" class="badge rounded-pill bg-success text-white px-2.5 py-1 small">
-                ĐÃ XÁC NHẬN
-              </span>
-            </div>
-            <h3 id="modal-ticket-event-name" class="fs-5 fw-bold text-white mb-0 text-truncate-2" style="line-height: 1.35;">
-              Tên sự kiện
-            </h3>
-          </div>
+<!-- Modal Vé Đơn Giản (Vẫn dùng Thư viện QRCode.js) -->
+<div class="modal fade" id="ticketModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 380px;">
+    <div class="modal-content text-center p-4 rounded-4 shadow border-0">
+      
+      <!-- 1. Tiêu đề vé -->
+      <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1 mb-2 align-self-center small">
+        VÉ ĐIỆN TỬ CHÍNH THỨC
+      </span>
+      <h5 class="fw-bold text-dark mb-1" id="modal-ticket-event-name">Tên sự kiện</h5>
+      <p class="text-muted small mb-3" id="modal-ticket-date">Ngày giờ</p>
 
-          <!-- Body Info -->
-          <div class="p-4 pt-3 pb-3">
-            <div class="d-flex align-items-center gap-3 mb-3 p-2.5 rounded-3 bg-light border">
-              <img id="modal-ticket-img" src="" alt="Poster" class="rounded-2 object-fit-cover flex-shrink-0" style="width: 54px; height: 54px;">
-              <div class="small">
-                <div class="text-muted" style="font-size: 11px;">NGƯỜI THAM DỰ</div>
-                <div id="modal-ticket-user-name" class="fw-bold text-dark text-truncate" style="max-width: 260px;">Họ tên</div>
-                <div id="modal-ticket-user-email" class="text-secondary text-truncate" style="font-size: 12px; max-width: 260px;">Email</div>
-              </div>
-            </div>
-
-            <div class="d-flex flex-column gap-2 small text-secondary">
-              <div class="d-flex align-items-center gap-2">
-                <i class="fa-regular fa-calendar-check text-muted" style="width: 16px;"></i>
-                <span id="modal-ticket-date" class="text-dark fw-medium">Thời gian</span>
-              </div>
-              <div class="d-flex align-items-start gap-2">
-                <i class="fa-solid fa-location-dot text-danger mt-0.5" style="width: 16px;"></i>
-                <span id="modal-ticket-location" class="text-dark">Địa điểm</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Notch Divider (Đường răng cưa vé kiểu MoMo) -->
-          <div class="position-relative py-1">
-            <div style="border-top: 2px dashed #e2e8f0; width: 100%;"></div>
-            <div class="position-absolute rounded-circle bg-light border" style="width: 26px; height: 26px; left: -14px; top: -12px;"></div>
-            <div class="position-absolute rounded-circle bg-light border" style="width: 26px; height: 26px; right: -14px; top: -12px;"></div>
-          </div>
-
-          <!-- Bottom: Dynamic QR Code -->
-          <div class="p-4 pt-3 text-center bg-white">
-            <div class="d-inline-block p-2.5 bg-white border rounded-3 shadow-xs mb-2">
-              <div id="ticket-qr-code" class="d-flex justify-content-center align-items-center" style="width: 150px; height: 150px;"></div>
-            </div>
-            
-            <div class="font-monospace fw-bold text-dark fs-5 tracking-wide mb-1" id="modal-ticket-code">
-              QQQ-2026-XXXXXX
-            </div>
-            <p class="text-muted small mb-0" style="font-size: 11.5px;">
-              Xuất trình mã QR này tại cổng sự kiện để Ban tổ chức quét check-in.
-            </p>
-          </div>
-
-          <!-- Action Buttons inside Ticket -->
-          <div class="p-3 bg-light border-top d-flex gap-2 btn-print-hide">
-            <button type="button" class="btn btn-dark w-100 py-2 fw-medium rounded-3 small d-flex align-items-center justify-content-center gap-1.5" onclick="printTicket()">
-              <i class="fa-solid fa-print"></i>
-              <span>In / Lưu PDF</span>
-            </button>
-            <button type="button" class="btn btn-outline-secondary w-50 py-2 fw-medium rounded-3 small" data-bs-dismiss="modal">
-              Đóng
-            </button>
-          </div>
-
-        </div>
+      <!-- 2. Mã QR động (Vẽ bằng thư viện QRCode.js) -->
+      <div class="d-inline-block p-2 bg-light border rounded-3 mx-auto mb-2">
+        <div id="ticket-qr-code" class="d-flex justify-content-center align-items-center" style="width: 150px; height: 150px;"></div>
       </div>
+      <div class="font-monospace fw-bold fs-5 text-dark" id="modal-ticket-code">QQQ-2026-XXXXXX</div>
+      <div class="text-muted small" style="font-size: 12px;">Mã QR dùng để quét check-in tại cổng</div>
+      
+      <hr class="my-3" style="border-style: dashed;">
+
+      <!-- 3. Thông tin người tham dự -->
+      <div class="small text-secondary text-start px-2">
+        <div class="mb-1"><strong>Người tham dự:</strong> <span id="modal-ticket-user-name" class="text-dark"></span></div>
+        <div><strong>Địa điểm:</strong> <span id="modal-ticket-location" class="text-dark"></span></div>
+      </div>
+
+      <!-- 4. Nút đóng -->
+      <button type="button" class="btn btn-dark w-100 mt-3 rounded-3 py-2 fw-medium" data-bs-dismiss="modal">Đóng vé</button>
     </div>
   </div>
 </div>
 
-<!-- Print Stylesheet -->
-<style>
-@media print {
-  body * {
-    visibility: hidden !important;
-  }
-  #momo-ticket-card, #momo-ticket-card * {
-    visibility: visible !important;
-  }
-  #momo-ticket-card {
-    position: absolute !important;
-    left: 50% !important;
-    top: 30px !important;
-    transform: translateX(-50%) !important;
-    width: 380px !important;
-    border: 1px solid #111 !important;
-    box-shadow: none !important;
-  }
-  .btn-print-hide, .modal-backdrop {
-    display: none !important;
-  }
-}
-</style>
-
-<!-- QRCode.js Library -->
+<!-- Nạp Thư viện QRCode.js từ CDN -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <script>
 let ticketModalInstance = null;
 
-function openTicketModal(id, code, title, date, location, name, email, img, status) {
+function openTicketModal(id, code, title, date, location, name) {
+  // 1. Đổ dữ liệu vào Modal
   document.getElementById('modal-ticket-event-name').textContent = title;
-  document.getElementById('modal-ticket-user-name').textContent = name;
-  document.getElementById('modal-ticket-user-email').textContent = email;
   document.getElementById('modal-ticket-date').textContent = date;
+  document.getElementById('modal-ticket-user-name').textContent = name;
   document.getElementById('modal-ticket-location').textContent = location;
   document.getElementById('modal-ticket-code').textContent = code;
-  document.getElementById('modal-ticket-img').src = img;
 
-  // Status Badge
-  const badgeEl = document.getElementById('modal-ticket-badge');
-  if (status === 'da_tham_gia' || status === 'da_check_in') {
-    badgeEl.className = 'badge rounded-pill bg-info text-white px-2.5 py-1 small';
-    badgeEl.textContent = 'ĐÃ CHECK-IN';
-  } else if (status === 'da_huy') {
-    badgeEl.className = 'badge rounded-pill bg-danger text-white px-2.5 py-1 small';
-    badgeEl.textContent = 'ĐÃ HỦY';
-  } else {
-    badgeEl.className = 'badge rounded-pill bg-success text-white px-2.5 py-1 small';
-    badgeEl.textContent = 'ĐÃ XÁC NHẬN';
-  }
-
-  // Generate QR Code
+  // 2. Dùng thư viện QRCode.js vẽ mã QR
   const qrContainer = document.getElementById('ticket-qr-code');
-  qrContainer.innerHTML = '';
+  qrContainer.innerHTML = ''; // Xóa QR cũ nếu có
   new QRCode(qrContainer, {
     text: code,
     width: 150,
     height: 150,
     colorDark: "#111827",
-    colorLight: "#ffffff",
-    correctLevel: QRCode.CorrectLevel.H
+    colorLight: "#ffffff"
   });
 
+  // 3. Mở Modal
   if (!ticketModalInstance) {
     ticketModalInstance = new bootstrap.Modal(document.getElementById('ticketModal'));
   }
   ticketModalInstance.show();
 }
-
-function printTicket() {
-  window.print();
-}
-
-// Tự động mở vé khi vừa đặt vé thành công
-@if(session('new_ticket_code'))
-document.addEventListener('DOMContentLoaded', function() {
-  const targetCode = '{{ session('new_ticket_code') }}';
-  const btn = document.querySelector(`.btn-show-ticket[data-ticket-code="${targetCode}"]`);
-  if (btn) {
-    setTimeout(() => {
-      btn.click();
-    }, 400);
-  }
-});
-@endif
 </script>
 @endsection
