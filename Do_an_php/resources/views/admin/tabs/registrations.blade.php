@@ -197,7 +197,7 @@ function performCheckIn(ticketCode) {
     feedbackBox.className = 'rounded-3 border p-3 small bg-light text-secondary';
     feedbackBox.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i>Đang kiểm tra mã vé: <strong>' + ticketCode + '</strong>...';
 
-    fetch('{{ route('admin.checkin') }}', {
+    fetch('/admin/check-in', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
