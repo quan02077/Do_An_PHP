@@ -1,4 +1,4 @@
-# EVENTVN — HỆ THỐNG QUẢN TRỊ & ĐẶT VÉ SỰ KIỆN TRỰC TUYẾN
+# QQQ — HỆ THỐNG QUẢN TRỊ & ĐẶT VÉ SỰ KIỆN TRỰC TUYẾN
 
 **Đồ án môn học: Lập trình Web với PHP & Laravel**  
 **Trường Đại học Công Thương TP.HCM (HUIT) — Khoa Công nghệ Thông tin**
@@ -6,7 +6,7 @@
 ---
 
 ## 1. Giới thiệu Đề tài
-**EventVN** là nền tảng trực tuyến kết nối ban tổ chức sự kiện với người tham dự. Hệ thống giải quyết trọn vẹn bài toán từ khâu xuất bản, phân loại danh mục, quảng bá sự kiện, quản lý số lượng chỗ ngồi, đặt vé trực tuyến tự động sinh mã vé duy nhất, đến phân hệ duyệt vé và kiểm soát dữ liệu chuyên nghiệp dành cho Quản trị viên (Admin).
+**QQQ** là nền tảng trực tuyến kết nối ban tổ chức sự kiện với người tham dự. Hệ thống giải quyết trọn vẹn bài toán từ khâu xuất bản, phân loại danh mục, quảng bá sự kiện, quản lý số lượng chỗ ngồi, đặt vé trực tuyến tự động sinh mã vé duy nhất, đến phân hệ duyệt vé và kiểm soát dữ liệu chuyên nghiệp dành cho Quản trị viên (Admin).
 
 ---
 
