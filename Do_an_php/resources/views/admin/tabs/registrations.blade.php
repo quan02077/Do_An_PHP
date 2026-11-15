@@ -8,7 +8,7 @@
         </h5>
         
         <div class="row g-4 align-items-start">
-            <!-- Cột 1: Đúng 1 khung máy quét chuẩn tự động như trong hình -->
+            <!-- Cột 1: Khung Scanner có sẵn UI (Camera + Nút + Chọn ảnh) như trong video -->
             <div class="col-12 col-md-6">
                 <div id="reader" style="width: 100%; max-width: 380px;" class="mx-auto bg-white rounded-3 overflow-hidden shadow-xs border p-2"></div>
             </div>
@@ -112,7 +112,7 @@ function onScanSuccess(decodedText) {
     guiCheckIn(decodedText);
 }
 
-// 2. Khởi tạo đúng 1 máy quét như trong hình
+// 2. Khởi tạo Scanner tự động tạo giao diện (Y hệt trong video)
 let html5QrcodeScanner = null;
 
 function khoiTaoScanner() {
@@ -128,9 +128,8 @@ function khoiTaoScanner() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(khoiTaoScanner, 400);
-});
+// Khởi chạy scanner
+setTimeout(khoiTaoScanner, 300);
 
 // 3. Hàm gửi mã vé lên Laravel API bằng fetch()
 let isProcessingCheckin = false;
@@ -185,3 +184,4 @@ function guiCheckIn(maVe) {
     });
 }
 </script>
+    
