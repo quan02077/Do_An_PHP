@@ -1,6 +1,6 @@
 # QQQ — HỆ THỐNG QUẢN TRỊ & ĐẶT VÉ SỰ KIỆN TRỰC TUYẾN
 
-**Đồ án môn học: Lập trình Web với PHP & Laravel**  
+**Đồ án môn học: Lập trình mã nguồn mở**  
 **Trường Đại học Công Thương TP.HCM (HUIT) — Khoa Công nghệ Thông tin**
 
 ---
