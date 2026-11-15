@@ -8,21 +8,9 @@
         </h5>
         
         <div class="row g-4 align-items-start">
-            <!-- Cột 1: Khung Scanner có sẵn UI (Chỉ bật khi bấm nút) -->
-            <div class="col-12 col-md-6 text-center">
-                <div id="reader-container" class="d-none">
-                    <div id="reader" style="width: 100%; max-width: 380px;" class="mx-auto bg-white rounded-3 overflow-hidden shadow-xs border p-2 mb-2"></div>
-                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="tatCamera()">
-                        <i class="fa-solid fa-stop me-1"></i> Tắt Camera
-                    </button>
-                </div>
-                <div id="reader-placeholder" class="p-4 border rounded-3 bg-white text-center">
-                    <i class="fa-solid fa-camera-retro fs-3 text-secondary mb-2 d-block"></i>
-                    <div class="small text-muted mb-2">Camera đang ở chế độ chờ. Bấm nút bên dưới để mở máy quét QR.</div>
-                    <button type="button" class="btn btn-sm btn-dark" onclick="moCamera()">
-                        <i class="fa-solid fa-camera me-1"></i> Bật Camera Quét QR
-                    </button>
-                </div>
+            <!-- Cột 1: Đúng 1 khung máy quét chuẩn tự động như trong hình -->
+            <div class="col-12 col-md-6">
+                <div id="reader" style="width: 100%; max-width: 380px;" class="mx-auto bg-white rounded-3 overflow-hidden shadow-xs border p-2"></div>
             </div>
 
             <!-- Cột 2: Nhập mã tay & Kết quả Check-in -->
@@ -124,14 +112,11 @@ function onScanSuccess(decodedText) {
     guiCheckIn(decodedText);
 }
 
-// 2. Khởi tạo Scanner theo yêu cầu (Chỉ mở khi bấm nút)
+// 2. Khởi tạo đúng 1 máy quét như trong hình
 let html5QrcodeScanner = null;
 
-function moCamera() {
-    document.getElementById('reader-placeholder').classList.add('d-none');
-    document.getElementById('reader-container').classList.remove('d-none');
-
-    if (!html5QrcodeScanner) {
+function khoiTaoScanner() {
+    if (!html5QrcodeScanner && document.getElementById('reader')) {
         html5QrcodeScanner = new Html5QrcodeScanner(
             "reader", 
             { 
@@ -139,19 +124,13 @@ function moCamera() {
                 qrbox: { width: 220, height: 220 } 
             }
         );
+        html5QrcodeScanner.render(onScanSuccess);
     }
-    html5QrcodeScanner.render(onScanSuccess);
 }
 
-function tatCamera() {
-    if (html5QrcodeScanner) {
-        html5QrcodeScanner.clear().then(() => {
-            document.getElementById('reader-container').classList.add('d-none');
-            document.getElementById('reader-placeholder').classList.remove('d-none');
-            html5QrcodeScanner = null;
-        }).catch(err => console.error(err));
-    }
-}
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(khoiTaoScanner, 400);
+});
 
 // 3. Hàm gửi mã vé lên Laravel API bằng fetch()
 let isProcessingCheckin = false;
