@@ -103,7 +103,11 @@
           type="button"
           class="btn btn-sm btn-dark rounded-3 px-3 py-2 fw-medium d-flex align-items-center gap-1.5 flex-grow-1 flex-md-grow-0 btn-show-ticket"
           data-ticket-code="{{ $code }}"
-          onclick="openTicketModal('{{ $ticket->id }}', '{{ $code }}', '{{ addslashes($ev->ten_su_kien ?? 'Sự kiện') }}', '{{ addslashes($date) }}', '{{ addslashes($ev->dia_diem ?? 'Địa điểm cập nhật') }}', '{{ addslashes($user->ho_ten ?? 'Khách') }}')">
+          data-event-title="{{ $ev->ten_su_kien ?? 'Sự kiện' }}"
+          data-event-date="{{ $date }}"
+          data-event-location="{{ $ev->dia_diem ?? 'Địa điểm cập nhật' }}"
+          data-user-name="{{ $user->ho_ten ?? 'Khách' }}"
+          onclick="openTicketModal(this)">
           <i class="fa-solid fa-qrcode"></i>
           <span>Xem vé & QR</span>
         </button>
@@ -188,7 +192,16 @@
 <script>
 let ticketModalInstance = null;
 
-function openTicketModal(id, code, title, date, location, name) {
+function openTicketModal(btnOrId, code, title, date, location, name) {
+  // Nếu truyền 'this' (phần tử nút bấm), tự động lấy từ data-attributes (sạch đẹp, không sợ lỗi dấu nháy)
+  if (typeof btnOrId === 'object' && btnOrId !== null && btnOrId.dataset) {
+    code = btnOrId.dataset.ticketCode || '';
+    title = btnOrId.dataset.eventTitle || 'Sự kiện';
+    date = btnOrId.dataset.eventDate || '';
+    location = btnOrId.dataset.eventLocation || '';
+    name = btnOrId.dataset.userName || 'Khách';
+  }
+
   // 1. Đổ dữ liệu vào Modal
   document.getElementById('modal-ticket-event-name').textContent = title;
   document.getElementById('modal-ticket-date').textContent = date;
