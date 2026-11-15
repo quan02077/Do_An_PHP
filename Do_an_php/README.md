@@ -1,26 +1,16 @@
-<div align="center">
-
-# 🎟️ EVENTVN — HỆ THỐNG QUẢN TRỊ & ĐẶT VÉ SỰ KIỆN TRỰC TUYẾN
+# EVENTVN — HỆ THỐNG QUẢN TRỊ & ĐẶT VÉ SỰ KIỆN TRỰC TUYẾN
 
 **Đồ án môn học: Lập trình Web với PHP & Laravel**  
 **Trường Đại học Công Thương TP.HCM (HUIT) — Khoa Công nghệ Thông tin**
 
-[![PHP Version](https://img.shields.io/badge/PHP-8.2%2B-777BB4?style=flat&logo=php&logoColor=white)](https://www.php.net/)
-[![Laravel Version](https://img.shields.io/badge/Laravel-12.x-FF2D20?style=flat&logo=laravel&logoColor=white)](https://laravel.com/)
-[![MySQL](https://img.shields.io/badge/MySQL-8.0%2B-4479A1?style=flat&logo=mysql&logoColor=white)](https://www.mysql.com/)
-[![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-7952B3?style=flat&logo=bootstrap&logoColor=white)](https://getbootstrap.com/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-
-</div>
-
 ---
 
-## 📖 1. Giới thiệu Đề tài
+## 1. Giới thiệu Đề tài
 **EventVN** là nền tảng trực tuyến kết nối ban tổ chức sự kiện với người tham dự. Hệ thống giải quyết trọn vẹn bài toán từ khâu xuất bản, phân loại danh mục, quảng bá sự kiện, quản lý số lượng chỗ ngồi, đặt vé trực tuyến tự động sinh mã vé duy nhất, đến phân hệ duyệt vé và kiểm soát dữ liệu chuyên nghiệp dành cho Quản trị viên (Admin).
 
 ---
 
-## 👥 2. Thông tin Nhóm Sinh viên & Bảng phân công nhiệm vụ
+## 2. Thông tin Nhóm Sinh viên & Phân công nhiệm vụ
 *(Dựa theo Bảng phân công công việc chi tiết `PCCV_EventVN.xlsx`)*
 
 | STT | Thành viên | Vai trò | Công việc phụ trách chính | Tỷ lệ hoàn thành |
@@ -31,9 +21,9 @@
 
 ---
 
-## 🌟 3. Danh sách Chức năng Hệ thống
+## 3. Danh sách Chức năng Hệ thống
 
-### 🟢 Phân hệ Khách & Người dùng (User / Public)
+### Phân hệ Khách & Người dùng (User / Public)
 1. **Trang chủ & Khám phá sự kiện:**
    * Tìm kiếm từ khóa đa trường (theo tên sự kiện, mô tả tóm tắt, địa điểm tổ chức).
    * Lọc theo danh mục thể loại (Âm nhạc, Công nghệ, Thể thao, Ẩm thực, Hội thảo...).
@@ -51,13 +41,13 @@
    * Danh sách toàn bộ vé đã đăng ký kèm mã vé, ngày đăng ký, trạng thái duyệt.
    * Chức năng **Hủy vé an toàn**: cập nhật trạng thái `da_huy`, bảo lưu lịch sử giao dịch và cho phép đăng ký lại khi cần.
 5. **Sự kiện yêu thích (Bookmark):**
-   * Nút tim thả yêu thích tại tất cả các thẻ sự kiện.
+   * Nút tim lưu yêu thích tại tất cả các thẻ sự kiện.
    * Trang quản lý danh sách yêu thích riêng cho từng tài khoản.
 6. **Hồ sơ cá nhân & Bảo mật:**
    * Xem và chỉnh sửa thông tin cá nhân (họ tên, email, số điện thoại, ngày sinh, địa chỉ, tiểu sử).
    * Đổi mật khẩu tài khoản với cơ chế xác thực mật khẩu cũ và băm mật khẩu mới bằng thuật toán Bcrypt.
 
-### 🔴 Phân hệ Quản trị viên (Admin Portal)
+### Phân hệ Quản trị viên (Admin Portal)
 1. **Bảng điều khiển Thống kê (Dashboard Tab):**
    * Thẻ đo lường tức thời: Tổng số sự kiện, sự kiện sắp diễn ra, tổng số vé đã đặt, tổng số thành viên.
 2. **Quản lý Sự kiện (Events Tab - CRUD Modal):**
@@ -77,7 +67,7 @@
 
 ---
 
-## 🗄️ 4. Sơ đồ Cơ sở dữ liệu (Database Schema)
+## 4. Sơ đồ Cơ sở dữ liệu (Database Schema)
 
 Cơ sở dữ liệu gồm 5 bảng chính được thiết kế chuẩn hóa quan hệ (Database: `quan_ly_su_kien`):
 
@@ -107,7 +97,7 @@ Cơ sở dữ liệu gồm 5 bảng chính được thiết kế chuẩn hóa qu
 
 ---
 
-## 📂 5. Cấu trúc Thư mục Dự án
+## 5. Cấu trúc Thư mục Dự án
 
 ```text
 Do_an_php/
@@ -171,7 +161,7 @@ Do_an_php/
 
 ---
 
-## ⚡ 6. Hướng dẫn Cài đặt & Khởi chạy
+## 6. Hướng dẫn Cài đặt & Khởi chạy
 
 ### Bước 1: Clone dự án về máy
 ```bash
@@ -217,7 +207,7 @@ Truy cập hệ thống tại: **`http://127.0.0.1:8000`**
 
 ---
 
-## 🔑 7. Tài khoản Thử nghiệm (Demo Accounts)
+## 7. Tài khoản Thử nghiệm (Demo Accounts)
 
 Hệ thống đã nạp sẵn tài khoản với đầy đủ dữ liệu mô phỏng để phục vụ việc chấm điểm và kiểm thử:
 
@@ -226,8 +216,3 @@ Hệ thống đã nạp sẵn tài khoản với đầy đủ dữ liệu mô ph
 | **Quản trị viên (Admin)** | `admin@gmail.com` | `123456` | Toàn quyền vào `/admin`: Quản lý sự kiện, danh mục, upload ảnh poster, duyệt/hủy vé |
 | **Người dùng (User 1)** | `user@gmail.com` | `123456` | Trải nghiệm đặt vé, xem vé trong *Vé của tôi*, hủy vé, lưu yêu thích, sửa hồ sơ |
 | **Người dùng (User 2)** | `user2@gmail.com` | `123456` | Tài khoản thứ 2 để thử nghiệm đăng ký vé song song và kiểm tra số lượng chỗ |
-
----
-
-## 🛡️ 8. Giấy phép (License)
-Dự án được phát triển nhằm mục đích học tập và nghiên cứu trong khuôn khổ môn học tại **Trường Đại học Công Thương TP.HCM (HUIT)**. Mã nguồn mở phát hành theo giấy phép [MIT License](LICENSE).
