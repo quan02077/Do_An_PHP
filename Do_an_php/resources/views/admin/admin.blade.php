@@ -386,6 +386,91 @@
         showModal('edit-category-modal');
     }
 
+    // Validation thời gian sự kiện phía client (chỗ thêm sự kiện)
+    const newEvStart = document.getElementById('new-ev-start');
+    const newEvEnd = document.getElementById('new-ev-end');
+    const addEventForm = document.getElementById('add-event-form');
+
+    if (newEvStart && newEvEnd) {
+        newEvStart.addEventListener('change', function () {
+            if (this.value) {
+                newEvEnd.min = this.value;
+                if (newEvEnd.value && newEvEnd.value < this.value) {
+                    newEvEnd.value = this.value;
+                }
+            }
+        });
+    }
+
+    if (addEventForm) {
+        addEventForm.addEventListener('submit', function (e) {
+            const now = new Date();
+            // Lấy thời điểm bắt đầu của ngày hiện tại (00:00:00)
+            const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+
+            if (newEvStart && newEvStart.value) {
+                const startDate = new Date(newEvStart.value);
+                if (startDate < todayStart) {
+                    e.preventDefault();
+                    alert('Thời gian bắt đầu không được nhỏ hơn ngày hiện tại.');
+                    newEvStart.focus();
+                    return false;
+                }
+            }
+
+            if (newEvEnd && newEvEnd.value) {
+                const endDate = new Date(newEvEnd.value);
+                if (endDate < todayStart) {
+                    e.preventDefault();
+                    alert('Thời gian kết thúc không được nhỏ hơn ngày hiện tại.');
+                    newEvEnd.focus();
+                    return false;
+                }
+            }
+
+            if (newEvStart && newEvEnd && newEvStart.value && newEvEnd.value) {
+                const startDate = new Date(newEvStart.value);
+                const endDate = new Date(newEvEnd.value);
+                if (endDate < startDate) {
+                    e.preventDefault();
+                    alert('Thời gian kết thúc không được nhỏ hơn ngày bắt đầu.');
+                    newEvEnd.focus();
+                    return false;
+                }
+            }
+        });
+    }
+
+    const editEvStart = document.getElementById('edit-ev-start');
+    const editEvEnd = document.getElementById('edit-ev-end');
+    const editEventForm = document.getElementById('edit-event-form');
+
+    if (editEvStart && editEvEnd) {
+        editEvStart.addEventListener('change', function () {
+            if (this.value) {
+                editEvEnd.min = this.value;
+                if (editEvEnd.value && editEvEnd.value < this.value) {
+                    editEvEnd.value = this.value;
+                }
+            }
+        });
+    }
+
+    if (editEventForm) {
+        editEventForm.addEventListener('submit', function (e) {
+            if (editEvStart && editEvEnd && editEvStart.value && editEvEnd.value) {
+                const startDate = new Date(editEvStart.value);
+                const endDate = new Date(editEvEnd.value);
+                if (endDate < startDate) {
+                    e.preventDefault();
+                    alert('Thời gian kết thúc không được nhỏ hơn ngày bắt đầu.');
+                    editEvEnd.focus();
+                    return false;
+                }
+            }
+        });
+    }
+
     switchAdminTab("{{ $currentTab }}");
 </script>
 @endpush

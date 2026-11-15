@@ -10,7 +10,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body p-3 p-sm-4">
-        <form method="POST" action="{{ route('admin.event.store') }}" enctype="multipart/form-data">
+        <form id="add-event-form" method="POST" action="{{ route('admin.event.store') }}" enctype="multipart/form-data">
           @csrf
           <div class="mb-3">
             <label for="new-ev-title" class="form-label small fw-medium text-dark mb-1">Tên sự kiện <span class="text-danger">*</span></label>
@@ -40,11 +40,11 @@
           <div class="row g-3 mb-3">
             <div class="col-sm-6">
               <label for="new-ev-start" class="form-label small fw-medium text-dark mb-1">Thời gian bắt đầu <span class="text-danger">*</span></label>
-              <input type="datetime-local" name="thoi_gian_bat_dau" id="new-ev-start" required class="form-control form-control-sm py-2" />
+              <input type="datetime-local" name="thoi_gian_bat_dau" id="new-ev-start" required min="{{ now()->format('Y-m-d\TH:i') }}" class="form-control form-control-sm py-2" />
             </div>
             <div class="col-sm-6">
               <label for="new-ev-end" class="form-label small fw-medium text-dark mb-1">Thời gian kết thúc <span class="text-danger">*</span></label>
-              <input type="datetime-local" name="thoi_gian_ket_thuc" id="new-ev-end" required class="form-control form-control-sm py-2" />
+              <input type="datetime-local" name="thoi_gian_ket_thuc" id="new-ev-end" required min="{{ now()->format('Y-m-d\TH:i') }}" class="form-control form-control-sm py-2" />
             </div>
           </div>
 

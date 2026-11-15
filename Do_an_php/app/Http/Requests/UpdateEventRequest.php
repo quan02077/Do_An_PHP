@@ -20,7 +20,7 @@ class UpdateEventRequest extends FormRequest
             'hinh_anh'           => ['nullable', 'string', 'max:255'],
             'hinh_anh_tai_len'   => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
             'thoi_gian_bat_dau'  => ['sometimes', 'required', 'date'],
-            'thoi_gian_ket_thuc' => ['sometimes', 'required', 'date', 'after:thoi_gian_bat_dau'],
+            'thoi_gian_ket_thuc' => ['sometimes', 'required', 'date'],
             'dia_diem'           => ['sometimes', 'required', 'string', 'max:255'],
             'ban_to_chuc'        => ['nullable', 'string', 'max:255'],
             'so_luong_toi_da'    => ['sometimes', 'required', 'integer', 'min:1'],
@@ -55,5 +55,17 @@ class UpdateEventRequest extends FormRequest
             'gia_ve.min'                  => 'Giá vé không được là số âm (0 là miễn phí).',
             'trang_thai.in'               => 'Trạng thái sự kiện không hợp lệ.',
         ];
+    }
+
+    public function withValidator($validator): void
+    {
+        $validator->after(function ($validator) {
+            $start = $this->input('thoi_gian_bat_dau');
+            $end = $this->input('thoi_gian_ket_thuc');
+
+            if ($start && $end && strtotime($end) < strtotime($start)) {
+                $validator->errors()->add('thoi_gian_ket_thuc', 'Thời gian kết thúc không được nhỏ hơn ngày bắt đầu.');
+            }
+        });
     }
 }
