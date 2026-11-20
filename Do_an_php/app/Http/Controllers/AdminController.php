@@ -171,6 +171,13 @@ class AdminController extends Controller
 
             $registration->update($data);
             event(TicketCountsChanged::forEvent($event));
+
+            // Check-in thủ công cũng phải cập nhật bộ đếm/bảng tin realtime như khi quét QR.
+            if ($data['trang_thai'] === 'da_tham_gia') {
+                $checkedInTotal = DangKy::where('trang_thai', 'da_tham_gia')->count();
+                event(new TicketCheckedIn($registration->id, $event->id, $registration->nguoiDung->ho_ten, $checkedInTotal));
+            }
+
             return redirect()->route('admin.index', ['tab' => 'registrations'])
                 ->with('success', 'Đã cập nhật trạng thái đăng ký.');
         });

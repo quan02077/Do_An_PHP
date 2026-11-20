@@ -31,6 +31,34 @@ class RealtimeTicketTest extends TestCase
         );
     }
 
+    public function test_manual_status_check_in_also_publishes_admin_message(): void
+    {
+        Event::fake([TicketCountsChanged::class, TicketCheckedIn::class]);
+        $admin = NguoiDung::factory()->create(['vai_tro' => 'admin']);
+        $ticket = DangKy::factory()->create(['trang_thai' => 'da_xac_nhan']);
+
+        $this->actingAs($admin)->from('/admin?tab=registrations')
+            ->put('/admin/registrations/'.$ticket->id.'/status', ['trang_thai' => 'da_tham_gia'])
+            ->assertSessionHas('success');
+
+        Event::assertDispatched(TicketCheckedIn::class, fn ($message) =>
+            $message->ticketId === $ticket->id && $message->checkedInTotal === 1
+        );
+    }
+
+    public function test_manual_cancel_does_not_publish_check_in_message(): void
+    {
+        Event::fake([TicketCountsChanged::class, TicketCheckedIn::class]);
+        $admin = NguoiDung::factory()->create(['vai_tro' => 'admin']);
+        $ticket = DangKy::factory()->create(['trang_thai' => 'da_xac_nhan']);
+
+        $this->actingAs($admin)->from('/admin?tab=registrations')
+            ->put('/admin/registrations/'.$ticket->id.'/status', ['trang_thai' => 'da_huy'])
+            ->assertSessionHas('success');
+
+        Event::assertNotDispatched(TicketCheckedIn::class);
+    }
+
     public function test_check_in_publishes_admin_message_without_public_personal_data(): void
     {
         Event::fake([TicketCountsChanged::class, TicketCheckedIn::class]);
