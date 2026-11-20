@@ -45,9 +45,10 @@
 4. **Quản lý Vé của tôi & Vé điện tử QR MoMo (E-Ticket):**
    * Danh sách toàn bộ vé đã đăng ký kèm mã vé, ngày đăng ký, trạng thái duyệt.
    * **Vé điện tử phong cách MoMo / Ticketbox:** Tự động sinh mã QR động trực tiếp từ mã vé định danh, giao diện cuống vé răng cưa chuẩn thực tế, tích hợp nút **In / Tải vé PDF** (`window.print`).
-   * Chức năng **Hủy vé an toàn**: cập nhật trạng thái `da_huy`, bảo lưu lịch sử giao dịch và cho phép đăng ký lại khi cần.
+   * Chức năng **Hủy vé an toàn**: cập nhật trạng thái `da_huy`, bảo lưu lịch sử giao dịch và cho phép đăng ký lại khi cần. Không hủy được vé đã check-in (`da_tham_gia`) hoặc khi sự kiện đã bắt đầu.
+   * Hủy vé bằng AJAX: badge và nút đổi ngay, hiện thông báo toast, không tải lại trang; khi tắt JavaScript vẫn hủy được qua form thường.
 5. **Sự kiện yêu thích (Bookmark):**
-   * Nút tim lưu yêu thích tại tất cả các thẻ sự kiện.
+   * Nút tim lưu yêu thích tại tất cả các thẻ sự kiện; bấm bằng AJAX (không tải lại trang), controller trả JSON khi request AJAX và vẫn redirect khi tắt JavaScript.
    * Trang quản lý danh sách yêu thích riêng cho từng tài khoản.
 6. **Hồ sơ cá nhân & Bảo mật:**
    * Xem và chỉnh sửa thông tin cá nhân (họ tên, email, số điện thoại, ngày sinh, địa chỉ, tiểu sử).
@@ -76,6 +77,7 @@
      * Gửi yêu cầu đến `POST /admin/check-in` có middleware đăng nhập và Admin, cập nhật trạng thái `da_tham_gia` và cảnh báo vé đã check-in.
    * Bộ đếm và tên người vừa check-in cập nhật trên các màn Admin đang mở qua kênh Reverb riêng cho Admin.
    * Thao tác 1 chạm: **Duyệt** vé (`da_xac_nhan`), **Check-in** vé (`da_tham_gia`) hoặc **Hủy** vé (`da_huy`).
+   * Luồng trạng thái được kiểm tra ở server, giao diện chỉ hiện nút hợp lệ: `cho_duyet → da_xac_nhan | da_huy`; `da_xac_nhan → da_tham_gia | da_huy`; `da_huy → da_xac_nhan` chỉ khi sự kiện còn chỗ, còn công khai và chưa bắt đầu; `da_tham_gia` là trạng thái cuối.
 5. **Cơ chế Phân quyền (Security & Middleware):**
    * Middleware `AuthenticateCustom` (`auth.custom`): Chặn khách vãng lai truy cập vào các trang cá nhân và đặt vé.
    * Middleware `AdminMiddleware` (`admin`): Kiểm tra quyền hạn `vai_tro === 'admin'`, chặn người dùng thường truy cập trái phép vào URL `/admin`.
@@ -109,7 +111,7 @@ Cơ sở dữ liệu gồm 5 bảng chính được thiết kế chuẩn hóa qu
 * **`nguoi_dung`**: Lưu thông tin tài khoản, vai trò (`admin` / `user`), mật khẩu mã hóa Bcrypt.
 * **`danh_muc`**: Phân loại sự kiện (triển lãm, âm nhạc, công nghệ...), trạng thái hoạt động.
 * **`su_kien`**: Tên sự kiện, slug URL, ngày giờ bắt đầu/kết thúc, địa điểm, quy mô vé, giá vé, hình ảnh, trạng thái.
-* **`dang_ky`**: Khóa ngoại liên kết `nguoi_dung_id` và `su_kien_id`, mã vé độc nhất `ma_ve`, trạng thái duyệt (`cho_duyet`, `da_xac_nhan`, `da_huy`).
+* **`dang_ky`**: Khóa ngoại liên kết `nguoi_dung_id` và `su_kien_id`, mã vé độc nhất `ma_ve`, trạng thái vé (`cho_duyet`, `da_xac_nhan`, `da_tham_gia`, `da_huy`).
 * **`yeu_thich`**: Bảng quan hệ N - N lưu trữ các sự kiện được người dùng đánh dấu yêu thích.
 
 ---
@@ -238,6 +240,14 @@ Chạy kiểm thử với SQLite trong bộ nhớ sau khi cài `vendor`:
 php artisan test
 ```
 
+SQLite trong bộ nhớ không kiểm chứng được khóa dòng khi nhiều người đặt cùng lúc. Kiểm thử đồng thời trên MySQL/MariaDB thật (tự tạo và xóa database `qqq_concurrency_test`, không đụng `quan_ly_su_kien`; chạy bằng Git Bash):
+
+```bash
+bash tests/concurrency/run.sh
+```
+
+Chi tiết kịch bản và kết quả: `tests/concurrency/README.md`.
+
 Truy cập hệ thống tại: **`http://127.0.0.1:8000`**
 
 ---
@@ -248,6 +258,6 @@ Hệ thống đã nạp sẵn tài khoản với đầy đủ dữ liệu mô ph
 
 | Loại tài khoản | Email đăng nhập | Mật khẩu | Quyền hạn và Phạm vi thử nghiệm |
 |:---|:---|:---|:---|
-| **Quản trị viên (Admin)** | `admin@gmail.com` | `123456` | Toàn quyền vào `/admin`: Quản lý sự kiện, danh mục, upload ảnh poster, duyệt/hủy vé |
-| **Người dùng (User 1)** | `user@gmail.com` | `123456` | Trải nghiệm đặt vé, xem vé trong *Vé của tôi*, hủy vé, lưu yêu thích, sửa hồ sơ |
-| **Người dùng (User 2)** | `user2@gmail.com` | `123456` | Tài khoản thứ 2 để thử nghiệm đăng ký vé song song và kiểm tra số lượng chỗ |
+| **Quản trị viên (Admin)** | `admin@qqq.vn` | `123456` | Toàn quyền vào `/admin`: Quản lý sự kiện, danh mục, upload ảnh poster, duyệt/hủy vé |
+| **Người dùng (User 1)** | `quan@gmail.com` | `123456` | Trải nghiệm đặt vé, xem vé trong *Vé của tôi*, hủy vé, lưu yêu thích, sửa hồ sơ |
+| **Người dùng (User 2)** | `nam@gmail.com` | `123456` | Tài khoản thứ 2 để thử nghiệm đăng ký vé song song và kiểm tra số lượng chỗ |
