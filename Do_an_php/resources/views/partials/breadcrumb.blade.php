@@ -14,7 +14,7 @@
                 <a href="{{ $url }}" class="text-decoration-none text-secondary">{{ $label }}</a>
             </li>
             @else
-            <li class="breadcrumb-item active text-dark fw-medium" aria-current="page">{{ $label }}</li>
+            <li class="breadcrumb-item active text-dark fw-medium text-break" aria-current="page">{{ $label }}</li>
             @endif
             @endforeach
         </ol>

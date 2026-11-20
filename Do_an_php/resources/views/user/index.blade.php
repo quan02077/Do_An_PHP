@@ -36,50 +36,52 @@ $events = $events ?? collect();
     <div class="d-flex align-items-center gap-2 overflow-x-auto pb-2" id="category-pills-container">
       <a
         href="{{ route('Home.index', request()->only('search', 'status')) }}"
-        class="btn btn-sm rounded-pill px-3 py-1.5 fw-medium {{ !request('category') ? 'btn-dark shadow-sm' : 'btn-outline-secondary' }}">
+        class="btn btn-sm rounded-pill px-3 py-1.5 fw-medium flex-shrink-0 {{ !request('category') ? 'btn-dark shadow-sm' : 'btn-outline-secondary' }}">
         Tất cả
       </a>
 
       @foreach ($categories as $cat)
       <a
         href="{{ route('Home.index', array_merge(request()->only('search', 'status'), ['category' => $cat->id])) }}"
-        class="btn btn-sm rounded-pill px-3 py-1.5 fw-medium {{ request('category') == $cat->id ? 'btn-dark shadow-sm' : 'btn-outline-secondary' }}">
+        class="btn btn-sm rounded-pill px-3 py-1.5 fw-medium flex-shrink-0 {{ request('category') == $cat->id ? 'btn-dark shadow-sm' : 'btn-outline-secondary' }}">
         {{ $cat->ten_danh_muc }}
       </a>
       @endforeach
     </div>
 
     <div class="d-flex flex-column flex-sm-row justify-content-between gap-3 pt-3 border-top mt-2">
-      <div class="btn-group btn-group-sm rounded-pill p-1 bg-white border shadow-sm w-auto align-self-start" role="group">
-        <a
-          href="{{ route('Home.index', request()->only('search', 'category')) }}"
-          class="status-filter-tab btn btn-sm rounded-pill px-3 {{ !request('status') ? 'btn-dark active' : 'btn-outline-secondary border-0' }}">
-          Tất cả
-        </a>
-        <a
-          href="{{ route('Home.index', array_merge(request()->only('search', 'category'), ['status' => 'sap_dien_ra'])) }}"
-          class="status-filter-tab btn btn-sm rounded-pill px-3 {{ request('status') === 'sap_dien_ra' ? 'btn-dark active' : 'btn-outline-secondary border-0' }}">
-          Sắp diễn ra
-        </a>
-        <a
-          href="{{ route('Home.index', array_merge(request()->only('search', 'category'), ['status' => 'dang_dien_ra'])) }}"
-          class="status-filter-tab btn btn-sm rounded-pill px-3 {{ request('status') === 'dang_dien_ra' ? 'btn-dark active' : 'btn-outline-secondary border-0' }}">
-          Đang diễn ra
-        </a>
-        <a
-          href="{{ route('Home.index', array_merge(request()->only('search', 'category'), ['status' => 'da_ket_thuc'])) }}"
-          class="status-filter-tab btn btn-sm rounded-pill px-3 {{ request('status') === 'da_ket_thuc' ? 'btn-dark active' : 'btn-outline-secondary border-0' }}">
-          Đã kết thúc
-        </a>
-        <a
-          href="{{ route('Home.index', array_merge(request()->only('search', 'category'), ['status' => 'yeu_thich'])) }}"
-          class="status-filter-tab btn btn-sm rounded-pill px-3 {{ request('status') === 'yeu_thich' ? 'btn-dark active' : 'btn-outline-secondary border-0' }} d-flex align-items-center gap-1">
-          <i class="fa-solid fa-heart text-danger"></i>
-          <span>Yêu thích</span>
-        </a>
+      <div class="status-filter-scroll mw-100 pb-1">
+        <div class="btn-group btn-group-sm rounded-pill p-1 bg-white border shadow-sm w-auto align-self-start" role="group">
+          <a
+            href="{{ route('Home.index', request()->only('search', 'category')) }}"
+            class="status-filter-tab btn btn-sm rounded-pill px-3 {{ !request('status') ? 'btn-dark active' : 'btn-outline-secondary border-0' }}">
+            Tất cả
+          </a>
+          <a
+            href="{{ route('Home.index', array_merge(request()->only('search', 'category'), ['status' => 'sap_dien_ra'])) }}"
+            class="status-filter-tab btn btn-sm rounded-pill px-3 {{ request('status') === 'sap_dien_ra' ? 'btn-dark active' : 'btn-outline-secondary border-0' }}">
+            Sắp diễn ra
+          </a>
+          <a
+            href="{{ route('Home.index', array_merge(request()->only('search', 'category'), ['status' => 'dang_dien_ra'])) }}"
+            class="status-filter-tab btn btn-sm rounded-pill px-3 {{ request('status') === 'dang_dien_ra' ? 'btn-dark active' : 'btn-outline-secondary border-0' }}">
+            Đang diễn ra
+          </a>
+          <a
+            href="{{ route('Home.index', array_merge(request()->only('search', 'category'), ['status' => 'da_ket_thuc'])) }}"
+            class="status-filter-tab btn btn-sm rounded-pill px-3 {{ request('status') === 'da_ket_thuc' ? 'btn-dark active' : 'btn-outline-secondary border-0' }}">
+            Đã kết thúc
+          </a>
+          <a
+            href="{{ route('Home.index', array_merge(request()->only('search', 'category'), ['status' => 'yeu_thich'])) }}"
+            class="status-filter-tab btn btn-sm rounded-pill px-3 {{ request('status') === 'yeu_thich' ? 'btn-dark active' : 'btn-outline-secondary border-0' }} d-flex align-items-center gap-1">
+            <i class="fa-solid fa-heart text-danger"></i>
+            <span>Yêu thích</span>
+          </a>
+        </div>
       </div>
 
-      <div id="events-count-label" class="small fw-semibold text-secondary align-self-center">
+      <div id="events-count-label" class="small fw-semibold text-secondary align-self-start align-self-sm-center flex-shrink-0">
         Hiển thị {{ $events->count() }} / {{ $events->total() }} sự kiện
       </div>
     </div>
