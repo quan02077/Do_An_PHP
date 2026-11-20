@@ -70,6 +70,20 @@ class RegistrationStatusFlowTest extends TestCase
         $this->assertDatabaseHas('dang_ky', ['id' => $ticket->id, 'trang_thai' => 'da_huy']);
     }
 
+    public function test_check_in_page_loads_pinned_qr_library_with_integrity(): void
+    {
+        $admin = NguoiDung::factory()->create(['vai_tro' => 'admin']);
+
+        $html = $this->actingAs($admin)->get('/admin?tab=registrations')->assertOk()->getContent();
+
+        // Không ghim phiên bản thì CDN có thể đổi bản bất ngờ giữa buổi demo.
+        $this->assertMatchesRegularExpression(
+            '#<script src="https://unpkg\.com/html5-qrcode@\d+\.\d+\.\d+/html5-qrcode\.min\.js"\s+integrity="sha384-[A-Za-z0-9+/=]{64}"\s+crossorigin="anonymous"#',
+            $html
+        );
+        $this->assertStringNotContainsString('src="https://unpkg.com/html5-qrcode"', $html);
+    }
+
     public function test_registrations_tab_shows_only_valid_actions(): void
     {
         $admin = NguoiDung::factory()->create(['vai_tro' => 'admin']);

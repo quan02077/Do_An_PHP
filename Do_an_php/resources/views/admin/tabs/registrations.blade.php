@@ -108,8 +108,12 @@
     @endif
 </div>
 
-<!-- Thư viện Quét mã QR chuẩn Html5-QRCode (y hệt trong video) -->
-<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<!-- Thư viện quét mã QR Html5-QRCode, ghim phiên bản 2.3.8 để CDN không tự đổi bản giữa buổi demo.
+     integrity (SRI): trình duyệt từ chối chạy nếu nội dung file khác bản đã kiểm tra.
+     Nâng cấp: đổi số phiên bản VÀ tính lại hash: curl -s <url> | openssl dgst -sha384 -binary | openssl base64 -A -->
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"
+        integrity="sha384-c9d8RFSL+u3exBOJ4Yp3HUJXS4znl9f+z66d1y54ig+ea249SpqR+w1wyvXz/lk+"
+        crossorigin="anonymous"></script>
 
 <script>
 // 1. Hàm xử lý khi quét thành công mã QR (Y hệt trong video)
