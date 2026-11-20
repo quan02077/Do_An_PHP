@@ -12,6 +12,7 @@ use App\Http\Requests\ChangePasswordRequest;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class DashboardController extends Controller
@@ -65,8 +66,12 @@ class DashboardController extends Controller
             return redirect()->route('Auth.index')->with('warning', $message);
         }
 
+        return DB::transaction(function () use ($request, $user, $id) {
+        // Khóa dòng vé: nếu admin đang quét QR check-in cùng vé, một bên phải chờ bên kia xong,
+        // rồi mới kiểm tra trạng thái. Không khóa thì vé vừa check-in có thể bị ghi đè thành đã hủy.
         $ticket = DangKy::where('id', $id)
             ->where('nguoi_dung_id', $user->id)
+            ->lockForUpdate()
             ->first();
 
         if (!$ticket) {
@@ -133,6 +138,7 @@ class DashboardController extends Controller
         }
 
         return back()->with('success', $message);
+        });
     }
 
     /**

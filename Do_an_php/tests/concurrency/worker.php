@@ -22,10 +22,12 @@ $kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
 $kernel->bootstrap();
 concurrency_guard_database();
 
-// Nới rộng cửa sổ race: ngủ ngay sau truy vấn đếm vé, tức giữa "kiểm tra còn chỗ" và "insert".
-// Không sửa mã nguồn ứng dụng; chỉ móc vào sự kiện truy vấn của Laravel.
-DB::listen(function ($query) use ($delayMs) {
-    if ((int) $delayMs > 0 && preg_match('/count\(\*\).*dang_ky/i', $query->sql)) {
+// Nới rộng cửa sổ race mà không sửa mã nguồn ứng dụng (móc vào sự kiện truy vấn của Laravel):
+//   book/naive: ngủ sau truy vấn đếm vé, tức giữa "kiểm tra còn chỗ" và "insert".
+//   cancel    : ngủ sau khi đọc dòng vé, tức giữa "kiểm tra trạng thái" và "lưu da_huy".
+$delayPattern = $mode === 'cancel' ? '/from `dang_ky` where `id`/i' : '/count\(\*\).*dang_ky/i';
+DB::listen(function ($query) use ($delayMs, $delayPattern) {
+    if ((int) $delayMs > 0 && preg_match($delayPattern, $query->sql)) {
         usleep((int) $delayMs * 1000);
     }
 });
@@ -58,9 +60,11 @@ try {
             return 'booked';
         });
     } else {
-        $request = $mode === 'book'
-            ? Request::create("/event/$arg/book", 'POST')
-            : Request::create('/admin/check-in', 'POST', ['ma_ve' => $arg], [], [], ['HTTP_ACCEPT' => 'application/json']);
+        $request = match ($mode) {
+            'book' => Request::create("/event/$arg/book", 'POST'),
+            'cancel' => Request::create("/tickets/$arg/cancel", 'POST'),
+            default => Request::create('/admin/check-in', 'POST', ['ma_ve' => $arg], [], [], ['HTTP_ACCEPT' => 'application/json']),
+        };
 
         // APP_ENV=testing nên middleware CSRF tự bỏ qua; đăng nhập bằng cách gắn user vào guard.
         $app->instance('request', $request);
@@ -69,7 +73,7 @@ try {
         $response = $kernel->handle($request);
         $out['status'] = $response->getStatusCode();
 
-        if ($mode === 'book') {
+        if ($mode === 'book' || $mode === 'cancel') {
             $session = $app['session.store'];
             $out['result'] = $session->get('success') ? 'success' : ($session->get('warning') ?? 'none');
         } else {

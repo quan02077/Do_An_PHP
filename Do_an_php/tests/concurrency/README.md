@@ -30,9 +30,11 @@ nên không thể chạy nhầm vào `quan_ly_su_kien`.
 | A2 | 30 user / 1 chỗ, không thêm trễ | Đúng 1 vé |
 | B | 1 user gửi 10 yêu cầu cùng lúc | Đúng 1 vé, các yêu cầu còn lại báo "đã đăng ký rồi" |
 | C | 10 admin cùng check-in một mã vé | Đúng 1 lần check-in thành công |
+| D | User hủy vé đúng lúc admin quét QR check-in cùng vé (hủy ngủ 1,5 s sau khi đọc vé, check-in xuất phát sau 0,3 s) | Chỉ một bên thành công, trạng thái cuối khớp bên đó |
 
 "Nới cửa sổ race" nghĩa là tiến trình ngủ ngay sau truy vấn đếm số vé (giữa bước kiểm tra
-còn chỗ và bước insert), thực hiện bằng `DB::listen` — **không sửa mã nguồn ứng dụng**.
+còn chỗ và bước insert) hoặc, với kịch bản D, ngay sau khi đọc dòng vé (giữa bước kiểm tra
+trạng thái và bước lưu `da_huy`), thực hiện bằng `DB::listen` — **không sửa mã nguồn ứng dụng**.
 Mọi kịch bản còn kiểm tra không có phản hồi 5xx hay exception.
 
 ## Kết quả đã ghi nhận (MariaDB 10.4.32, InnoDB, REPEATABLE-READ)
@@ -41,6 +43,9 @@ Mọi kịch bản còn kiểm tra không có phản hồi 5xx hay exception.
 - A1: 5 thành công, 15 "hết vé"; thời gian phản hồi trải từ ~2 s đến ~9 s, cho thấy các
   yêu cầu thực sự xếp hàng chờ khóa dòng sự kiện.
 - A2: 1/1. B: 1 vé, 9 "đã đăng ký rồi". C: 1 check-in, 9 "đã check-in trước đó".
+- D (lỗi do Codex review phát hiện): **trước khi sửa**, cả hủy vé lẫn check-in đều báo thành công
+  và vé cuối cùng là `da_huy` — khách đã vào cửa nhưng vé bị hủy. **Sau khi** `cancelTicket` khóa dòng
+  vé trong transaction: hủy thành công, check-in chờ khóa rồi báo "vé đã bị hủy", trạng thái cuối `da_huy`.
 
 ## Giới hạn
 

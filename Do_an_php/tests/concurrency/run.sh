@@ -102,6 +102,45 @@ scenario "A2: 30 user / 1 chỗ, không thêm trễ"       book 1 30 0   0 da_xa
 scenario "B: 1 user gửi 10 yêu cầu cùng lúc"          book 100 10 0 1 da_xac_nhan 1
 scenario "C: 10 admin check-in cùng một mã vé"        checkin 10 10 0 0 da_tham_gia 1
 
+# D: user hủy vé đúng lúc admin quét QR check-in cùng vé đó.
+# Tiến trình hủy ngủ 1500ms sau khi đọc dòng vé; check-in xuất phát trễ hơn 300ms.
+# Đúng: chỉ MỘT bên thành công và trạng thái cuối khớp với bên đó. Sai: cả hai báo thành công.
+race_cancel_checkin() {
+  local name="D: hủy vé song song với check-in cùng vé"
+  local setup; setup=$("$PHP" "$HERE/setup.php" 10 1) || { echo "setup lỗi"; FAILED=1; return; }
+  local ev admin user
+  ev=$(echo "$setup" | sed -E 's/.*"event":([0-9]+).*/\1/')
+  admin=$(echo "$setup" | sed -E 's/.*"admin":([0-9]+).*/\1/')
+  user=$(echo "$setup" | sed -E 's/.*"users":\[([0-9]+).*/\1/')
+  "$PHP" "$HERE/worker.php" book "$user" "$ev" 0 0 > /dev/null
+  local tid code
+  tid=$(sql "$CONC_DB" -e "SELECT id FROM dang_ky WHERE su_kien_id=$ev LIMIT 1")
+  code=$(sql "$CONC_DB" -e "SELECT ma_ve FROM dang_ky WHERE id=$tid")
+
+  local dir="$TMP/race_cd"; mkdir -p "$dir"
+  local start; start=$("$PHP" -r 'printf("%.6f", microtime(true) + 8);')
+  local later; later=$("$PHP" -r 'printf("%.6f", $argv[1] + 0.3);' "$start")
+  "$PHP" "$HERE/worker.php" cancel "$user" "$tid" "$start" 1500 > "$dir/cancel.json" 2>&1 &
+  "$PHP" "$HERE/worker.php" checkin "$admin" "$code" "$later" 0 > "$dir/checkin.json" 2>&1 &
+  wait
+
+  local final; final=$(sql "$CONC_DB" -e "SELECT trang_thai FROM dang_ky WHERE id=$tid")
+  local cancel_ok=0 checkin_ok=0
+  grep -q '"result":"success"' "$dir/cancel.json" && cancel_ok=1
+  grep -q '"ok":true' "$dir/checkin.json" && checkin_ok=1
+  local verdict=FAIL
+  if [ "$cancel_ok" = 1 ] && [ "$checkin_ok" = 0 ] && [ "$final" = da_huy ]; then verdict=PASS; fi
+  if [ "$cancel_ok" = 0 ] && [ "$checkin_ok" = 1 ] && [ "$final" = da_tham_gia ]; then verdict=PASS; fi
+  [ "$verdict" = PASS ] || FAILED=1
+
+  echo
+  echo "### $name"
+  echo "    hủy    : $(sed -E 's/,"ms":[0-9]+//' "$dir/cancel.json")"
+  echo "    check-in: $(sed -E 's/,"ms":[0-9]+//' "$dir/checkin.json")"
+  echo "    DB: trạng thái cuối = $final (hủy thành công=$cancel_ok, check-in thành công=$checkin_ok) => $verdict"
+}
+race_cancel_checkin
+
 echo
 if [ "$CONTROL_OVERSOLD" -le 5 ]; then
   echo "CẢNH BÁO: nhóm đối chứng không bán vượt ($CONTROL_OVERSOLD/5) — kết quả các kịch bản khác chưa đủ chứng minh."
