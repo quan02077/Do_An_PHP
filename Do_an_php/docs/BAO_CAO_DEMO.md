@@ -28,6 +28,8 @@ Quản lý sự kiện thủ công khó theo dõi số chỗ, danh sách đăng 
 
 ## 5. Trả lời câu hỏi code (10 phút)
 
+Kịch bản demo chi tiết từng phút và bộ câu hỏi code dự kiến kèm gợi ý trả lời cho từng thành viên: [`DEMO.md`](DEMO.md).
+
 Chuẩn bị mở sẵn `routes/web.php`, `AuthController`, `EventController`, `AdminController`, `HomeController`, middleware, migration và test. Giải thích đường đi từ route đến controller, model, database và Blade.
 
 Với Reverb, giải thích `TicketCountsChanged` phát trên kênh công khai theo sự kiện, `TicketCheckedIn` phát trên kênh riêng Admin, và JavaScript dùng Laravel Echo để cập nhật giao diện. Event phát sau khi giao dịch lưu thành công; nếu Reverb không chạy, thao tác đặt vé vẫn phải hoạt động.
