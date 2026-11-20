@@ -38,20 +38,22 @@
     <div class="bg-white rounded-4 border shadow-sm p-3 p-sm-4 p-md-5">
         <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3 border-bottom pb-4 mb-4">
             <!-- Admin Tabs -->
-            <div class="btn-group p-1 bg-light rounded-pill align-self-start" role="group" aria-label="Admin navigation tabs">
-                <button type="button" onclick="switchAdminTab('events')" id="adm-tab-events" class="btn btn-sm rounded-pill fw-semibold btn-dark shadow-xs px-3 py-2">
-                    Quản lý sự kiện
-                </button>
-                <button type="button" onclick="switchAdminTab('registrations')" id="adm-tab-registrations" class="btn btn-sm rounded-pill fw-medium text-secondary px-3 py-2">
-                    Duyệt đăng ký vé
-                </button>
-                <button type="button" onclick="switchAdminTab('categories')" id="adm-tab-categories" class="btn btn-sm rounded-pill fw-medium text-secondary px-3 py-2">
-                    Danh mục sự kiện
-                </button>
+            <div class="overflow-x-auto w-100 pb-1 scrollbar-none" style="-webkit-overflow-scrolling: touch;">
+                <div class="btn-group p-1 bg-light rounded-pill align-self-start flex-nowrap d-inline-flex" role="group" aria-label="Admin navigation tabs">
+                    <button type="button" onclick="switchAdminTab('events')" id="adm-tab-events" class="btn btn-sm rounded-pill fw-semibold btn-dark shadow-xs px-3 py-2 text-nowrap flex-shrink-0">
+                        Quản lý sự kiện
+                    </button>
+                    <button type="button" onclick="switchAdminTab('registrations')" id="adm-tab-registrations" class="btn btn-sm rounded-pill fw-medium text-secondary px-3 py-2 text-nowrap flex-shrink-0">
+                        Duyệt đăng ký vé
+                    </button>
+                    <button type="button" onclick="switchAdminTab('categories')" id="adm-tab-categories" class="btn btn-sm rounded-pill fw-medium text-secondary px-3 py-2 text-nowrap flex-shrink-0">
+                        Danh mục sự kiện
+                    </button>
+                </div>
             </div>
 
             <!-- Action Buttons -->
-            <div id="admin-action-btn-container" class="d-flex align-items-center gap-2">
+            <div id="admin-action-btn-container" class="d-flex align-items-center gap-2 flex-wrap flex-shrink-0">
                 <button type="button" onclick="openAddCategoryModal()" class="btn btn-sm btn-outline-secondary rounded-3 px-3 py-2 fw-medium small d-flex align-items-center gap-1.5">
                     <i class="fa-solid fa-plus me-1"></i>
                     <span>Thêm danh mục</span>
