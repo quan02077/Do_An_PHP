@@ -196,15 +196,7 @@ class DashboardController extends Controller
             return back()->with('error', 'Không tìm thấy thông tin tài khoản người dùng.');
         }
 
-        // Kiểm tra tính hợp lệ của mật khẩu hiện tại (hỗ trợ Hash::check, plain text, hoặc md5)
-        $currentValid = false;
-        if (Hash::check($request->current_password, $userModel->mat_khau)) {
-            $currentValid = true;
-        } elseif ($userModel->mat_khau === $request->current_password || md5($request->current_password) === $userModel->mat_khau) {
-            $currentValid = true;
-        }
-
-        if (!$currentValid) {
+        if (!Hash::isHashed($userModel->mat_khau) || !Hash::check($request->current_password, $userModel->mat_khau)) {
             return back()->withErrors(['current_password' => 'Mật khẩu hiện tại không chính xác.'])->withInput();
         }
 

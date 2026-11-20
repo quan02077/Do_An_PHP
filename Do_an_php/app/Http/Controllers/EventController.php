@@ -9,6 +9,7 @@ use App\Http\Requests\EventRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class EventController extends Controller
@@ -125,7 +126,9 @@ class EventController extends Controller
             return redirect()->route('Auth.index')->with('warning', 'Vui lòng đăng nhập để đăng ký vé.');
         }
 
-        $event = SuKien::findOrFail($id);
+        return DB::transaction(function () use ($user, $id) {
+        // Khóa dòng sự kiện trên MySQL để hai yêu cầu đồng thời không vượt sức chứa.
+        $event = SuKien::whereKey($id)->lockForUpdate()->firstOrFail();
 
         // Kiểm tra sự kiện có bị hủy không
         if ($event->trang_thai === 'da_huy') {
@@ -175,6 +178,7 @@ class EventController extends Controller
         return redirect()->route('Dashboard.myTicket')
             ->with('success', 'Chúc mừng! Đăng ký vé thành công! Mã vé của bạn là ' . $maVe)
             ->with('new_ticket_code', $maVe);
+        });
     }
 
     /** Tạo slug không trùng để dùng cho URL và báo cáo. */

@@ -5,7 +5,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>
-    @if(request('mode') === 'register')
+    @if(isset($resetToken))
+    Đặt lại mật khẩu — QQQ
+    @elseif(request('mode') === 'register')
     Đăng ký tài khoản — QQQ
     @elseif(request('mode') === 'forgot')
     Quên mật khẩu — QQQ
@@ -41,7 +43,7 @@
     <div class="w-100 bg-white rounded-4 border shadow-sm p-4 p-sm-5" style="max-width: 440px;">
 
       <!-- Tab Chuyển Đăng nhập / Đăng ký hoặc Quay lại nếu Quên mật khẩu -->
-      @if (request('mode') === 'forgot')
+      @if (request('mode') === 'forgot' || isset($resetToken))
       <div class="mb-4">
         <a href="{{ route('Auth.index') }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3 d-inline-flex align-items-center gap-2 small text-decoration-none">
           <i class="fa-solid fa-arrow-left"></i>
@@ -66,17 +68,30 @@
       @include('partials.alerts')
 
 
-      @if (request('mode') === 'forgot')
+      @if (isset($resetToken))
+      <h4 class="fw-bold text-dark mb-3 fs-5">Đặt lại mật khẩu</h4>
+      <form method="POST" action="{{ route('Auth.resetPassword') }}">
+        @csrf
+        <input type="hidden" name="token" value="{{ $resetToken }}">
+        <input type="hidden" name="email" value="{{ $resetEmail }}">
+        <p class="small text-secondary">Tài khoản: {{ $resetEmail }}</p>
+        <label for="reset-password" class="form-label">Mật khẩu mới</label>
+        <input id="reset-password" name="password" type="password" minlength="6" required class="form-control mb-3">
+        <label for="reset-confirmation" class="form-label">Xác nhận mật khẩu mới</label>
+        <input id="reset-confirmation" name="password_confirmation" type="password" minlength="6" required class="form-control mb-3">
+        <button type="submit" class="btn btn-dark w-100">Đặt lại mật khẩu</button>
+      </form>
+      @elseif (request('mode') === 'forgot')
       <!-- ─── FORM QUÊN MẬT KHẨU ────────────────────────────────────────── -->
       <div class="text-center mb-4">
         <div class="d-inline-flex align-items-center justify-content-center bg-light text-dark rounded-circle mb-3 shadow-sm" style="width: 54px; height: 54px;">
           <i class="fa-solid fa-key fs-4"></i>
         </div>
         <h4 class="fw-bold text-dark mb-1 fs-5">Khôi phục mật khẩu</h4>
-        <p class="text-secondary small mb-0">Xác minh thông tin tài khoản đã đăng ký để thiết lập lại mật khẩu mới.</p>
+        <p class="text-secondary small mb-0">Nhập email để nhận liên kết đặt lại mật khẩu.</p>
       </div>
 
-      <form id="forgot-form" method="POST" action="{{ route('Auth.resetPassword') }}">
+      <form id="forgot-form" method="POST" action="{{ route('Auth.sendResetLink') }}">
         @csrf
         <div class="mb-3">
           <label for="forgot-email" class="form-label small fw-medium text-dark mb-1">Địa chỉ Email đã đăng ký <span class="text-danger">*</span></label>
@@ -88,45 +103,8 @@
           </div>
         </div>
 
-        <div class="mb-3">
-          <label for="forgot-phone" class="form-label small fw-medium text-dark mb-1">Số điện thoại xác minh <span class="text-danger">*</span></label>
-          <div class="input-group">
-            <span class="input-group-text bg-light text-muted border-end-0">
-              <i class="fa-solid fa-phone"></i>
-            </span>
-            <input type="tel" id="forgot-phone" name="phone" value="{{ old('phone') }}" required placeholder="0912 345 678" class="form-control border-start-0" />
-          </div>
-        </div>
-
-        <div class="mb-3">
-          <label for="forgot-password" class="form-label small fw-medium text-dark mb-1">Mật khẩu mới <span class="text-danger">*</span></label>
-          <div class="input-group">
-            <span class="input-group-text bg-light text-muted border-end-0">
-              <i class="fa-solid fa-lock"></i>
-            </span>
-            <input type="password" id="forgot-password" name="password" required placeholder="Tối thiểu 6 ký tự" class="form-control border-start-0" />
-          </div>
-        </div>
-
-        <div class="mb-3">
-          <label for="forgot-password-confirmation" class="form-label small fw-medium text-dark mb-1">Xác nhận mật khẩu mới <span class="text-danger">*</span></label>
-          <div class="input-group">
-            <span class="input-group-text bg-light text-muted border-end-0">
-              <i class="fa-solid fa-shield-halved"></i>
-            </span>
-            <input type="password" id="forgot-password-confirmation" name="password_confirmation" required placeholder="Nhập lại mật khẩu mới" class="form-control border-start-0" />
-          </div>
-        </div>
-
-        <div class="form-check form-switch d-flex align-items-center mb-3">
-          <input class="form-check-input" type="checkbox" id="forgot-show-pass" onchange="show_hide_pass(this)">
-          <label class="form-check-label ms-3" for="forgot-show-pass">
-            Hiện mật khẩu
-          </label>
-        </div>
-
         <button type="submit" class="btn btn-dark w-100 py-2.5 mt-2 fw-medium shadow-sm rounded-3">
-          Đặt lại mật khẩu
+          Gửi liên kết đặt lại mật khẩu
         </button>
 
         <div class="text-center mt-3">

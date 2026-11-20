@@ -1,4 +1,9 @@
 <div id="adm-view-events">
+    <form method="GET" action="{{ route('admin.index') }}" class="d-flex gap-2 mb-3">
+        <input type="hidden" name="tab" value="events">
+        <input type="search" name="event_search" value="{{ request('event_search') }}" class="form-control" placeholder="Tìm tên, mô tả, địa điểm, danh mục" aria-label="Tìm sự kiện">
+        <button class="btn btn-dark" type="submit">Tìm</button>
+    </form>
     <div class="table-responsive">
         <table class="table table-hover align-middle mb-0 small">
             <thead class="table-light text-secondary text-uppercase small">
@@ -89,4 +94,7 @@
             </tbody>
         </table>
     </div>
+    @if($events->hasPages())
+        <div class="mt-3">{{ $events->links('pagination::bootstrap-5') }}</div>
+    @endif
 </div>

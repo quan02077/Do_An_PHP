@@ -27,9 +27,21 @@ class AdminController extends Controller
         $upcomingEvents = SuKien::where('trang_thai', 'cong_khai')->where('thoi_gian_bat_dau', '>', $now)->count();
         $totalBookings = DangKy::where('trang_thai', '!=', 'da_huy')->count();
         $totalMembers = NguoiDung::where('vai_tro', 'user')->count();
-        $categories = DanhMuc::withCount('suKiens')->get();
-        $events = SuKien::with(['danhMuc', 'dangKys'])->orderByDesc('id')->get();
-        $registrations = DangKy::with(['nguoiDung', 'suKien'])->orderByDesc('id')->get();
+        $allCategories = DanhMuc::withCount('suKiens')->orderBy('ten_danh_muc')->get();
+        $categories = DanhMuc::withCount('suKiens')->orderBy('id')->paginate(10, ['*'], 'categories_page')->withQueryString();
+        $eventsQuery = SuKien::with(['danhMuc', 'dangKys']);
+        $eventSearch = trim((string) $request->query('event_search', ''));
+        if ($eventSearch !== '') {
+            $eventsQuery->where(function ($query) use ($eventSearch) {
+                $query->where('ten_su_kien', 'like', '%'.$eventSearch.'%')
+                    ->orWhere('mo_ta', 'like', '%'.$eventSearch.'%')
+                    ->orWhere('dia_diem', 'like', '%'.$eventSearch.'%')
+                    ->orWhereHas('danhMuc', fn ($category) => $category->where('ten_danh_muc', 'like', '%'.$eventSearch.'%'));
+            });
+        }
+        $events = $eventsQuery->orderByDesc('id')->paginate(10, ['*'], 'events_page')->withQueryString();
+        $registrations = DangKy::with(['nguoiDung', 'suKien'])->orderByDesc('id')
+            ->paginate(10, ['*'], 'registrations_page')->withQueryString();
         $uploadDir = public_path('uploads/su_kien');
         File::ensureDirectoryExists($uploadDir);
         $eventImages = collect(File::files($uploadDir))
@@ -39,8 +51,8 @@ class AdminController extends Controller
 
         // Chuẩn bị dữ liệu cho Biểu đồ Chart.js
         $categoryChart = [
-            'labels' => $categories->pluck('ten_danh_muc')->values(),
-            'counts' => $categories->pluck('su_kiens_count')->values(),
+            'labels' => $allCategories->pluck('ten_danh_muc')->values(),
+            'counts' => $allCategories->pluck('su_kiens_count')->values(),
         ];
 
         $topEvents = SuKien::withCount(['dangKys' => function ($query) {
@@ -65,6 +77,7 @@ class AdminController extends Controller
             'events',
             'registrations',
             'categories',
+            'allCategories',
             'eventImages',
             'categoryChart',
             'eventBookingChart'

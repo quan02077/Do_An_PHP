@@ -25,10 +25,11 @@
 
 ### Phân hệ Khách & Người dùng (User / Public)
 1. **Trang chủ & Khám phá sự kiện:**
-   * Tìm kiếm từ khóa đa trường (theo tên sự kiện, mô tả tóm tắt, địa điểm tổ chức).
+   * Tìm kiếm bằng truy vấn Eloquent theo tên sự kiện, mô tả, địa điểm và tên danh mục.
    * Lọc theo danh mục thể loại (Âm nhạc, Công nghệ, Thể thao, Ẩm thực, Hội thảo...).
    * Lọc theo 4 trạng thái sự kiện: *Sắp diễn ra, Đang diễn ra, Đã kết thúc, Sự kiện yêu thích*.
-   * Phân trang tự động chuẩn Bootstrap với phương thức `withQueryString()`.
+   * Phân trang 12 sự kiện/trang bằng `paginate()->withQueryString()`; giữ từ khóa và bộ lọc khi đổi trang.
+   * Ô tìm kiếm cập nhật danh sách bằng AJAX sau khi ngừng gõ; biểu mẫu GET vẫn hoạt động khi JavaScript tắt.
 2. **Xem chi tiết sự kiện:**
    * Hiển thị đầy đủ banner poster, đơn vị tổ chức, thời gian bắt đầu/kết thúc, giá vé.
    * Thanh tiến độ (Progress bar) trực quan thể hiện tỷ lệ số chỗ đã đăng ký / quy mô tối đa.
@@ -47,7 +48,7 @@
    * Trang quản lý danh sách yêu thích riêng cho từng tài khoản.
 6. **Hồ sơ cá nhân & Bảo mật:**
    * Xem và chỉnh sửa thông tin cá nhân (họ tên, email, số điện thoại, ngày sinh, địa chỉ, tiểu sử).
-   * Đổi mật khẩu tài khoản với cơ chế xác thực mật khẩu cũ và băm mật khẩu mới bằng thuật toán Bcrypt.
+   * Đổi mật khẩu bằng `Hash::check` và lưu hash mới; quên mật khẩu dùng liên kết email có token hết hạn.
 
 ### Phân hệ Quản trị viên (Admin Portal)
 1. **Bảng điều khiển Thống kê & Biểu đồ trực quan (Dashboard Tab):**
@@ -57,6 +58,7 @@
      * **Biểu đồ cột (Bar Chart):** Top các sự kiện thu hút số lượng lượt đăng ký vé cao nhất.
 2. **Quản lý Sự kiện (Events Tab - CRUD Modal):**
    * Danh sách bảng sự kiện trực quan có hình ảnh, danh mục, thời gian, số lượng vé và trạng thái.
+   * Tìm kiếm theo tên, mô tả, địa điểm, danh mục và phân trang 10 sự kiện/trang. Danh mục, lượt đăng ký cũng phân trang 10 dòng/trang.
    * **Thêm mới sự kiện:** Popup modal hỗ trợ upload ảnh poster trực tiếp từ máy tính hoặc chọn ảnh thumbnail có sẵn.
    * **Chỉnh sửa sự kiện:** Đổ dữ liệu tự động vào form modal qua Javascript Data Attributes.
    * **Xóa sự kiện an toàn:** Nếu sự kiện đã có người đặt vé, hệ thống tự động chuyển trạng thái sang `da_huy` để tránh lỗi vi phạm khóa ngoại MySQL.
@@ -65,10 +67,10 @@
    * Quy tắc nghiệp vụ chặn xóa danh mục khi đang có sự kiện trực thuộc.
 4. **Duyệt đăng ký vé & Quét mã QR Check-in (Registrations Tab):**
    * Theo dõi danh sách tất cả các lượt đăng ký vé của người dùng trong hệ thống.
-   * **Soát vé & Check-in QR trực tiếp (O2O Scanner & RESTful API):**
+   * **Soát vé & Check-in QR trực tiếp:**
      * Tích hợp máy quét Camera/Webcam chuẩn HTML5: Quét trực tiếp mã QR trên điện thoại của khách tại cổng sự kiện.
      * Ô nhập nhanh mã vé hỗ trợ soát vé thủ công.
-     * Tự động xác thực qua API `POST /admin/check-in`, cập nhật trạng thái `da_tham_gia` theo thời gian thực và cảnh báo ngăn chặn hành vi sử dụng vé đã check-in.
+     * Gửi yêu cầu đến `POST /admin/check-in` có middleware đăng nhập và Admin, cập nhật trạng thái `da_tham_gia` và cảnh báo vé đã check-in.
    * Thao tác 1 chạm: **Duyệt** vé (`da_xac_nhan`), **Check-in** vé (`da_tham_gia`) hoặc **Hủy** vé (`da_huy`).
 5. **Cơ chế Phân quyền (Security & Middleware):**
    * Middleware `AuthenticateCustom` (`auth.custom`): Chặn khách vãng lai truy cập vào các trang cá nhân và đặt vé.
@@ -197,6 +199,8 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
+Đặt `APP_URL` đúng địa chỉ đang mở, ví dụ `http://127.0.0.1:8000`. Quên mật khẩu dùng email chứa liên kết token có thời hạn. `.env.example` đặt `MAIL_MAILER=log` để thử nghiệm: mở `storage/logs/laravel.log` lấy liên kết. Muốn gửi email thật, cấu hình SMTP trong `.env` trước khi demo.
+
 ### Bước 4: Khởi tạo Application Key
 ```bash
 php artisan key:generate
@@ -210,6 +214,11 @@ php artisan migrate:fresh --seed
 ### Bước 6: Khởi chạy máy chủ phát triển
 ```bash
 php artisan serve
+```
+
+Chạy kiểm thử với SQLite trong bộ nhớ sau khi cài `vendor`:
+```bash
+php artisan test
 ```
 
 Truy cập hệ thống tại: **`http://127.0.0.1:8000`**

@@ -9,10 +9,15 @@ use Tests\TestCase;
 
 class SecurityRulesTest extends TestCase
 {
+    public function test_old_check_in_route_is_removed(): void
+    {
+        $this->post('/api/check-in', ['ma_ve' => 'QQQ-0000-ABCDEF'])->assertNotFound();
+    }
+
     public function test_guest_cannot_check_in_ticket_through_api(): void
     {
         $ticket = DangKy::factory()->create();
-        $this->post('/api/check-in', ['ma_ve' => $ticket->ma_ve])->assertRedirect('/auth');
+        $this->post('/admin/check-in', ['ma_ve' => $ticket->ma_ve])->assertRedirect('/auth');
         $this->assertDatabaseHas('dang_ky', ['id' => $ticket->id, 'trang_thai' => 'da_xac_nhan']);
     }
 
@@ -20,7 +25,7 @@ class SecurityRulesTest extends TestCase
     {
         $ticket = DangKy::factory()->create();
         $member = NguoiDung::factory()->create(['vai_tro' => 'user']);
-        $this->actingAs($member)->post('/api/check-in', ['ma_ve' => $ticket->ma_ve])->assertRedirect('/');
+        $this->actingAs($member)->post('/admin/check-in', ['ma_ve' => $ticket->ma_ve])->assertRedirect('/');
         $this->assertDatabaseHas('dang_ky', ['id' => $ticket->id, 'trang_thai' => 'da_xac_nhan']);
     }
 
@@ -36,7 +41,7 @@ class SecurityRulesTest extends TestCase
         $event = SuKien::factory()->create(['trang_thai' => 'nhap']);
         $ticket = DangKy::factory()->create();
         $this->actingAs($admin)->get('/event/'.$event->id)->assertOk();
-        $this->actingAs($admin)->post('/api/check-in', ['ma_ve' => $ticket->ma_ve])
+        $this->actingAs($admin)->post('/admin/check-in', ['ma_ve' => $ticket->ma_ve])
             ->assertOk()->assertJsonPath('success', true);
         $this->assertDatabaseHas('dang_ky', ['id' => $ticket->id, 'trang_thai' => 'da_tham_gia']);
     }
@@ -44,7 +49,7 @@ class SecurityRulesTest extends TestCase
     public function test_check_in_requires_ticket_code(): void
     {
         $admin = NguoiDung::factory()->create(['vai_tro' => 'admin']);
-        $this->actingAs($admin)->post('/api/check-in', [])->assertSessionHasErrors('ma_ve');
+        $this->actingAs($admin)->post('/admin/check-in', [])->assertSessionHasErrors('ma_ve');
     }
 
     public function test_full_event_rejects_new_registration(): void

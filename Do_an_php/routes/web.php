@@ -52,13 +52,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth.custom', 'admin'])->gr
     Route::resource('event', EventController::class)->except(['show', 'create', 'edit']);
 });
 
-/* ==================== 4. RESTFUL API ==================== */
-Route::post('/api/check-in', [AdminController::class, 'checkInTicket'])
-    ->middleware(['auth.custom', 'admin'])->name('api.checkin');
-
 /* ==================== 4. AUTHENTICATION & TÀI KHOẢN ==================== */
 Route::get('/auth', [AuthController::class, 'index'])->name('Auth.index');
 Route::post('/login', [AuthController::class, 'login'])->name('Auth.login');
 Route::post('/register', [AuthController::class, 'register'])->name('Auth.register');
-Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('Auth.resetPassword');
+Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->middleware('throttle:5,1')->name('Auth.sendResetLink');
+Route::get('/reset-password/{token}', [AuthController::class, 'showResetForm'])->name('password.reset');
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->middleware('throttle:5,1')->name('Auth.resetPassword');
 Route::match(['get', 'post'], '/logout', [AuthController::class, 'logout'])->name('Auth.logout');

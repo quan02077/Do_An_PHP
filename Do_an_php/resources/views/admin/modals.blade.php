@@ -30,7 +30,7 @@
                 </button>
               </div>
               <select name="danh_muc_id" id="new-ev-category" class="form-select form-select-sm py-2" required>
-                @foreach($categories ?? [] as $cat)
+                @foreach($allCategories ?? [] as $cat)
                   <option value="{{ $cat->id }}">{{ $cat->ten_danh_muc }}</option>
                 @endforeach
               </select>
@@ -123,7 +123,7 @@
             <div class="col-sm-6">
               <label for="edit-ev-category" class="form-label small fw-medium text-dark mb-1">Danh mục <span class="text-danger">*</span></label>
               <select name="danh_muc_id" id="edit-ev-category" class="form-select form-select-sm py-2" required>
-                @foreach($categories ?? [] as $cat)
+                @foreach($allCategories ?? [] as $cat)
                   <option value="{{ $cat->id }}">{{ $cat->ten_danh_muc }}</option>
                 @endforeach
               </select>

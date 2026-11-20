@@ -101,6 +101,9 @@
             </tbody>
         </table>
     </div>
+    @if($registrations->hasPages())
+        <div class="mt-3">{{ $registrations->links('pagination::bootstrap-5') }}</div>
+    @endif
 </div>
 
 <!-- Thư viện Quét mã QR chuẩn Html5-QRCode (y hệt trong video) -->
@@ -184,4 +187,4 @@ function guiCheckIn(maVe) {
     });
 }
 </script>
-    
+

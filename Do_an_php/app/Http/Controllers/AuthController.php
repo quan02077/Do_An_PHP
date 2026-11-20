@@ -9,6 +9,7 @@ use App\Http\Requests\ResetPasswordRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 
 class AuthController extends Controller
 {
@@ -28,23 +29,7 @@ class AuthController extends Controller
             return back()->withErrors(['email' => 'Email này chưa được đăng ký trong hệ thống.'])->withInput();
         }
 
-        $passwordValid = false;
-        if (Hash::check($request->password, $user->mat_khau)) {
-            $passwordValid = true;
-        } elseif ($user->mat_khau === $request->password) {
-            $passwordValid = true;
-            // Nâng cấp mật khẩu thành hash bảo mật
-            try {
-                $user->mat_khau = Hash::make($request->password);
-                $user->save();
-            } catch (\Exception $e) {
-                // bỏ qua nếu lỗi
-            }
-        } elseif (md5($request->password) === $user->mat_khau) {
-            $passwordValid = true;
-        }
-
-        if (!$passwordValid) {
+        if (!Hash::isHashed($user->mat_khau) || !Hash::check($request->password, $user->mat_khau)) {
             return back()->withErrors(['password' => 'Mật khẩu không chính xác.'])->withInput();
         }
 
@@ -83,18 +68,25 @@ class AuthController extends Controller
 
     public function resetPassword(ResetPasswordRequest $request)
     {
-        $user = NguoiDung::where('email', $request->email)
-            ->where('so_dien_thoai', $request->phone)
-            ->first();
+        $status = Password::reset($request->validated(), function (NguoiDung $user, string $password) {
+            $user->forceFill(['mat_khau' => Hash::make($password)])->save();
+        });
 
-        if (!$user) {
-            return back()->withErrors(['email' => 'Email hoặc số điện thoại không chính xác.'])->withInput();
-        }
+        return $status === Password::PASSWORD_RESET
+            ? redirect()->route('Auth.index')->with('success', 'Đặt lại mật khẩu thành công!')
+            : back()->withErrors(['email' => __($status)]);
+    }
 
-        $user->update([
-            'mat_khau' => Hash::make($request->password),
-        ]);
+    public function sendResetLink(Request $request)
+    {
+        $request->validate(['email' => ['required', 'email']]);
+        Password::sendResetLink($request->only('email'));
 
-        return redirect()->route('Auth.index')->with('success', 'Đặt lại mật khẩu thành công! Bạn có thể đăng nhập ngay.');
+        return back()->with('status', 'Nếu email tồn tại, liên kết đặt lại mật khẩu đã được gửi.');
+    }
+
+    public function showResetForm(string $token, Request $request)
+    {
+        return view('auth.auth', ['resetToken' => $token, 'resetEmail' => $request->query('email')]);
     }
 }
