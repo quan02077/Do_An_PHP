@@ -53,7 +53,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth.custom', 'admin'])->gr
 });
 
 /* ==================== 4. RESTFUL API ==================== */
-Route::post('/api/check-in', [AdminController::class, 'checkInTicket'])->name('api.checkin');
+Route::post('/api/check-in', [AdminController::class, 'checkInTicket'])
+    ->middleware(['auth.custom', 'admin'])->name('api.checkin');
 
 /* ==================== 4. AUTHENTICATION & TÀI KHOẢN ==================== */
 Route::get('/auth', [AuthController::class, 'index'])->name('Auth.index');

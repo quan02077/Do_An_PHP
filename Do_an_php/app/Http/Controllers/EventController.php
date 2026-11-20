@@ -47,6 +47,8 @@ class EventController extends Controller
         $event = SuKien::with(['danhMuc', 'nguoiTao', 'dangKys'])->findOrFail($id);
         $user = $this->getCurrentUser();
 
+        abort_if($event->trang_thai !== 'cong_khai' && $user?->vai_tro !== 'admin', 404);
+
         $isFavorited = false;
         $userTicket = null;
 

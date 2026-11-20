@@ -145,7 +145,8 @@ class AdminController extends Controller
     public function checkInTicket(Request $request)
     {
         // 1. Nhận mã vé gửi lên (Ví dụ: QQQ-2026-B8D2F1)
-        $maVe = trim($request->input('ma_ve'));
+        $data = $request->validate(['ma_ve' => ['required', 'string', 'max:100']]);
+        $maVe = trim($data['ma_ve']);
 
         // 2. Tìm vé trong CSDL
         $ticket = DangKy::with('nguoiDung')->where('ma_ve', $maVe)->first();
