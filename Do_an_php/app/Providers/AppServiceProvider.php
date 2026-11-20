@@ -19,7 +19,7 @@ class AppServiceProvider extends ServiceProvider
     {
         view()->composer('*', function ($view) {
             try {
-                $currentUser = Auth::user() ?? session('user');
+                $currentUser = Auth::user();
                 $favCount = $currentUser ? \App\Models\YeuThich::where('nguoi_dung_id', $currentUser->id)->count() : 0;
                 $ticketCount = $currentUser ? \App\Models\DangKy::where('nguoi_dung_id', $currentUser->id)->where('trang_thai', '!=', 'da_huy')->count() : 0;
                 $view->with([

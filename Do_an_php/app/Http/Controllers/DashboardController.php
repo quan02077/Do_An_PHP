@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DangKy;
 use App\Models\YeuThich;
 use App\Models\NguoiDung;
+use App\Models\SuKien;
 use App\Http\Requests\UpdateProfileRequest;
 use App\Http\Requests\ChangePasswordRequest;
 use Carbon\Carbon;
@@ -15,11 +16,11 @@ use Illuminate\Support\Facades\Hash;
 class DashboardController extends Controller
 {
     /**
-     * Lấy người dùng hiện tại (qua Auth, Session, hoặc mặc định mẫu để không bị gián đoạn trải nghiệm)
+     * Lấy người dùng hiện tại từ Laravel Auth.
      */
     protected function getCurrentUser()
     {
-        return Auth::user() ?? session('user');
+        return Auth::user();
     }
 
     /**
@@ -110,6 +111,8 @@ class DashboardController extends Controller
             return redirect()->route('Auth.index')->with('warning', 'Vui lòng đăng nhập để lưu sự kiện yêu thích.');
         }
 
+        SuKien::whereKey($eventId)->where('trang_thai', 'cong_khai')->firstOrFail();
+
         $fav = YeuThich::where('nguoi_dung_id', $user->id)
             ->where('su_kien_id', $eventId)
             ->first();
@@ -171,9 +174,8 @@ class DashboardController extends Controller
 
         $userModel->update($data);
 
-        // Đồng bộ lại thông tin mới vào session và auth
+        // Cập nhật user đang đăng nhập sau khi lưu hồ sơ.
         $freshUser = $userModel->fresh();
-        session(['user' => $freshUser]);
         if (Auth::check()) {
             Auth::setUser($freshUser);
         }
@@ -204,7 +206,6 @@ class DashboardController extends Controller
         $userModel->save();
 
         $freshUser = $userModel->fresh();
-        session(['user' => $freshUser]);
         if (Auth::check()) {
             Auth::setUser($freshUser);
         }

@@ -9,12 +9,13 @@ use App\Models\SuKien;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
     public function index(Request $request)
     {
-        $user = Auth::user() ?? session('user');
+        $user = Auth::user();
 
         if (!$user || $user->vai_tro !== 'admin') {
             return redirect()->route('Home.index');
@@ -146,18 +147,32 @@ class AdminController extends Controller
             'trang_thai' => ['required', 'in:cho_duyet,da_xac_nhan,da_tham_gia,da_huy'],
         ]);
 
-        $registration = DangKy::findOrFail($id);
-        $registration->update($data);
+        return DB::transaction(function () use ($id, $data) {
+            $registration = DangKy::findOrFail($id);
+            $event = SuKien::whereKey($registration->su_kien_id)->lockForUpdate()->firstOrFail();
+            $registration->refresh();
 
-        return redirect()->route('admin.index', ['tab' => 'registrations'])->with('success', 'Đã cập nhật trạng thái đăng ký.');
+            if ($registration->trang_thai === 'da_huy' && $data['trang_thai'] !== 'da_huy') {
+                if ($event->trang_thai !== 'cong_khai' || $event->thoi_gian_bat_dau <= now()) {
+                    return back()->with('warning', 'Sự kiện không còn nhận đăng ký; không thể khôi phục vé.');
+                }
+                if ($event->so_luong_toi_da > 0 && $event->so_luong_da_dang_ky >= $event->so_luong_toi_da) {
+                    return back()->with('warning', 'Sự kiện đã hết chỗ; không thể khôi phục vé.');
+                }
+            }
+
+            $registration->update($data);
+            return redirect()->route('admin.index', ['tab' => 'registrations'])
+                ->with('success', 'Đã cập nhật trạng thái đăng ký.');
+        });
     }
 
     /**
-     * RESTful API: Quét mã QR hoặc nhập mã vé để Check-in tại sự kiện
+     * Quét mã QR hoặc nhập mã vé để check-in tại sự kiện.
      */
     public function checkInTicket(Request $request)
     {
-        // 1. Nhận mã vé gửi lên (Ví dụ: QQQ-2026-B8D2F1)
+        // 1. Nhận mã vé gửi lên.
         $data = $request->validate(['ma_ve' => ['required', 'string', 'max:100']]);
         $maVe = trim($data['ma_ve']);
 
@@ -174,6 +189,9 @@ class AdminController extends Controller
         if ($ticket->trang_thai === 'da_huy') {
             return response()->json(['success' => false, 'message' => 'Vé này đã bị hủy, không thể check-in!']);
         }
+        if ($ticket->trang_thai !== 'da_xac_nhan' || $ticket->suKien?->trang_thai !== 'cong_khai') {
+            return response()->json(['success' => false, 'message' => 'Vé chưa được xác nhận hoặc sự kiện không còn hoạt động.']);
+        }
 
         // 4. Hợp lệ -> Đổi trạng thái vé sang 'da_tham_gia'
         $ticket->update(['trang_thai' => 'da_tham_gia']);
@@ -187,7 +205,7 @@ class AdminController extends Controller
 
     private function requireAdmin()
     {
-        $user = Auth::user() ?? session('user');
+        $user = Auth::user();
 
         return (!$user || $user->vai_tro !== 'admin')
             ? redirect()->route('Home.index')->with('warning', 'Bạn không có quyền thực hiện thao tác quản trị.')

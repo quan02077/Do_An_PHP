@@ -15,7 +15,7 @@ class AuthController extends Controller
 {
     public function index(Request $request)
     {
-        if (Auth::check() || session()->has('user')) {
+        if (Auth::check()) {
             return redirect()->route('Dashboard.myTicket');
         }
         return view('auth.auth');
@@ -34,7 +34,7 @@ class AuthController extends Controller
         }
 
         Auth::login($user);
-        session(['user' => $user]);
+        $request->session()->regenerate();
 
         return redirect()->intended(route('Home.index'))->with('success', 'Đăng nhập thành công! Chào mừng ' . $user->ho_ten . '.');
     }
@@ -51,7 +51,7 @@ class AuthController extends Controller
         ]);
 
         Auth::login($user);
-        session(['user' => $user]);
+        $request->session()->regenerate();
 
         return redirect()->route('Home.index')->with('success', 'Đăng ký tài khoản thành công!');
     }
@@ -59,9 +59,8 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         Auth::logout();
-        session()->forget('user');
-        session()->invalidate();
-        session()->regenerateToken();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return redirect()->route('Home.index')->with('success', 'Đã đăng xuất khỏi tài khoản.');
     }

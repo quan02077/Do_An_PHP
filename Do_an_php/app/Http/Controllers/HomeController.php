@@ -12,7 +12,7 @@ class HomeController extends Controller
 {
     public function index(Request $request)
     {
-        $user = Auth::user() ?? session('user');
+        $user = Auth::user();
 
         // Phân quyền: Nếu là Quản trị viên (Admin) -> Hiển thị trang quản trị Admin
         if ($user && $user->vai_tro === 'admin') {

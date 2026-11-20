@@ -15,7 +15,7 @@ class UpdateProfileRequest extends FormRequest
 
     public function rules(): array
     {
-        $user = Auth::user() ?? session('user');
+        $user = Auth::user();
         $userId = is_object($user) ? ($user->id ?? null) : ($user['id'] ?? null);
 
         return [

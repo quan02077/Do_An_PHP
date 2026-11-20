@@ -19,6 +19,8 @@
 | **2** | **Lương Văn Quan** | • Lập bảng map HTML mockup sang layout, partial, component và Blade view<br>• Tạo `layouts/app`, navbar, footer, alert và input component bằng Blade + Bootstrap<br>• Chuyển trang chủ, danh sách và chi tiết sự kiện sang Blade responsive<br>• Chuyển Vé của tôi, Yêu thích và Hồ sơ sang Blade<br>• Chụp ảnh màn hình chức năng; review responsive và thống nhất UI trước demo | • Danh sách chuyển đổi view rõ ràng<br>• Layout dùng chung cho toàn site<br>• Guest xem danh sách và chi tiết event<br>• Giao diện user hoàn chỉnh<br>• Bộ ảnh báo cáo và UI đã QA | **Hoàn thành** |
 | **3** | **Trịnh Hữu Kiến Quốc** | • Đăng ký, đăng nhập, đăng xuất với `NguoiDung`, Hash và Laravel Auth<br>• Tạo middleware `role:admin`; bảo vệ route và hiển thị quyền trong Blade<br>• CRUD đầy đủ `danh_muc` và `su_kien`: Resource Controller, Form Request, validate, upload poster tùy chọn<br>• Tìm kiếm, lọc danh mục/trạng thái, phân trang Bootstrap với `withQueryString`<br>• Đăng ký vé phía server: chặn trùng, hết chỗ, event chưa công khai/đã bắt đầu<br>• Vé của tôi, hủy vé, giữ trạng thái cancelled và cho phép đăng ký lại<br>• Test rule chính, README, ERD, Use Case, phân công, script demo và freeze tính năng | • User/Admin đăng nhập được<br>• User không truy cập được `/admin`<br>• Admin tạo/xem/sửa/xóa đúng hai bảng<br>• Danh sách có search/filter/pagination<br>• Đăng ký vé đúng quy tắc nghiệp vụ<br>• User quản lý vé của mình<br>• Bản demo ổn định và hồ sơ hoàn chỉnh | **Hoàn thành** |
 
+**Lưu ý tiến độ:** Cột “Hoàn thành” phản ánh bảng phân công ban đầu, không thay cho biên bản nghiệm thu. Bộ ảnh chụp màn hình và kiểm tra responsive trên thiết bị thật vẫn cần nhóm bổ sung trước khi nộp.
+
 ---
 
 ## 3. Danh sách Chức năng Hệ thống
@@ -33,12 +35,12 @@
 2. **Xem chi tiết sự kiện:**
    * Hiển thị đầy đủ banner poster, đơn vị tổ chức, thời gian bắt đầu/kết thúc, giá vé.
    * Thanh tiến độ (Progress bar) trực quan thể hiện tỷ lệ số chỗ đã đăng ký / quy mô tối đa.
-   * **Tích hợp API Bản đồ Google Maps:** Nhúng bản đồ vị trí trực quan theo địa điểm tổ chức, hỗ trợ liên kết mở ứng dụng Google Maps chỉ đường.
+   * **Bản đồ địa điểm:** Nhúng iframe Google Maps theo địa điểm tổ chức; không dùng API key hoặc gọi Google Maps API từ server.
    * Danh sách các sự kiện liên quan cùng thể loại.
 3. **Đăng ký & Đặt vé sự kiện (Core Feature):**
    * Kiểm tra điều kiện ngặt nghèo: sự kiện đã hủy, sự kiện đã qua thời gian bắt đầu, sự kiện đã hết chỗ.
    * Chống trùng lặp: mỗi người dùng chỉ được đăng ký 1 vé cho mỗi sự kiện.
-   * Tự động sinh mã vé ngẫu nhiên theo định dạng chuẩn: `QQQ-YYYY-XXXXXX` (Ví dụ: `QQQ-2026-B8D2F1`).
+   * Tự động sinh mã vé `QQQ-YYYY-ID-RANDOM12`; ID giúp bảo đảm mã không trùng, phần ngẫu nhiên khiến mã khó đoán.
 4. **Quản lý Vé của tôi & Vé điện tử QR MoMo (E-Ticket):**
    * Danh sách toàn bộ vé đã đăng ký kèm mã vé, ngày đăng ký, trạng thái duyệt.
    * **Vé điện tử phong cách MoMo / Ticketbox:** Tự động sinh mã QR động trực tiếp từ mã vé định danh, giao diện cuống vé răng cưa chuẩn thực tế, tích hợp nút **In / Tải vé PDF** (`window.print`).
@@ -79,6 +81,8 @@
 ---
 
 ## 4. Sơ đồ Cơ sở dữ liệu (Database Schema)
+
+Xem sơ đồ quan hệ trong [`docs/ERD.md`](docs/ERD.md), sơ đồ chức năng trong [`docs/UseCase.puml`](docs/UseCase.puml) và khung thuyết trình ở [`docs/BAO_CAO_DEMO.md`](docs/BAO_CAO_DEMO.md). Bảng phân công ở mục 2; cần chụp ảnh màn hình từ bản demo chạy trên máy nhóm trước khi nộp báo cáo.
 
 Cơ sở dữ liệu gồm 5 bảng chính được thiết kế chuẩn hóa quan hệ (Database: `quan_ly_su_kien`):
 

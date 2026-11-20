@@ -16,7 +16,7 @@ class EventController extends Controller
 {
     protected function getCurrentUser()
     {
-        return Auth::user() ?? session('user');
+        return Auth::user();
     }
     /**
      * Lưu sự kiện mới vào CSDL (Resource store)
@@ -126,6 +126,10 @@ class EventController extends Controller
             return redirect()->route('Auth.index')->with('warning', 'Vui lòng đăng nhập để đăng ký vé.');
         }
 
+        if ($user->vai_tro === 'admin') {
+            return redirect()->route('admin.index')->with('warning', 'Tài khoản quản trị không thể đặt vé.');
+        }
+
         return DB::transaction(function () use ($user, $id) {
         // Khóa dòng sự kiện trên MySQL để hai yêu cầu đồng thời không vượt sức chứa.
         $event = SuKien::whereKey($id)->lockForUpdate()->firstOrFail();
@@ -163,17 +167,18 @@ class EventController extends Controller
             return redirect()->route('Dashboard.myTicket')->with('warning', 'Bạn đã đăng ký vé cho sự kiện này rồi! Mã vé: ' . $existingTicket->ma_ve);
         }
 
-        // Tạo mã vé duy nhất
-        $maVe = 'QQQ-' . date('Y') . '-' . strtoupper(Str::random(6));
-
         $ticket = DangKy::create([
             'nguoi_dung_id' => $user->id,
             'su_kien_id' => $id,
-            'ma_ve' => $maVe,
+            'ma_ve' => 'TEMP-' . $user->id . '-' . $id,
             'thoi_gian_dang_ky' => now(),
             'trang_thai' => 'da_xac_nhan',
             'ghi_chu' => 'Đăng ký vé trực tuyến trên website',
         ]);
+
+        // ID vé bảo đảm duy nhất; phần ngẫu nhiên khiến mã khó đoán khi quét QR.
+        $maVe = 'QQQ-' . date('Y') . '-' . $ticket->id . '-' . strtoupper(Str::random(12));
+        $ticket->update(['ma_ve' => $maVe]);
 
         return redirect()->route('Dashboard.myTicket')
             ->with('success', 'Chúc mừng! Đăng ký vé thành công! Mã vé của bạn là ' . $maVe)

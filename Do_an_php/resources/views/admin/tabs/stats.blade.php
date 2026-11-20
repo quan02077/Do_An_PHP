@@ -66,8 +66,8 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     // 1. Dữ liệu Danh mục
-    const catLabels = {!! json_encode($categoryChart['labels'] ?? []) !!};
-    const catCounts = {!! json_encode($categoryChart['counts'] ?? []) !!};
+    const catLabels = {{ Illuminate\Support\Js::from($categoryChart['labels'] ?? []) }};
+    const catCounts = {{ Illuminate\Support\Js::from($categoryChart['counts'] ?? []) }};
 
     const ctxCat = document.getElementById('categoryChartCanvas');
     if (ctxCat) {
@@ -104,8 +104,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // 2. Dữ liệu Top sự kiện đăng ký vé
-    const eventLabels = {!! json_encode($eventBookingChart['labels'] ?? []) !!};
-    const eventCounts = {!! json_encode($eventBookingChart['counts'] ?? []) !!};
+    const eventLabels = {{ Illuminate\Support\Js::from($eventBookingChart['labels'] ?? []) }};
+    const eventCounts = {{ Illuminate\Support\Js::from($eventBookingChart['counts'] ?? []) }};
 
     const ctxEvent = document.getElementById('eventBookingChartCanvas');
     if (ctxEvent) {

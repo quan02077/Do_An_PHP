@@ -65,4 +65,15 @@ class AuthSecurityTest extends TestCase
             'password_confirmation' => 'newsecret123',
         ])->assertSessionHasErrors('current_password');
     }
+
+    public function test_login_is_rate_limited_after_repeated_attempts(): void
+    {
+        $this->withServerVariables(['REMOTE_ADDR' => '192.0.2.99']);
+        for ($attempt = 0; $attempt < 5; $attempt++) {
+            $this->post('/login', ['email' => 'unknown@example.test', 'password' => 'wrong'])
+                ->assertRedirect();
+        }
+        $this->post('/login', ['email' => 'unknown@example.test', 'password' => 'wrong'])
+            ->assertStatus(429);
+    }
 }

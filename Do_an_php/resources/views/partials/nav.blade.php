@@ -111,10 +111,13 @@
               </li>
 
               <li>
-                <a class="dropdown-item small rounded-2 py-1.5 text-danger" href="{{ route('Auth.logout') }}">
-                  <i class="fa-solid fa-arrow-right-from-bracket me-2 text-danger"></i>
-                  Đăng xuất
-                </a>
+                <form method="POST" action="{{ route('Auth.logout') }}">
+                  @csrf
+                  <button type="submit" class="dropdown-item small rounded-2 py-1.5 text-danger">
+                    <i class="fa-solid fa-arrow-right-from-bracket me-2 text-danger"></i>
+                    Đăng xuất
+                  </button>
+                </form>
               </li>
             </ul>
           </div>

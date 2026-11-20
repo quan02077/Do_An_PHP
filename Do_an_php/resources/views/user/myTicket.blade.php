@@ -167,7 +167,7 @@
       <div class="d-inline-block p-2 bg-light border rounded-3 mx-auto mb-2">
         <div id="ticket-qr-code" class="d-flex justify-content-center align-items-center" style="width: 150px; height: 150px;"></div>
       </div>
-      <div class="font-monospace fw-bold fs-5 text-dark" id="modal-ticket-code">QQQ-2026-XXXXXX</div>
+      <div class="font-monospace fw-bold fs-5 text-dark" id="modal-ticket-code">QQQ-2026-ID-XXXXXXXXXXXX</div>
       <div class="text-muted small" style="font-size: 12px;">Mã QR dùng để quét check-in tại cổng</div>
       
       <hr class="my-3" style="border-style: dashed;">
