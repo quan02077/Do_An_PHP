@@ -156,7 +156,11 @@ class AdminController extends Controller
             $event = SuKien::whereKey($registration->su_kien_id)->lockForUpdate()->firstOrFail();
             $registration->refresh();
 
-            if ($registration->trang_thai === 'da_huy' && $data['trang_thai'] !== 'da_huy') {
+            if (!in_array($data['trang_thai'], self::registrationStatusTransitions()[$registration->trang_thai] ?? [], true)) {
+                return back()->with('warning', 'Không thể chuyển vé từ trạng thái hiện tại sang trạng thái đã chọn.');
+            }
+
+            if ($registration->trang_thai === 'da_huy') {
                 if ($event->trang_thai !== 'cong_khai' || $event->thoi_gian_bat_dau <= now()) {
                     return back()->with('warning', 'Sự kiện không còn nhận đăng ký; không thể khôi phục vé.');
                 }
@@ -170,6 +174,17 @@ class AdminController extends Controller
             return redirect()->route('admin.index', ['tab' => 'registrations'])
                 ->with('success', 'Đã cập nhật trạng thái đăng ký.');
         });
+    }
+
+    /** Các trạng thái vé được phép chuyển tiếp. */
+    private static function registrationStatusTransitions(): array
+    {
+        return [
+            'cho_duyet' => ['da_xac_nhan', 'da_huy'],
+            'da_xac_nhan' => ['da_tham_gia', 'da_huy'],
+            'da_huy' => ['da_xac_nhan'],
+            'da_tham_gia' => [],
+        ];
     }
 
     /**

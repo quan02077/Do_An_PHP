@@ -70,12 +70,12 @@
                         @endif
                     </td>
                     <td class="py-3 px-3 text-end">
-                        @if($reg->trang_thai !== 'da_tham_gia' && $reg->trang_thai !== 'da_check_in' && $reg->trang_thai !== 'da_huy')
+                        @if($reg->trang_thai === 'da_xac_nhan')
                         <button type="button" onclick="performCheckIn('{{ $reg->ma_ve }}')" class="btn btn-sm btn-outline-primary py-1 px-2.5 rounded-2 me-1" title="Xác nhận tham gia">
                             Check-in
                         </button>
                         @endif
-                        @if($reg->trang_thai !== 'da_xac_nhan' && $reg->trang_thai !== 'da_tham_gia')
+                        @if(in_array($reg->trang_thai, ['cho_duyet', 'da_huy'], true))
                         <form method="POST" action="{{ route('admin.registrations.status', $reg->id) }}" class="d-inline">
                             @csrf
                             @method('PUT')
@@ -83,7 +83,7 @@
                             <button type="submit" class="btn btn-sm btn-outline-success py-1 px-2.5 rounded-2 me-1">Duyệt</button>
                         </form>
                         @endif
-                        @if($reg->trang_thai !== 'da_huy')
+                        @if(in_array($reg->trang_thai, ['cho_duyet', 'da_xac_nhan'], true))
                         <form method="POST" action="{{ route('admin.registrations.status', $reg->id) }}" class="d-inline" onsubmit="return confirm('Xác nhận hủy đăng ký vé này?')">
                             @csrf
                             @method('PUT')
