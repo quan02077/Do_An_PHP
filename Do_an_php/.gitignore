@@ -37,6 +37,9 @@ desktop.ini
 *.tiff
 public/uploads/
 **/uploads/
+# Ngoại lệ: ảnh mẫu của seeder phải nằm trong git; DatabaseSeeder chép chúng sang public/uploads/su_kien.
+# Ảnh admin tải lên (tên UUID trong public/uploads) vẫn bị bỏ qua như trên.
+!/database/seeders/images/*.jpg
 
 # Database & Credentials
 *.sql
