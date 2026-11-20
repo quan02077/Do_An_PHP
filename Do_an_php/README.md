@@ -225,6 +225,8 @@ php artisan key:generate
 php artisan migrate:fresh --seed
 ```
 
+Seeder cũng chép 10 ảnh mẫu từ `database/seeders/images` sang `public/uploads/su_kien` (thư mục `uploads` không nằm trong git). Nếu ảnh sự kiện bị trống, chạy lại lệnh trên. Ảnh admin tải lên không được commit.
+
 ### Bước 6: Khởi chạy web và Reverb ở hai cửa sổ terminal
 ```bash
 php artisan serve --host=0.0.0.0 --port=8000

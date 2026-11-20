@@ -65,6 +65,7 @@ hoặc mở `tests/concurrency/README.md` để đọc kết quả.
 | `belongsToMany` khác `hasMany` ra sao? | `hasMany(DangKy)` lấy bản ghi vé; `belongsToMany(SuKien, 'dang_ky')` đi xuyên bảng trung gian lấy thẳng sự kiện | `app/Models/NguoiDung.php:64,72` |
 | Số chỗ đã đăng ký tính ở đâu? | Accessor `getSoLuongDaDangKyAttribute` đếm vé khác `da_huy` | `app/Models/SuKien.php:144` |
 | Seeder tạo gì? | 1 admin, 2 user, 6 danh mục, 12 sự kiện (có sự kiện đầy chỗ, đã hủy), vé và yêu thích mẫu | `database/seeders/DatabaseSeeder.php` |
+| Ảnh mẫu lấy từ đâu khi `uploads/` không nằm trong git? | Ảnh mẫu lưu trong git tại `database/seeders/images` (ngoại lệ duy nhất trong `.gitignore`); `copySampleImages()` chép sang `public/uploads/su_kien` mỗi lần seed. Ảnh admin tải lên đặt tên UUID nên không bị ghi đè và không bị commit | `DatabaseSeeder::copySampleImages`, `.gitignore` |
 | Mật khẩu lưu thế nào? | Cột `mat_khau` cast `hashed` → bcrypt tự động khi gán | `app/Models/NguoiDung.php` |
 
 ### Quan – giao diện Blade
