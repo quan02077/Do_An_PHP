@@ -54,7 +54,15 @@ class DashboardController extends Controller
     {
         $user = $this->getCurrentUser();
         if (!$user) {
-            return redirect()->route('Auth.index')->with('warning', 'Vui lòng đăng nhập để thực hiện.');
+            $message = 'Vui lòng đăng nhập để thực hiện.';
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $message,
+                    'redirect' => route('Auth.index'),
+                ], 401);
+            }
+            return redirect()->route('Auth.index')->with('warning', $message);
         }
 
         $ticket = DangKy::where('id', $id)
@@ -62,26 +70,69 @@ class DashboardController extends Controller
             ->first();
 
         if (!$ticket) {
-            return back()->with('warning', 'Không tìm thấy vé hoặc bạn không có quyền hủy vé này.');
+            $message = 'Không tìm thấy vé hoặc bạn không có quyền hủy vé này.';
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $message,
+                ], 404);
+            }
+            return back()->with('warning', $message);
         }
 
         if ($ticket->trang_thai === 'da_huy') {
-            return back()->with('warning', 'Vé này đã được hủy trước đó.');
+            $message = 'Vé này đã được hủy trước đó.';
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $message,
+                ], 422);
+            }
+            return back()->with('warning', $message);
         }
 
         if ($ticket->trang_thai === 'da_tham_gia') {
-            return back()->with('warning', 'Vé đã được check-in nên không thể hủy.');
+            $message = 'Vé đã được check-in nên không thể hủy.';
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $message,
+                ], 422);
+            }
+            return back()->with('warning', $message);
         }
 
         if ($ticket->suKien && $ticket->suKien->thoi_gian_bat_dau <= now()) {
-            return back()->with('warning', 'Không thể hủy vé khi sự kiện đã bắt đầu.');
+            $message = 'Không thể hủy vé khi sự kiện đã bắt đầu.';
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $message,
+                ], 422);
+            }
+            return back()->with('warning', $message);
         }
 
         $ticket->trang_thai = 'da_huy';
         $ticket->save();
         event(TicketCountsChanged::forEvent($ticket->suKien));
 
-        return back()->with('success', 'Đã hủy vé thành công!');
+        $message = 'Đã hủy vé thành công!';
+        if ($request->expectsJson()) {
+            $ticketCount = DangKy::where('nguoi_dung_id', $user->id)
+                ->where('trang_thai', '!=', 'da_huy')
+                ->count();
+
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'status' => 'da_huy',
+                'ticket_id' => $ticket->id,
+                'ticket_count' => $ticketCount,
+            ]);
+        }
+
+        return back()->with('success', $message);
     }
 
     /**
@@ -114,10 +165,27 @@ class DashboardController extends Controller
     {
         $user = $this->getCurrentUser();
         if (!$user) {
-            return redirect()->route('Auth.index')->with('warning', 'Vui lòng đăng nhập để lưu sự kiện yêu thích.');
+            $message = 'Vui lòng đăng nhập để lưu sự kiện yêu thích.';
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $message,
+                    'redirect' => route('Auth.index'),
+                ], 401);
+            }
+            return redirect()->route('Auth.index')->with('warning', $message);
         }
 
-        SuKien::whereKey($eventId)->where('trang_thai', 'cong_khai')->firstOrFail();
+        $event = SuKien::whereKey($eventId)->where('trang_thai', 'cong_khai')->first();
+        if (!$event) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Không tìm thấy sự kiện hoặc sự kiện không khả dụng.',
+                ], 404);
+            }
+            abort(404);
+        }
 
         $fav = YeuThich::where('nguoi_dung_id', $user->id)
             ->where('su_kien_id', $eventId)
@@ -125,13 +193,26 @@ class DashboardController extends Controller
 
         if ($fav) {
             $fav->delete();
+            $favorited = false;
             $message = 'Đã xóa sự kiện khỏi danh sách yêu thích!';
         } else {
             YeuThich::create([
                 'nguoi_dung_id' => $user->id,
                 'su_kien_id' => $eventId,
             ]);
+            $favorited = true;
             $message = 'Đã thêm sự kiện vào danh sách yêu thích!';
+        }
+
+        if ($request->expectsJson()) {
+            $favCount = YeuThich::where('nguoi_dung_id', $user->id)->count();
+
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'favorited' => $favorited,
+                'fav_count' => $favCount,
+            ]);
         }
 
         return back()->with('success', $message);
