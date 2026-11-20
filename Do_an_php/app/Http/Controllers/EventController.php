@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\TicketCountsChanged;
 use App\Models\DangKy;
 use App\Models\SuKien;
 use App\Models\YeuThich;
@@ -9,13 +10,14 @@ use App\Http\Requests\EventRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class EventController extends Controller
 {
     protected function getCurrentUser()
     {
-        return Auth::user() ?? session('user');
+        return Auth::user();
     }
     /**
      * Lưu sự kiện mới vào CSDL (Resource store)
@@ -46,6 +48,8 @@ class EventController extends Controller
     {
         $event = SuKien::with(['danhMuc', 'nguoiTao', 'dangKys'])->findOrFail($id);
         $user = $this->getCurrentUser();
+
+        abort_if($event->trang_thai !== 'cong_khai' && $user?->vai_tro !== 'admin', 404);
 
         $isFavorited = false;
         $userTicket = null;
@@ -123,7 +127,13 @@ class EventController extends Controller
             return redirect()->route('Auth.index')->with('warning', 'Vui lòng đăng nhập để đăng ký vé.');
         }
 
-        $event = SuKien::findOrFail($id);
+        if ($user->vai_tro === 'admin') {
+            return redirect()->route('admin.index')->with('warning', 'Tài khoản quản trị không thể đặt vé.');
+        }
+
+        return DB::transaction(function () use ($user, $id) {
+        // Khóa dòng sự kiện trên MySQL để hai yêu cầu đồng thời không vượt sức chứa.
+        $event = SuKien::whereKey($id)->lockForUpdate()->firstOrFail();
 
         // Kiểm tra sự kiện có bị hủy không
         if ($event->trang_thai === 'da_huy') {
@@ -149,6 +159,7 @@ class EventController extends Controller
                 $existingTicket->trang_thai = 'da_xac_nhan';
                 $existingTicket->thoi_gian_dang_ky = now();
                 $existingTicket->save();
+                event(TicketCountsChanged::forEvent($event));
 
                 return redirect()->route('Dashboard.myTicket')
                     ->with('success', 'Bạn đã kích hoạt lại vé thành công! Mã vé: ' . $existingTicket->ma_ve)
@@ -158,21 +169,24 @@ class EventController extends Controller
             return redirect()->route('Dashboard.myTicket')->with('warning', 'Bạn đã đăng ký vé cho sự kiện này rồi! Mã vé: ' . $existingTicket->ma_ve);
         }
 
-        // Tạo mã vé duy nhất
-        $maVe = 'QQQ-' . date('Y') . '-' . strtoupper(Str::random(6));
-
         $ticket = DangKy::create([
             'nguoi_dung_id' => $user->id,
             'su_kien_id' => $id,
-            'ma_ve' => $maVe,
+            'ma_ve' => 'TEMP-' . $user->id . '-' . $id,
             'thoi_gian_dang_ky' => now(),
             'trang_thai' => 'da_xac_nhan',
             'ghi_chu' => 'Đăng ký vé trực tuyến trên website',
         ]);
 
+        // ID vé bảo đảm duy nhất; phần ngẫu nhiên khiến mã khó đoán khi quét QR.
+        $maVe = 'QQQ-' . date('Y') . '-' . $ticket->id . '-' . strtoupper(Str::random(12));
+        $ticket->update(['ma_ve' => $maVe]);
+        event(TicketCountsChanged::forEvent($event));
+
         return redirect()->route('Dashboard.myTicket')
             ->with('success', 'Chúc mừng! Đăng ký vé thành công! Mã vé của bạn là ' . $maVe)
             ->with('new_ticket_code', $maVe);
+        });
     }
 
     /** Tạo slug không trùng để dùng cho URL và báo cáo. */

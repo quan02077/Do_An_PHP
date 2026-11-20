@@ -19,7 +19,7 @@
     <div class="bg-white rounded-4 border shadow-sm p-3 p-sm-4 p-md-5">
         <!-- Tab Navigation Bar -->
         <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4 border-bottom pb-4">
-            <div class="btn-group p-1 bg-light rounded-pill align-self-start" role="group" aria-label="Admin navigation tabs">
+            <div class="btn-group p-1 bg-light rounded-pill align-self-start overflow-x-auto mw-100" role="group" aria-label="Admin navigation tabs">
                 <button type="button" onclick="switchAdminTab('events')" id="adm-tab-events" class="btn btn-sm rounded-pill fw-semibold btn-dark shadow-xs px-3 py-2">
                     Quản lý sự kiện
                 </button>
@@ -32,7 +32,7 @@
             </div>
 
             <!-- Action Buttons -->
-            <div id="admin-action-btn-container" class="d-flex align-items-center gap-2">
+            <div id="admin-action-btn-container" class="d-flex align-items-center flex-wrap gap-2">
                 <button type="button" onclick="openAddCategoryModal()" class="btn btn-sm btn-outline-secondary rounded-3 px-3 py-2 fw-medium small d-flex align-items-center gap-1.5">
                     <i class="fa-solid fa-plus me-1"></i>
                     <span>Thêm danh mục</span>

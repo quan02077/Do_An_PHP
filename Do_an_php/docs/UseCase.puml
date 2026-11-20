@@ -1,0 +1,37 @@
+@startuml
+left to right direction
+actor "Khách" as Guest
+actor "Thành viên" as Member
+actor "Quản trị viên" as Admin
+
+rectangle "QQQ - Quản lý sự kiện" {
+  usecase "Xem và tìm sự kiện" as Browse
+  usecase "Đăng ký tài khoản" as Register
+  usecase "Đăng nhập / đăng xuất" as Login
+  usecase "Quên mật khẩu qua email" as Reset
+  usecase "Đăng ký vé" as Book
+  usecase "Xem / hủy vé" as Ticket
+  usecase "Lưu sự kiện yêu thích" as Favorite
+  usecase "Cập nhật hồ sơ" as Profile
+  usecase "Quản lý danh mục" as Category
+  usecase "Quản lý sự kiện" as Event
+  usecase "Quản lý đăng ký" as Registration
+  usecase "Check-in vé" as Checkin
+  usecase "Xem thống kê" as Stats
+}
+
+Guest --> Browse
+Guest --> Register
+Guest --> Login
+Guest --> Reset
+Member --> Browse
+Member --> Book
+Member --> Ticket
+Member --> Favorite
+Member --> Profile
+Admin --> Category
+Admin --> Event
+Admin --> Registration
+Admin --> Checkin
+Admin --> Stats
+@enduml

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\SuKien;
 use Illuminate\Foundation\Http\FormRequest;
 
 class EventRequest extends FormRequest
@@ -62,11 +63,28 @@ class EventRequest extends FormRequest
     public function withValidator($validator): void
     {
         $validator->after(function ($validator) {
-            $start = $this->input('thoi_gian_bat_dau');
-            $end = $this->input('thoi_gian_ket_thuc');
+            if ($validator->errors()->has('thoi_gian_bat_dau') || $validator->errors()->has('thoi_gian_ket_thuc')) {
+                return;
+            }
 
-            if ($start && $end && strtotime($end) < strtotime($start)) {
-                $validator->errors()->add('thoi_gian_ket_thuc', 'Thời gian kết thúc không được nhỏ hơn ngày bắt đầu.');
+            $event = null;
+            if ($this->isMethod('PUT') || $this->isMethod('PATCH')) {
+                $event = SuKien::find($this->route('event'));
+            }
+
+            $start = $this->input('thoi_gian_bat_dau') ?: $event?->thoi_gian_bat_dau;
+            $end = $this->input('thoi_gian_ket_thuc') ?: $event?->thoi_gian_ket_thuc;
+            $startTime = $start ? strtotime((string) $start) : false;
+            $endTime = $end ? strtotime((string) $end) : false;
+
+            if ($this->filled('thoi_gian_bat_dau') && $startTime !== false && $startTime < time()) {
+                $validator->errors()->add('thoi_gian_bat_dau', 'Thời gian bắt đầu không được nhỏ hơn ngày hiện tại.');
+            }
+            if ($endTime !== false && $endTime < time() && (!$event || $this->filled('thoi_gian_ket_thuc'))) {
+                $validator->errors()->add('thoi_gian_ket_thuc', 'Thời gian kết thúc không được nhỏ hơn ngày hiện tại.');
+            }
+            if ($startTime !== false && $endTime !== false && $endTime <= $startTime) {
+                $validator->errors()->add('thoi_gian_ket_thuc', 'Thời gian kết thúc phải sau thời gian bắt đầu.');
             }
         });
     }

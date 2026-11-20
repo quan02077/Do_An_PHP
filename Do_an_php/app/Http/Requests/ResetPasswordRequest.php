@@ -15,7 +15,7 @@ class ResetPasswordRequest extends FormRequest
     {
         return [
             'email'                 => ['required', 'string', 'email'],
-            'phone'                 => ['required', 'string'],
+            'token'                 => ['required', 'string'],
             'password'              => ['required', 'string', 'min:6', 'confirmed'],
             'password_confirmation' => ['required', 'string'],
         ];
@@ -26,7 +26,7 @@ class ResetPasswordRequest extends FormRequest
         return [
             'email.required'                 => 'Vui lòng nhập địa chỉ email đã đăng ký.',
             'email.email'                    => 'Địa chỉ email không đúng định dạng.',
-            'phone.required'                 => 'Vui lòng nhập số điện thoại xác minh tài khoản.',
+            'token.required'                 => 'Liên kết đặt lại mật khẩu không hợp lệ.',
             'password.required'              => 'Vui lòng nhập mật khẩu mới.',
             'password.min'                   => 'Mật khẩu mới phải có tối thiểu 6 ký tự.',
             'password.confirmed'             => 'Xác nhận mật khẩu mới không trùng khớp.',

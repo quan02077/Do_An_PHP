@@ -12,7 +12,7 @@ class AdminMiddleware
     /** Chỉ cho phép tài khoản có vai_tro = admin truy cập khu vực quản trị. */
     public function handle(Request $request, Closure $next): Response
     {
-        $user = Auth::user() ?? $request->session()->get('user');
+        $user = Auth::user();
 
         if (!$user || $user->vai_tro !== 'admin') {
             return redirect()->route('Home.index')

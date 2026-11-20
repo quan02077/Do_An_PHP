@@ -9,6 +9,7 @@ use App\Models\SuKien;
 use App\Models\YeuThich;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
 
 class DatabaseSeeder extends Seeder
@@ -18,6 +19,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // 0. Chép ảnh mẫu (lưu trong git tại database/seeders/images) sang public/uploads/su_kien,
+        //    vì thư mục uploads bị .gitignore bỏ qua nên máy clone mới sẽ không có ảnh.
+        $this->copySampleImages();
+
         // 1. Tắt kiểm tra khóa ngoại để xóa dữ liệu cũ nếu chạy lại
         Schema::disableForeignKeyConstraints();
         YeuThich::truncate();
@@ -390,5 +395,20 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->command->info('Đã nạp thành công toàn bộ dữ liệu mẫu (Users, 6 Danh mục, 12 Sự kiện gồm Đầy chỗ & Đã hủy, Vé và Yêu thích)!');
+    }
+
+    /**
+     * Chép ảnh mẫu 001.jpg–010.jpg vào thư mục ảnh sự kiện. Ghi đè cùng tên để luôn đúng bản trong git;
+     * ảnh admin tải lên có tên UUID nên không bị ảnh hưởng.
+     */
+    private function copySampleImages(): void
+    {
+        $source = database_path('seeders/images');
+        $target = public_path('uploads/su_kien');
+
+        File::ensureDirectoryExists($target);
+        foreach (File::files($source) as $image) {
+            File::copy($image->getPathname(), $target.DIRECTORY_SEPARATOR.$image->getFilename());
+        }
     }
 }

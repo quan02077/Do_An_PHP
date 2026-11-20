@@ -3,14 +3,14 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
-use App\Http\Requests\StoreEventRequest;
+use App\Http\Requests\EventRequest;
 use Illuminate\Support\Facades\Validator;
 
 class EventDateValidationTest extends TestCase
 {
     private function validateDates(array $data)
     {
-        $request = new StoreEventRequest();
+        $request = new EventRequest();
         $request->merge($data);
 
         $rules = [
@@ -54,7 +54,7 @@ class EventDateValidationTest extends TestCase
         ]);
 
         $this->assertTrue($validator->fails());
-        $this->assertContains('Thời gian kết thúc không được nhỏ hơn ngày bắt đầu.', $validator->errors()->get('thoi_gian_ket_thuc'));
+        $this->assertContains('Thời gian kết thúc phải sau thời gian bắt đầu.', $validator->errors()->get('thoi_gian_ket_thuc'));
     }
 
     public function test_passes_when_dates_are_valid(): void
@@ -67,13 +67,13 @@ class EventDateValidationTest extends TestCase
         $this->assertTrue($validator->passes());
     }
 
-    public function test_passes_when_start_and_end_date_are_equal(): void
+    public function test_fails_when_start_and_end_date_are_equal(): void
     {
         $validator = $this->validateDates([
             'thoi_gian_bat_dau' => date('Y-m-d H:i', strtotime('+1 day')),
             'thoi_gian_ket_thuc' => date('Y-m-d H:i', strtotime('+1 day')),
         ]);
 
-        $this->assertTrue($validator->passes());
+        $this->assertTrue($validator->fails());
     }
 }

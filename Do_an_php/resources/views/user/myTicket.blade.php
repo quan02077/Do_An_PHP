@@ -7,25 +7,25 @@
 
   <!-- Banner thông tin tài khoản -->
   @if(isset($user) && $user)
-  <div class="bg-white rounded-4 border shadow-sm p-4 mb-4 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
-    <div class="d-flex align-items-center gap-3">
+  <div class="bg-white rounded-4 border shadow-sm p-3 p-sm-4 mb-4 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+    <div class="d-flex align-items-center gap-3 min-w-0">
       <div class="rounded-3 bg-dark text-white fw-bold d-flex align-items-center justify-content-center shadow-sm flex-shrink-0 fs-3" style="width: 56px; height: 56px;">
         {{ mb_strtoupper(mb_substr($user->ho_ten ?? 'U', 0, 1)) }}
       </div>
-      <div>
-        <div class="d-flex align-items-center gap-2 mb-1">
-          <h1 class="fs-5 fw-bold tracking-tight text-dark mb-0">{{ $user->ho_ten }}</h1>
+      <div class="min-w-0">
+        <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+          <h1 class="fs-5 fw-bold tracking-tight text-dark mb-0 text-break">{{ $user->ho_ten }}</h1>
           <span class="badge rounded-pill {{ $user->vai_tro === 'admin' ? 'bg-danger' : 'bg-primary-subtle text-primary border border-primary-subtle' }}">
             {{ $user->vai_tro === 'admin' ? 'Quản trị viên' : 'Thành viên' }}
           </span>
         </div>
         <div class="d-flex flex-wrap gap-2 small text-muted">
-          <span>{{ $user->email }}</span>
+          <span class="text-break">{{ $user->email }}</span>
         </div>
       </div>
     </div>
 
-    <div class="d-flex align-items-center gap-2">
+    <div class="d-flex align-items-center gap-2 flex-wrap">
       <a href="{{ route('Dashboard.favorite') }}" class="btn btn-sm btn-outline-secondary rounded-3 px-3 py-2 fw-medium small d-flex align-items-center gap-2">
         <i class="fa-solid fa-heart text-danger"></i>
         <span>Xem yêu thích</span>
@@ -38,11 +38,11 @@
   @endif
 
   <!-- Header Tiêu đề & Đếm số vé -->
-  <div class="d-flex align-items-center justify-content-between mb-3">
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
     <div>
       <h2 class="fs-4 fw-bold text-dark mb-0">Vé đã đăng ký của bạn</h2>
     </div>
-    <span class="badge rounded-pill bg-white text-dark border px-3 py-2 fw-semibold">
+    <span class="badge rounded-pill bg-white text-dark border px-3 py-2 fw-semibold flex-shrink-0">
       Tổng cộng: <span id="tickets-count">{{ count($tickets) }}</span> vé
     </span>
   </div>
@@ -62,13 +62,13 @@
     @endphp
 
     <div class="bg-white rounded-4 border shadow-sm p-3 p-sm-4 d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3 ticket-card {{ $isCancelled ? 'opacity-75 bg-light-subtle' : '' }}" id="ticket-item-{{ $ticket->id }}">
-      <div class="d-flex align-items-center gap-3">
-        <img src="{{ $img }}" alt="{{ $ev->ten_su_kien ?? 'Sự kiện' }}" class="rounded-3 object-fit-cover flex-shrink-0" style="width: 80px; height: 80px;" />
-        <div>
+      <div class="d-flex align-items-start align-items-sm-center gap-3 w-100 min-w-0">
+        <img src="{{ $img }}" alt="{{ $ev->ten_su_kien ?? 'Sự kiện' }}" class="rounded-3 object-fit-cover flex-shrink-0 ticket-thumb" />
+        <div class="flex-grow-1 min-w-0">
           <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
-            <span class="badge rounded-pill bg-light text-dark border font-monospace" style="font-size: 12px; letter-spacing: 0.5px;">{{ $code }}</span>
+            <span class="badge rounded-pill bg-light text-dark border font-monospace text-break" style="font-size: 12px; letter-spacing: 0.5px;">{{ $code }}</span>
             <span id="badge-status-{{ $ticket->id }}">
-              @if ($ticket->trang_thai === 'da_check_in')
+              @if ($ticket->trang_thai === 'da_check_in' || $ticket->trang_thai === 'da_tham_gia')
               <span class="badge bg-success text-white rounded-pill">Đã check-in</span>
               @elseif ($ticket->trang_thai === 'cho_duyet')
               <span class="badge bg-warning text-dark rounded-pill">Chờ duyệt</span>
@@ -80,7 +80,7 @@
             </span>
           </div>
 
-          <h3 class="fs-6 fw-bold text-dark mb-1 text-truncate" style="max-width: 480px;">
+          <h3 class="fs-6 fw-bold text-dark mb-1 line-clamp-2 text-break">
             <a href="{{ $ev ? route('Event.show', $ev->id) : '#' }}" class="text-decoration-none text-dark hover-underline">
               {{ $ev->ten_su_kien ?? 'Sự kiện không còn tồn tại' }}
             </a>
@@ -90,7 +90,7 @@
             <span>{{ $date }}</span>
             @if(!empty($ev->dia_diem))
             <span>•</span>
-            <span>{{ $ev->dia_diem }}</span>
+            <span class="text-break">{{ $ev->dia_diem }}</span>
             @endif
             @if(!empty($ticket->thoi_gian_dang_ky))
             <span>•</span>
@@ -100,11 +100,12 @@
         </div>
       </div>
 
-      <div class="d-flex align-items-center gap-2 w-100 w-md-auto pt-2 pt-md-0 border-top border-md-top-0 flex-wrap flex-md-nowrap">
+      <div class="d-flex align-items-center gap-2 flex-wrap flex-md-nowrap flex-md-shrink-0 ticket-actions">
         @if(!$isCancelled)
         <button
           type="button"
-          class="btn btn-sm btn-dark rounded-3 px-3 py-2 fw-medium d-flex align-items-center gap-1.5"
+          id="btn-qr-{{ $ticket->id }}"
+          class="btn btn-sm btn-dark rounded-3 px-3 py-2 fw-medium d-flex align-items-center gap-1"
           onclick="openTicketModal('{{ $ticket->id }}', '{{ $code }}', '{{ $ticketTitle }}', '{{ $date }}', '{{ $ticketLocation }}', '{{ $userName }}')">
           <i class="fa-solid fa-qrcode"></i>
           <span>Xem vé & QR</span>
@@ -118,8 +119,16 @@
         @endif
 
         <div id="cancel-btn-wrapper-{{ $ticket->id }}">
-          @if (!$isCancelled)
-          <form action="{{ route('Tickets.cancel', $ticket->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn hủy vé này không?');" class="d-inline">
+          @if ($ticket->trang_thai === 'da_tham_gia')
+          <span class="text-muted small fst-italic px-2">Đã check-in</span>
+          @elseif (!$isCancelled)
+          <form
+            action="{{ route('Tickets.cancel', $ticket->id) }}"
+            method="POST"
+            data-ajax-cancel
+            data-ticket-id="{{ $ticket->id }}"
+            data-confirm-message="Bạn có chắc chắn muốn hủy vé này không?"
+            class="d-inline">
             @csrf
             <button
               type="submit"
@@ -160,22 +169,22 @@
       <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1 mb-2 align-self-center small">
         VÉ ĐIỆN TỬ CHÍNH THỨC
       </span>
-      <h5 class="fw-bold text-dark mb-1" id="modal-ticket-event-name">Tên sự kiện</h5>
+      <h5 class="fw-bold text-dark mb-1 text-break" id="modal-ticket-event-name">Tên sự kiện</h5>
       <p class="text-muted small mb-3" id="modal-ticket-date">Ngày giờ</p>
 
       <!-- 2. Mã QR động (Vẽ bằng thư viện QRCode.js) -->
       <div class="d-inline-block p-2 bg-light border rounded-3 mx-auto mb-2">
         <div id="ticket-qr-code" class="d-flex justify-content-center align-items-center" style="width: 150px; height: 150px;"></div>
       </div>
-      <div class="font-monospace fw-bold fs-5 text-dark" id="modal-ticket-code">QQQ-2026-XXXXXX</div>
+      <div class="font-monospace fw-bold fs-5 text-dark text-break" id="modal-ticket-code">QQQ-2026-ID-XXXXXXXXXXXX</div>
       <div class="text-muted small" style="font-size: 12px;">Mã QR dùng để quét check-in tại cổng</div>
       
       <hr class="my-3" style="border-style: dashed;">
 
       <!-- 3. Thông tin người tham dự -->
       <div class="small text-secondary text-start px-2">
-        <div class="mb-1"><strong>Người tham dự:</strong> <span id="modal-ticket-user-name" class="text-dark"></span></div>
-        <div><strong>Địa điểm:</strong> <span id="modal-ticket-location" class="text-dark"></span></div>
+        <div class="mb-1 text-break"><strong>Người tham dự:</strong> <span id="modal-ticket-user-name" class="text-dark"></span></div>
+        <div class="text-break"><strong>Địa điểm:</strong> <span id="modal-ticket-location" class="text-dark"></span></div>
       </div>
 
       <!-- 4. Nút đóng -->

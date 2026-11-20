@@ -6,6 +6,8 @@
             <i class="fa-solid fa-qrcode text-primary"></i>
             <span>Soát vé & Check-in QR</span>
         </h5>
+        <p class="small text-secondary mb-3">Đã check-in: <strong id="checkin-live-count">{{ $checkedInTotal }}</strong> lượt</p>
+        <div id="checkin-live-feed" class="small text-secondary mb-3" aria-live="polite"></div>
         
         <div class="row g-4 align-items-start">
             <!-- Cột 1: Khung Scanner có sẵn UI (Camera + Nút + Chọn ảnh) như trong video -->
@@ -68,12 +70,12 @@
                         @endif
                     </td>
                     <td class="py-3 px-3 text-end">
-                        @if($reg->trang_thai !== 'da_tham_gia' && $reg->trang_thai !== 'da_check_in' && $reg->trang_thai !== 'da_huy')
+                        @if($reg->trang_thai === 'da_xac_nhan')
                         <button type="button" onclick="performCheckIn('{{ $reg->ma_ve }}')" class="btn btn-sm btn-outline-primary py-1 px-2.5 rounded-2 me-1" title="Xác nhận tham gia">
                             Check-in
                         </button>
                         @endif
-                        @if($reg->trang_thai !== 'da_xac_nhan' && $reg->trang_thai !== 'da_tham_gia')
+                        @if(in_array($reg->trang_thai, ['cho_duyet', 'da_huy'], true))
                         <form method="POST" action="{{ route('admin.registrations.status', $reg->id) }}" class="d-inline">
                             @csrf
                             @method('PUT')
@@ -81,7 +83,7 @@
                             <button type="submit" class="btn btn-sm btn-outline-success py-1 px-2.5 rounded-2 me-1">Duyệt</button>
                         </form>
                         @endif
-                        @if($reg->trang_thai !== 'da_huy')
+                        @if(in_array($reg->trang_thai, ['cho_duyet', 'da_xac_nhan'], true))
                         <form method="POST" action="{{ route('admin.registrations.status', $reg->id) }}" class="d-inline" onsubmit="return confirm('Xác nhận hủy đăng ký vé này?')">
                             @csrf
                             @method('PUT')
@@ -101,10 +103,17 @@
             </tbody>
         </table>
     </div>
+    @if($registrations->hasPages())
+        <div class="mt-3">{{ $registrations->links('pagination::bootstrap-5') }}</div>
+    @endif
 </div>
 
-<!-- Thư viện Quét mã QR chuẩn Html5-QRCode (y hệt trong video) -->
-<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<!-- Thư viện quét mã QR Html5-QRCode, ghim phiên bản 2.3.8 để CDN không tự đổi bản giữa buổi demo.
+     integrity (SRI): trình duyệt từ chối chạy nếu nội dung file khác bản đã kiểm tra.
+     Nâng cấp: đổi số phiên bản VÀ tính lại hash: curl -s <url> | openssl dgst -sha384 -binary | openssl base64 -A -->
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"
+        integrity="sha384-c9d8RFSL+u3exBOJ4Yp3HUJXS4znl9f+z66d1y54ig+ea249SpqR+w1wyvXz/lk+"
+        crossorigin="anonymous"></script>
 
 <script>
 // 1. Hàm xử lý khi quét thành công mã QR (Y hệt trong video)
@@ -141,7 +150,7 @@ function guiCheckIn(maVe) {
 
     const hopKetQua = document.getElementById('hopKetQua');
     hopKetQua.className = 'alert alert-info mt-2 p-3 small rounded-3';
-    hopKetQua.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i>Đang kiểm tra mã vé <strong>' + maVe + '</strong>...';
+    hopKetQua.textContent = 'Đang kiểm tra mã vé ' + maVe + '...';
     hopKetQua.classList.remove('d-none');
 
     fetch('/admin/check-in', {
@@ -159,7 +168,10 @@ function guiCheckIn(maVe) {
         if (data.success) {
             // Check-in thành công: Hiện hộp màu xanh
             hopKetQua.classList.add('alert-success');
-            hopKetQua.innerHTML = '<i class="fa-solid fa-circle-check me-2 fs-6"></i><strong>' + data.message + '</strong>';
+            hopKetQua.textContent = data.message;
+            if (data.checkedInTotal !== undefined) {
+                document.getElementById('checkin-live-count').textContent = data.checkedInTotal;
+            }
 
             // Cập nhật trạng thái dòng vé trong bảng phía dưới thành "Đã tham gia"
             if (data.ticket && data.ticket.id) {
@@ -172,7 +184,7 @@ function guiCheckIn(maVe) {
         } else {
             // Có lỗi hoặc vé đã dùng: Hiện hộp màu đỏ
             hopKetQua.classList.add('alert-danger');
-            hopKetQua.innerHTML = '<i class="fa-solid fa-circle-xmark me-2 fs-6"></i><strong>' + data.message + '</strong>';
+            hopKetQua.textContent = data.message;
         }
     })
     .catch(err => {
@@ -184,4 +196,4 @@ function guiCheckIn(maVe) {
     });
 }
 </script>
-    
+
