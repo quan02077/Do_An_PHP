@@ -118,7 +118,9 @@
         @endif
 
         <div id="cancel-btn-wrapper-{{ $ticket->id }}">
-          @if (!$isCancelled)
+          @if ($ticket->trang_thai === 'da_tham_gia')
+          <span class="text-muted small fst-italic px-2">Đã check-in</span>
+          @elseif (!$isCancelled)
           <form action="{{ route('Tickets.cancel', $ticket->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn hủy vé này không?');" class="d-inline">
             @csrf
             <button

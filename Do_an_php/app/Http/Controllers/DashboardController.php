@@ -69,6 +69,10 @@ class DashboardController extends Controller
             return back()->with('warning', 'Vé này đã được hủy trước đó.');
         }
 
+        if ($ticket->trang_thai === 'da_tham_gia') {
+            return back()->with('warning', 'Vé đã được check-in nên không thể hủy.');
+        }
+
         if ($ticket->suKien && $ticket->suKien->thoi_gian_bat_dau <= now()) {
             return back()->with('warning', 'Không thể hủy vé khi sự kiện đã bắt đầu.');
         }

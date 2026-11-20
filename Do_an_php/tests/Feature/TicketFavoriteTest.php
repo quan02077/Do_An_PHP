@@ -33,6 +33,24 @@ class TicketFavoriteTest extends TestCase
         $this->assertDatabaseHas('dang_ky', ['id' => $ticket->id, 'trang_thai' => 'da_huy']);
     }
 
+    public function test_user_cannot_cancel_ticket_already_checked_in(): void
+    {
+        // Check-in tại cửa thường diễn ra trước giờ bắt đầu sự kiện.
+        $user = NguoiDung::factory()->create();
+        $ticket = DangKy::factory()->create([
+            'nguoi_dung_id' => $user->id,
+            'trang_thai' => 'da_tham_gia',
+        ]);
+
+        $this->actingAs($user)->get('/myTicket')
+            ->assertOk()
+            ->assertDontSee('btn-cancel-'.$ticket->id, false);
+
+        $this->actingAs($user)->from('/myTicket')->post('/tickets/'.$ticket->id.'/cancel')
+            ->assertRedirect('/myTicket')->assertSessionHas('warning');
+        $this->assertDatabaseHas('dang_ky', ['id' => $ticket->id, 'trang_thai' => 'da_tham_gia']);
+    }
+
     public function test_user_cannot_cancel_another_users_ticket(): void
     {
         $ticket = DangKy::factory()->create();
