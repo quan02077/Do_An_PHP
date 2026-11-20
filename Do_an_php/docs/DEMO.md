@@ -34,7 +34,7 @@ chỉ mất cập nhật realtime → nói rõ đó là thiết kế (`ShouldRes
 
 **Kiểm tra nhanh:** `php artisan test` (66 test đạt). Camera: chỉ chắc chạy trên `localhost`; qua IP Wi-Fi
 bằng HTTP trình duyệt điện thoại sẽ chặn camera → nhập mã vé thủ công.
-Thư viện quét QR tải từ `unpkg.com/html5-qrcode` (không ghim phiên bản, cần Internet) — thử trước buổi demo.
+Thư viện quét QR `html5-qrcode` ghim bản 2.3.8 kèm SRI, tải từ unpkg nên vẫn cần Internet — thử trước buổi demo.
 
 ## 2. Kịch bản ~13 phút
 
