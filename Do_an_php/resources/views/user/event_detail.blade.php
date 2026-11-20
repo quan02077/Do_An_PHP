@@ -135,13 +135,13 @@
                 $phanTram = ($tongSoVe > 0) ? min(100, round(($daDangKy / $tongSoVe) * 100)) : 0;
                 $veConLai = max(0, $tongSoVe - $daDangKy);
                 @endphp
-                <div class="mb-4">
+                <div class="mb-4" id="event-capacity" data-event-id="{{ $event->id }}">
                     <div class="d-flex justify-content-between small fw-medium mb-1">
                         <span class="text-muted">Tình trạng chỗ ngồi</span>
                         <span id="capacity-text" class="fw-semibold text-dark">{{ $daDangKy }} / {{ $tongSoVe }} ({{ $phanTram }}%)</span>
                     </div>
                     <div class="progress" style="height: 8px;">
-                        <div
+                        <div id="capacity-progress-bar"
                             class="progress-bar {{ $phanTram >= 100 ? 'bg-danger' : ($phanTram >= 80 ? 'bg-warning' : 'bg-dark') }}"
                             role="progressbar"
                             @style(["width: {$phanTram}%"])
@@ -211,25 +211,19 @@
                 <a href="{{ route('Dashboard.myTicket') }}" class="btn btn-outline-dark w-100 py-2.5 fw-medium shadow-sm rounded-3">
                     Xem vé trong "Vé của tôi"
                 </a>
-                @elseif($veConLai > 0)
+                @else
                 <form method="POST" action="{{ route('Event.book', $event->id) }}">
                     @csrf
                     <button
                         type="submit"
                         id="register-action-btn"
+                        @disabled($veConLai <= 0)
                         class="btn btn-dark w-100 py-2.5 fw-semibold shadow-sm rounded-3 d-flex align-items-center justify-content-center gap-2">
                         <i class="fa-solid fa-ticket"></i>
-                        <span>{{ ($userTicket && $userTicket->trang_thai === 'da_huy') ? 'Đăng ký lại vé tham dự' : 'Đăng ký tham gia ngay' }}</span>
+                        <span>{{ $veConLai <= 0 ? 'Đã hết vé' : (($userTicket && $userTicket->trang_thai === 'da_huy') ? 'Đăng ký lại vé tham dự' : 'Đăng ký tham gia ngay') }}</span>
                     </button>
                 </form>
                 <p class="text-center text-muted mt-2 mb-0 small">Vé điện tử sẽ được cấp ngay vào CSDL sau khi đăng ký</p>
-                @else
-                <button
-                    type="button"
-                    class="btn btn-secondary w-100 py-2.5 fw-medium shadow-sm rounded-3"
-                    disabled>
-                    Đã hết vé
-                </button>
                 @endif
             </div>
         </div>

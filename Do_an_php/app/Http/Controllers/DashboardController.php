@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\TicketCountsChanged;
 use App\Models\DangKy;
 use App\Models\YeuThich;
 use App\Models\NguoiDung;
@@ -74,6 +75,7 @@ class DashboardController extends Controller
 
         $ticket->trang_thai = 'da_huy';
         $ticket->save();
+        event(TicketCountsChanged::forEvent($ticket->suKien));
 
         return back()->with('success', 'Đã hủy vé thành công!');
     }

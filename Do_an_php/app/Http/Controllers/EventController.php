@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\TicketCountsChanged;
 use App\Models\DangKy;
 use App\Models\SuKien;
 use App\Models\YeuThich;
@@ -158,6 +159,7 @@ class EventController extends Controller
                 $existingTicket->trang_thai = 'da_xac_nhan';
                 $existingTicket->thoi_gian_dang_ky = now();
                 $existingTicket->save();
+                event(TicketCountsChanged::forEvent($event));
 
                 return redirect()->route('Dashboard.myTicket')
                     ->with('success', 'Bạn đã kích hoạt lại vé thành công! Mã vé: ' . $existingTicket->ma_ve)
@@ -179,6 +181,7 @@ class EventController extends Controller
         // ID vé bảo đảm duy nhất; phần ngẫu nhiên khiến mã khó đoán khi quét QR.
         $maVe = 'QQQ-' . date('Y') . '-' . $ticket->id . '-' . strtoupper(Str::random(12));
         $ticket->update(['ma_ve' => $maVe]);
+        event(TicketCountsChanged::forEvent($event));
 
         return redirect()->route('Dashboard.myTicket')
             ->with('success', 'Chúc mừng! Đăng ký vé thành công! Mã vé của bạn là ' . $maVe)

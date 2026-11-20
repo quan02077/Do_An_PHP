@@ -32,6 +32,7 @@
    * Lọc theo 4 trạng thái sự kiện: *Sắp diễn ra, Đang diễn ra, Đã kết thúc, Sự kiện yêu thích*.
    * Phân trang 12 sự kiện/trang bằng `paginate()->withQueryString()`; giữ từ khóa và bộ lọc khi đổi trang.
    * Ô tìm kiếm cập nhật danh sách bằng AJAX sau khi ngừng gõ; biểu mẫu GET vẫn hoạt động khi JavaScript tắt.
+   * Trang chi tiết cập nhật số chỗ qua Laravel Reverb khi có lượt đặt hoặc hủy vé, không cần tải lại trang.
 2. **Xem chi tiết sự kiện:**
    * Hiển thị đầy đủ banner poster, đơn vị tổ chức, thời gian bắt đầu/kết thúc, giá vé.
    * Thanh tiến độ (Progress bar) trực quan thể hiện tỷ lệ số chỗ đã đăng ký / quy mô tối đa.
@@ -73,6 +74,7 @@
      * Tích hợp máy quét Camera/Webcam chuẩn HTML5: Quét trực tiếp mã QR trên điện thoại của khách tại cổng sự kiện.
      * Ô nhập nhanh mã vé hỗ trợ soát vé thủ công.
      * Gửi yêu cầu đến `POST /admin/check-in` có middleware đăng nhập và Admin, cập nhật trạng thái `da_tham_gia` và cảnh báo vé đã check-in.
+   * Bộ đếm và tên người vừa check-in cập nhật trên các màn Admin đang mở qua kênh Reverb riêng cho Admin.
    * Thao tác 1 chạm: **Duyệt** vé (`da_xac_nhan`), **Check-in** vé (`da_tham_gia`) hoặc **Hủy** vé (`da_huy`).
 5. **Cơ chế Phân quyền (Security & Middleware):**
    * Middleware `AuthenticateCustom` (`auth.custom`): Chặn khách vãng lai truy cập vào các trang cá nhân và đặt vé.
@@ -184,9 +186,11 @@ git clone https://github.com/quan02077/Do_An_PHP.git
 cd Do_An_PHP/Do_an_php
 ```
 
-### Bước 2: Cài đặt thư viện phụ thuộc (Composer)
+### Bước 2: Cài đặt thư viện PHP và JavaScript
 ```bash
 composer install
+npm install
+npm run build
 ```
 
 ### Bước 3: Cấu hình tệp môi trường (.env)
@@ -205,6 +209,10 @@ DB_PASSWORD=
 
 Đặt `APP_URL` đúng địa chỉ đang mở, ví dụ `http://127.0.0.1:8000`. Quên mật khẩu dùng email chứa liên kết token có thời hạn. `.env.example` đặt `MAIL_MAILER=log` để thử nghiệm: mở `storage/logs/laravel.log` lấy liên kết. Muốn gửi email thật, cấu hình SMTP trong `.env` trước khi demo.
 
+Realtime dùng Reverb. `.env.example` chứa khóa mẫu chỉ dành cho demo local; khi chạy ngoài máy cá nhân hãy thay `REVERB_APP_KEY`, `REVERB_APP_SECRET` và `REVERB_APP_ID`. Đặt `BROADCAST_CONNECTION=reverb`, `REVERB_HOST=127.0.0.1`, `REVERB_PORT=8080`, `REVERB_SCHEME=http`. Nếu mở web bằng điện thoại cùng Wi-Fi, khởi chạy Reverb trên `0.0.0.0:8080`; JavaScript sẽ kết nối đến IP máy tính trong thanh địa chỉ. Cho phép cổng 8000 và 8080 qua tường lửa nếu cần.
+
+Trình duyệt điện thoại thường không cấp camera cho trang `http://<IP-LAN>:8000` vì camera yêu cầu secure context. Để demo quét camera, dùng `localhost` trên chính máy có webcam hoặc triển khai HTTPS/WSS hợp lệ; khi dùng điện thoại qua HTTP LAN có thể nhập mã vé thủ công.
+
 ### Bước 4: Khởi tạo Application Key
 ```bash
 php artisan key:generate
@@ -215,10 +223,15 @@ php artisan key:generate
 php artisan migrate:fresh --seed
 ```
 
-### Bước 6: Khởi chạy máy chủ phát triển
+### Bước 6: Khởi chạy web và Reverb ở hai cửa sổ terminal
 ```bash
-php artisan serve
+php artisan serve --host=0.0.0.0 --port=8000
 ```
+```bash
+php artisan reverb:start --host=0.0.0.0 --port=8080
+```
+
+Các event realtime dùng `ShouldBroadcastNow`, nên bản demo này không cần chạy `queue:work` cho việc phát số chỗ và check-in. Nếu đổi sang `ShouldBroadcast`, phải chạy worker hàng đợi.
 
 Chạy kiểm thử với SQLite trong bộ nhớ sau khi cài `vendor`:
 ```bash

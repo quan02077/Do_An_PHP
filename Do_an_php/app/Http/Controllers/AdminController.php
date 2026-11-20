@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\TicketCheckedIn;
+use App\Events\TicketCountsChanged;
 use App\Models\DangKy;
 use App\Models\DanhMuc;
 use App\Models\NguoiDung;
@@ -27,6 +29,7 @@ class AdminController extends Controller
         $totalEvents = SuKien::count();
         $upcomingEvents = SuKien::where('trang_thai', 'cong_khai')->where('thoi_gian_bat_dau', '>', $now)->count();
         $totalBookings = DangKy::where('trang_thai', '!=', 'da_huy')->count();
+        $checkedInTotal = DangKy::where('trang_thai', 'da_tham_gia')->count();
         $totalMembers = NguoiDung::where('vai_tro', 'user')->count();
         $allCategories = DanhMuc::withCount('suKiens')->orderBy('ten_danh_muc')->get();
         $categories = DanhMuc::withCount('suKiens')->orderBy('id')->paginate(10, ['*'], 'categories_page')->withQueryString();
@@ -74,6 +77,7 @@ class AdminController extends Controller
             'totalEvents',
             'upcomingEvents',
             'totalBookings',
+            'checkedInTotal',
             'totalMembers',
             'events',
             'registrations',
@@ -162,6 +166,7 @@ class AdminController extends Controller
             }
 
             $registration->update($data);
+            event(TicketCountsChanged::forEvent($event));
             return redirect()->route('admin.index', ['tab' => 'registrations'])
                 ->with('success', 'Đã cập nhật trạng thái đăng ký.');
         });
@@ -176,8 +181,9 @@ class AdminController extends Controller
         $data = $request->validate(['ma_ve' => ['required', 'string', 'max:100']]);
         $maVe = trim($data['ma_ve']);
 
-        // 2. Tìm vé trong CSDL
-        $ticket = DangKy::with('nguoiDung')->where('ma_ve', $maVe)->first();
+        return DB::transaction(function () use ($maVe) {
+        // Khóa vé để hai lần quét gần nhau không thể cùng thành công.
+        $ticket = DangKy::with(['nguoiDung', 'suKien'])->where('ma_ve', $maVe)->lockForUpdate()->first();
 
         // 3. Kiểm tra các trường hợp
         if (!$ticket) {
@@ -195,12 +201,19 @@ class AdminController extends Controller
 
         // 4. Hợp lệ -> Đổi trạng thái vé sang 'da_tham_gia'
         $ticket->update(['trang_thai' => 'da_tham_gia']);
+        $event = $ticket->suKien;
+        event(TicketCountsChanged::forEvent($event));
+        $checkedInTotal = DangKy::where('trang_thai', 'da_tham_gia')->count();
+        event(new TicketCheckedIn($ticket->id, $event->id, $ticket->nguoiDung->ho_ten, $checkedInTotal));
 
         // 5. Trả về thông báo thành công dạng JSON
         return response()->json([
             'success' => true,
-            'message' => 'Check-in thành công cho: ' . $ticket->nguoiDung->ho_ten
+            'message' => 'Check-in thành công cho: ' . $ticket->nguoiDung->ho_ten,
+            'ticket' => ['id' => $ticket->id],
+            'checkedInTotal' => $checkedInTotal,
         ]);
+        });
     }
 
     private function requireAdmin()

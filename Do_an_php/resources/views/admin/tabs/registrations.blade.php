@@ -6,6 +6,8 @@
             <i class="fa-solid fa-qrcode text-primary"></i>
             <span>Soát vé & Check-in QR</span>
         </h5>
+        <p class="small text-secondary mb-3">Đã check-in: <strong id="checkin-live-count">{{ $checkedInTotal }}</strong> lượt</p>
+        <div id="checkin-live-feed" class="small text-secondary mb-3" aria-live="polite"></div>
         
         <div class="row g-4 align-items-start">
             <!-- Cột 1: Khung Scanner có sẵn UI (Camera + Nút + Chọn ảnh) như trong video -->
@@ -144,7 +146,7 @@ function guiCheckIn(maVe) {
 
     const hopKetQua = document.getElementById('hopKetQua');
     hopKetQua.className = 'alert alert-info mt-2 p-3 small rounded-3';
-    hopKetQua.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i>Đang kiểm tra mã vé <strong>' + maVe + '</strong>...';
+    hopKetQua.textContent = 'Đang kiểm tra mã vé ' + maVe + '...';
     hopKetQua.classList.remove('d-none');
 
     fetch('/admin/check-in', {
@@ -162,7 +164,10 @@ function guiCheckIn(maVe) {
         if (data.success) {
             // Check-in thành công: Hiện hộp màu xanh
             hopKetQua.classList.add('alert-success');
-            hopKetQua.innerHTML = '<i class="fa-solid fa-circle-check me-2 fs-6"></i><strong>' + data.message + '</strong>';
+            hopKetQua.textContent = data.message;
+            if (data.checkedInTotal !== undefined) {
+                document.getElementById('checkin-live-count').textContent = data.checkedInTotal;
+            }
 
             // Cập nhật trạng thái dòng vé trong bảng phía dưới thành "Đã tham gia"
             if (data.ticket && data.ticket.id) {
@@ -175,7 +180,7 @@ function guiCheckIn(maVe) {
         } else {
             // Có lỗi hoặc vé đã dùng: Hiện hộp màu đỏ
             hopKetQua.classList.add('alert-danger');
-            hopKetQua.innerHTML = '<i class="fa-solid fa-circle-xmark me-2 fs-6"></i><strong>' + data.message + '</strong>';
+            hopKetQua.textContent = data.message;
         }
     })
     .catch(err => {
