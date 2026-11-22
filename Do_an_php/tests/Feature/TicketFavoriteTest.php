@@ -10,91 +10,71 @@ use Tests\TestCase;
 
 class TicketFavoriteTest extends TestCase
 {
-    public function test_my_ticket_page_loads_and_displays_user_tickets(): void
+    public function test_my_ticket_page_displays_own_tickets(): void
     {
-        $user = NguoiDung::find(2);
-        $response = $this->actingAs($user)->get('/myTicket');
-
-        $response->assertStatus(200);
-        $response->assertSee('Vé đã đăng ký của bạn');
-        $response->assertSee($user->ho_ten);
+        $user = NguoiDung::factory()->create();
+        DangKy::factory()->create(['nguoi_dung_id' => $user->id]);
+        $this->actingAs($user)->get('/myTicket')->assertOk()->assertSee('Vé đã đăng ký của bạn');
     }
 
-    public function test_favorite_page_loads_and_displays_user_favorites(): void
+    public function test_favorite_page_displays_own_favorites(): void
     {
-        $user = NguoiDung::find(2);
-        $response = $this->actingAs($user)->get('/favorite');
-
-        $response->assertStatus(200);
-        $response->assertSee('Sự kiện yêu thích');
-        $response->assertSee($user->ho_ten);
+        $user = NguoiDung::factory()->create();
+        YeuThich::factory()->create(['nguoi_dung_id' => $user->id]);
+        $this->actingAs($user)->get('/favorite')->assertOk()->assertSee('Sự kiện yêu thích');
     }
 
-    public function test_cancel_ticket_updates_database_for_user(): void
+    public function test_user_can_cancel_own_future_ticket(): void
     {
-        $user = NguoiDung::find(2);
-        $ticket = DangKy::where('nguoi_dung_id', $user->id)->first();
-        $this->assertNotNull($ticket);
-
-        $response = $this->actingAs($user)->postJson('/tickets/' . $ticket->id . '/cancel');
-
-        $response->assertStatus(200);
-        $response->assertJson([
-            'success' => true,
-            'status' => 'da_huy',
-        ]);
-
-        $this->assertDatabaseHas('dang_ky', [
-            'id' => $ticket->id,
-            'trang_thai' => 'da_huy',
-        ]);
+        $user = NguoiDung::factory()->create();
+        $ticket = DangKy::factory()->create(['nguoi_dung_id' => $user->id]);
+        $this->actingAs($user)->from('/myTicket')->post('/tickets/'.$ticket->id.'/cancel')
+            ->assertRedirect('/myTicket')->assertSessionHas('success');
+        $this->assertDatabaseHas('dang_ky', ['id' => $ticket->id, 'trang_thai' => 'da_huy']);
     }
 
-    public function test_toggle_favorite_updates_database_for_user(): void
+    public function test_user_cannot_cancel_ticket_already_checked_in(): void
     {
-        $user = NguoiDung::find(2);
-        $eventId = 7; // event not in favorites yet
-
-        $response = $this->actingAs($user)->postJson('/favorite/toggle/' . $eventId);
-
-        $response->assertStatus(200);
-        $response->assertJson([
-            'success' => true,
-            'is_favorited' => true,
-        ]);
-
-        $this->assertDatabaseHas('yeu_thich', [
+        // Check-in tại cửa thường diễn ra trước giờ bắt đầu sự kiện.
+        $user = NguoiDung::factory()->create();
+        $ticket = DangKy::factory()->create([
             'nguoi_dung_id' => $user->id,
-            'su_kien_id' => $eventId,
+            'trang_thai' => 'da_tham_gia',
         ]);
 
-        // Toggle again to remove
-        $response2 = $this->actingAs($user)->postJson('/favorite/toggle/' . $eventId);
-        $response2->assertStatus(200);
-        $response2->assertJson([
-            'success' => true,
-            'is_favorited' => false,
-        ]);
+        $this->actingAs($user)->get('/myTicket')
+            ->assertOk()
+            ->assertDontSee('btn-cancel-'.$ticket->id, false);
 
-        $this->assertDatabaseMissing('yeu_thich', [
-            'nguoi_dung_id' => $user->id,
-            'su_kien_id' => $eventId,
-        ]);
+        $this->actingAs($user)->from('/myTicket')->post('/tickets/'.$ticket->id.'/cancel')
+            ->assertRedirect('/myTicket')->assertSessionHas('warning');
+        $this->assertDatabaseHas('dang_ky', ['id' => $ticket->id, 'trang_thai' => 'da_tham_gia']);
     }
 
-    public function test_book_ticket_creates_record_in_database(): void
+    public function test_user_cannot_cancel_another_users_ticket(): void
     {
-        $user = NguoiDung::find(3);
-        $eventId = 6;
+        $ticket = DangKy::factory()->create();
+        $otherUser = NguoiDung::factory()->create();
+        $this->actingAs($otherUser)->from('/myTicket')->post('/tickets/'.$ticket->id.'/cancel')
+            ->assertRedirect('/myTicket')->assertSessionHas('warning');
+        $this->assertDatabaseHas('dang_ky', ['id' => $ticket->id, 'trang_thai' => 'da_xac_nhan']);
+    }
 
-        $response = $this->actingAs($user)->post('/event/' . $eventId . '/book');
+    public function test_toggle_favorite_adds_and_removes_record(): void
+    {
+        $user = NguoiDung::factory()->create();
+        $event = SuKien::factory()->create();
+        $this->actingAs($user)->from('/')->post('/favorite/toggle/'.$event->id)->assertRedirect('/');
+        $this->assertDatabaseHas('yeu_thich', ['nguoi_dung_id' => $user->id, 'su_kien_id' => $event->id]);
+        $this->actingAs($user)->from('/')->post('/favorite/toggle/'.$event->id)->assertRedirect('/');
+        $this->assertDatabaseMissing('yeu_thich', ['nguoi_dung_id' => $user->id, 'su_kien_id' => $event->id]);
+    }
 
-        $response->assertRedirect('/myTicket');
-
-        $this->assertDatabaseHas('dang_ky', [
-            'nguoi_dung_id' => $user->id,
-            'su_kien_id' => $eventId,
-            'trang_thai' => 'da_xac_nhan',
-        ]);
+    public function test_book_ticket_creates_record(): void
+    {
+        $user = NguoiDung::factory()->create();
+        $event = SuKien::factory()->create();
+        $this->actingAs($user)->post('/event/'.$event->id.'/book')->assertRedirect('/myTicket');
+        $this->assertDatabaseHas('dang_ky', ['nguoi_dung_id' => $user->id, 'su_kien_id' => $event->id, 'trang_thai' => 'da_xac_nhan']);
     }
 }

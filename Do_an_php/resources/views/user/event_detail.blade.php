@@ -17,73 +17,77 @@
 
     <div class="row g-4">
         <div class="col-lg-8">
-            <div class="position-relative rounded-4 overflow-hidden bg-dark shadow-sm border mb-4">
-                <img id="event-image" src="{{ $event->url_hinh_anh }}" alt="{{ $event->ten_su_kien }}" class="w-100 object-fit-cover" style="height: 360px;" />
+            <div class="position-relative rounded-4 overflow-hidden bg-dark shadow-sm border mb-4 d-flex flex-column justify-content-between event-detail-hero">
+                <img id="event-image" src="{{ $event->url_hinh_anh }}" alt="{{ $event->ten_su_kien }}" class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover" />
                 <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(to top, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.25) 50%, transparent 100%); pointer-events: none;"></div>
 
-                <div class="position-absolute top-0 start-0 p-3 d-flex gap-2" id="event-badges-container">
-                    <span class="badge text-bg-light fw-medium">{{ $event->danhMuc->ten_danh_muc ?? 'Chung' }}</span>
-                    @if($event->trang_thai === 'da_huy')
-                    <span class="badge bg-danger fw-medium">Đã hủy</span>
-                    @elseif($event->trang_thai_dien_ra === 'sap_dien_ra')
-                    <span class="badge bg-primary fw-medium">Sắp diễn ra</span>
-                    @elseif($event->trang_thai_dien_ra === 'dang_dien_ra')
-                    <span class="badge bg-success fw-medium">Đang diễn ra</span>
-                    @else
-                    <span class="badge bg-secondary fw-medium">Đã kết thúc</span>
-                    @endif
+                <div class="position-relative z-2 d-flex align-items-start justify-content-between gap-2 p-3">
+                    <div class="d-flex flex-wrap gap-2 min-w-0" id="event-badges-container">
+                        <span class="badge text-bg-light fw-medium">{{ $event->danhMuc->ten_danh_muc ?? 'Chung' }}</span>
+                        @if($event->trang_thai === 'da_huy')
+                        <span class="badge bg-danger fw-medium">Đã hủy</span>
+                        @elseif($event->trang_thai_dien_ra === 'sap_dien_ra')
+                        <span class="badge bg-primary fw-medium">Sắp diễn ra</span>
+                        @elseif($event->trang_thai_dien_ra === 'dang_dien_ra')
+                        <span class="badge bg-success fw-medium">Đang diễn ra</span>
+                        @else
+                        <span class="badge bg-secondary fw-medium">Đã kết thúc</span>
+                        @endif
+                    </div>
+
+                    <!-- Nút Bookmark Trái tim -->
+                    <form action="{{ route('Favorite.toggle', $event->id) }}" method="POST" data-ajax-favorite data-event-id="{{ $event->id }}" class="flex-shrink-0">
+                        @csrf
+                        <button
+                            type="submit"
+                            class="btn btn-light rounded-circle p-0 d-flex align-items-center justify-content-center shadow-sm border {{ $isFavorited ? 'text-danger' : 'text-secondary' }}"
+                            style="width: 44px; height: 44px;"
+                            title="{{ $isFavorited ? 'Bỏ lưu khỏi yêu thích' : 'Lưu vào yêu thích' }}"
+                            aria-label="{{ $isFavorited ? 'Bỏ lưu khỏi yêu thích' : 'Lưu vào yêu thích' }}"
+                            aria-pressed="{{ $isFavorited ? 'true' : 'false' }}">
+                            <i class="{{ $isFavorited ? 'fa-solid fa-heart text-danger' : 'fa-regular fa-heart text-secondary' }} fs-5"></i>
+                        </button>
+                    </form>
                 </div>
 
-                <!-- Nút Bookmark Trái tim -->
-                <form action="{{ route('Favorite.toggle', $event->id) }}" method="POST" class="position-absolute top-0 end-0 m-3 z-2">
-                    @csrf
-                    <button
-                        type="submit"
-                        class="btn btn-light rounded-circle p-0 d-flex align-items-center justify-content-center shadow-sm border"
-                        style="width: 44px; height: 44px;"
-                        title="{{ $isFavorited ? 'Bỏ lưu khỏi yêu thích' : 'Lưu vào yêu thích' }}">
-                        <i class="{{ $isFavorited ? 'fa-solid fa-heart text-danger' : 'fa-regular fa-heart text-secondary' }} fs-5"></i>
-                    </button>
-                </form>
-
-                <div class="position-absolute bottom-0 start-0 end-0 p-3 p-sm-4 text-white">
-                    <h1 id="event-title" class="fw-bold tracking-tight mb-2 display-6">{{ $event->ten_su_kien }}</h1>
-                    <div class="d-flex flex-wrap align-items-center gap-3 small text-white-50">
+                <div class="position-relative z-1 p-3 p-sm-4 pt-5 text-white mt-auto">
+                    <h1 id="event-title" class="fw-bold tracking-tight mb-2 display-6 text-break">{{ $event->ten_su_kien }}</h1>
+                    <div class="d-flex flex-wrap align-items-center gap-2 gap-sm-3 small text-white-50">
                         <div class="d-flex align-items-center gap-2" id="event-time-badge">
-                            <i class="fa-regular fa-calendar"></i>
+                            <i class="fa-regular fa-calendar flex-shrink-0"></i>
                             <span>{{ \Carbon\Carbon::parse($event->thoi_gian_bat_dau)->format('H:i - d/m/Y') }}</span>
                         </div>
-                        <div class="d-flex align-items-center gap-2" id="event-location-badge">
-                            <i class="fa-solid fa-location-dot"></i>
-                            <span>{{ $event->dia_diem }}</span>
+                        <div class="d-flex align-items-start gap-2 min-w-0" id="event-location-badge">
+                            <i class="fa-solid fa-location-dot flex-shrink-0 mt-1"></i>
+                            <span class="text-break">{{ $event->dia_diem }}</span>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Description Section -->
-            <div class="bg-white border shadow-sm rounded-4 p-4 p-md-5 mb-4">
+            <div class="bg-white border shadow-sm rounded-4 p-3 p-sm-4 p-md-5 mb-4">
                 <h2 class="fw-bold tracking-tight fs-4 text-dark border-bottom pb-3 mb-3">Giới thiệu sự kiện</h2>
-                <div id="event-description" class="text-secondary small leading-relaxed" style="white-space: pre-line; line-height: 1.7;">{{ $event->mo_ta }}</div>
+                <div id="event-description" class="text-secondary small leading-relaxed text-break" style="white-space: pre-line; line-height: 1.7;">{{ $event->mo_ta }}</div>
             </div>
 
             <!-- Organizer Section -->
-            <div class="bg-white border shadow-sm rounded-4 p-4 p-md-5 mb-4">
+            <div class="bg-white border shadow-sm rounded-4 p-3 p-sm-4 p-md-5 mb-4">
                 <h2 class="fw-bold tracking-tight fs-4 text-dark border-bottom pb-3 mb-4">Đơn vị tổ chức</h2>
                 <div class="d-flex align-items-center gap-3">
-                    <div>
-                        <h3 class="fs-6 fw-bold text-dark mb-1">{{ $event->ban_to_chuc ?? ($event->nguoiTao->ho_ten ?? 'Ban Tổ Chức Sự Kiện') }}</h3>
+                    <div class="min-w-0">
+                        <h3 class="fs-6 fw-bold text-dark mb-1 text-break">{{ $event->ban_to_chuc ?? ($event->nguoiTao->ho_ten ?? 'Ban Tổ Chức Sự Kiện') }}</h3>
                         <p class="small text-muted mb-2">Đơn vị tổ chức sự kiện chuyên nghiệp</p>
                         <div class="d-flex flex-wrap gap-3 small text-secondary">
                             @if(!empty($event->nguoiTao->email))
-                            <span class="d-flex align-items-center gap-2">
-                                <i class="fa-regular fa-envelope text-muted"></i>
-                                <span>{{ $event->nguoiTao->email }}</span>
+                            <span class="d-flex align-items-center gap-2 min-w-0">
+                                <i class="fa-regular fa-envelope text-muted flex-shrink-0"></i>
+                                <span class="text-break">{{ $event->nguoiTao->email }}</span>
                             </span>
                             @endif
                             @if(!empty($event->nguoiTao->so_dien_thoai))
                             <span class="d-flex align-items-center gap-2">
-                                <i class="fa-solid fa-phone text-muted"></i>
+                                <i class="fa-solid fa-phone text-muted flex-shrink-0"></i>
                                 <span>{{ $event->nguoiTao->so_dien_thoai }}</span>
                             </span>
                             @endif
@@ -93,12 +97,12 @@
             </div>
 
             <!-- Bản đồ địa điểm sự kiện (Google Maps Embed API) -->
-            <div class="bg-white shadow-sm border rounded-4 p-4 mb-4">
+            <div class="bg-white shadow-sm border rounded-4 p-3 p-sm-4 mb-4">
                 <h3 class="fs-5 fw-bold border-bottom pb-3 mb-3 d-flex align-items-center gap-2">
-                    <i class="fa-solid fa-map-location-dot text-danger"></i>
+                    <i class="fa-solid fa-map-location-dot text-danger flex-shrink-0"></i>
                     <span>Bản đồ địa điểm sự kiện</span>
                 </h3>
-                <div class="rounded-3 overflow-hidden border" style="height: 350px;">
+                <div class="rounded-3 overflow-hidden border event-map-wrapper">
                     <iframe 
                         src="https://www.google.com/maps?q={{ urlencode($event->dia_diem ?? 'Hồ Chí Minh') }}&output=embed" 
                         width="100%" 
@@ -109,17 +113,17 @@
                         referrerpolicy="no-referrer-when-downgrade">
                     </iframe>
                 </div>
-                <div class="mt-2 small text-secondary d-flex align-items-center gap-1">
-                    <i class="fa-solid fa-location-dot text-danger"></i>
-                    <span>Địa điểm: <strong>{{ $event->dia_diem ?? 'Chưa cập nhật' }}</strong></span>
+                <div class="mt-2 small text-secondary d-flex align-items-start gap-1">
+                    <i class="fa-solid fa-location-dot text-danger flex-shrink-0 mt-1"></i>
+                    <span class="text-break">Địa điểm: <strong>{{ $event->dia_diem ?? 'Chưa cập nhật' }}</strong></span>
                 </div>
             </div>
         </div>
 
         <!-- Right 1 Col: Ticket Registration Card -->
         <div class="col-lg-4">
-            <div class="bg-white border shadow-sm rounded-4 p-4 sticky-top" style="top: 84px;">
-                <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="bg-white border shadow-sm rounded-4 p-3 p-sm-4 sticky-lg-top" style="top: 84px;">
+                <div class="d-flex align-items-center justify-content-between gap-2 flex-wrap mb-3">
                     <span class="small fw-semibold text-muted text-uppercase tracking-wider">Vé tham dự</span>
                     @if($event->gia_ve > 0)
                     <span class="badge rounded-pill bg-primary-subtle text-primary border border-primary-subtle px-2.5 py-1">{{ number_format($event->gia_ve, 0, ',', '.') }} VNĐ</span>
@@ -135,13 +139,13 @@
                 $phanTram = ($tongSoVe > 0) ? min(100, round(($daDangKy / $tongSoVe) * 100)) : 0;
                 $veConLai = max(0, $tongSoVe - $daDangKy);
                 @endphp
-                <div class="mb-4">
-                    <div class="d-flex justify-content-between small fw-medium mb-1">
+                <div class="mb-4" id="event-capacity" data-event-id="{{ $event->id }}">
+                    <div class="d-flex justify-content-between gap-2 flex-wrap small fw-medium mb-1">
                         <span class="text-muted">Tình trạng chỗ ngồi</span>
                         <span id="capacity-text" class="fw-semibold text-dark">{{ $daDangKy }} / {{ $tongSoVe }} ({{ $phanTram }}%)</span>
                     </div>
                     <div class="progress" style="height: 8px;">
-                        <div
+                        <div id="capacity-progress-bar"
                             class="progress-bar {{ $phanTram >= 100 ? 'bg-danger' : ($phanTram >= 80 ? 'bg-warning' : 'bg-dark') }}"
                             role="progressbar"
                             @style(["width: {$phanTram}%"])
@@ -178,12 +182,12 @@
                     </div>
 
                     <div class="d-flex align-items-start gap-3">
-                        <div class="text-muted mt-1">
+                        <div class="text-muted mt-1 flex-shrink-0">
                             <i class="fa-solid fa-location-dot"></i>
                         </div>
-                        <div>
+                        <div class="min-w-0">
                             <div class="fw-medium text-dark">Địa điểm</div>
-                            <div id="sidebar-location" class="text-secondary">{{ $event->dia_diem }}</div>
+                            <div id="sidebar-location" class="text-secondary text-break">{{ $event->dia_diem }}</div>
                         </div>
                     </div>
                 </div>
@@ -203,33 +207,27 @@
                 @elseif($userTicket && $userTicket->trang_thai !== 'da_huy')
                 <div class="alert alert-success d-flex align-items-center gap-2 mb-2 p-3 small rounded-3 border">
                     <i class="fa-solid fa-circle-check fs-5 text-success flex-shrink-0"></i>
-                    <div>
+                    <div class="min-w-0">
                         <div class="fw-bold">Bạn đã có vé sự kiện này!</div>
-                        <div class="font-monospace text-muted mt-0.5">Mã vé: {{ $userTicket->ma_ve }}</div>
+                        <div class="font-monospace text-muted mt-0.5 text-break">Mã vé: {{ $userTicket->ma_ve }}</div>
                     </div>
                 </div>
                 <a href="{{ route('Dashboard.myTicket') }}" class="btn btn-outline-dark w-100 py-2.5 fw-medium shadow-sm rounded-3">
                     Xem vé trong "Vé của tôi"
                 </a>
-                @elseif($veConLai > 0)
+                @else
                 <form method="POST" action="{{ route('Event.book', $event->id) }}">
                     @csrf
                     <button
                         type="submit"
                         id="register-action-btn"
+                        @disabled($veConLai <= 0)
                         class="btn btn-dark w-100 py-2.5 fw-semibold shadow-sm rounded-3 d-flex align-items-center justify-content-center gap-2">
                         <i class="fa-solid fa-ticket"></i>
-                        <span>{{ ($userTicket && $userTicket->trang_thai === 'da_huy') ? 'Đăng ký lại vé tham dự' : 'Đăng ký tham gia ngay' }}</span>
+                        <span>{{ $veConLai <= 0 ? 'Đã hết vé' : (($userTicket && $userTicket->trang_thai === 'da_huy') ? 'Đăng ký lại vé tham dự' : 'Đăng ký tham gia ngay') }}</span>
                     </button>
                 </form>
                 <p class="text-center text-muted mt-2 mb-0 small">Vé điện tử sẽ được cấp ngay vào CSDL sau khi đăng ký</p>
-                @else
-                <button
-                    type="button"
-                    class="btn btn-secondary w-100 py-2.5 fw-medium shadow-sm rounded-3"
-                    disabled>
-                    Đã hết vé
-                </button>
                 @endif
             </div>
         </div>

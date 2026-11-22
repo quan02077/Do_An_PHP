@@ -2,24 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\TicketCountsChanged;
 use App\Models\DangKy;
 use App\Models\YeuThich;
 use App\Models\NguoiDung;
+use App\Models\SuKien;
 use App\Http\Requests\UpdateProfileRequest;
 use App\Http\Requests\ChangePasswordRequest;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class DashboardController extends Controller
 {
     /**
-     * Lấy người dùng hiện tại (qua Auth, Session, hoặc mặc định mẫu để không bị gián đoạn trải nghiệm)
+     * Lấy người dùng hiện tại từ Laravel Auth.
      */
     protected function getCurrentUser()
     {
-        return Auth::user() ?? session('user');
+        return Auth::user();
     }
 
     /**
@@ -52,29 +55,90 @@ class DashboardController extends Controller
     {
         $user = $this->getCurrentUser();
         if (!$user) {
-            return redirect()->route('Auth.index')->with('warning', 'Vui lòng đăng nhập để thực hiện.');
+            $message = 'Vui lòng đăng nhập để thực hiện.';
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $message,
+                    'redirect' => route('Auth.index'),
+                ], 401);
+            }
+            return redirect()->route('Auth.index')->with('warning', $message);
         }
 
+        return DB::transaction(function () use ($request, $user, $id) {
+        // Khóa dòng vé: nếu admin đang quét QR check-in cùng vé, một bên phải chờ bên kia xong,
+        // rồi mới kiểm tra trạng thái. Không khóa thì vé vừa check-in có thể bị ghi đè thành đã hủy.
         $ticket = DangKy::where('id', $id)
             ->where('nguoi_dung_id', $user->id)
+            ->lockForUpdate()
             ->first();
 
         if (!$ticket) {
-            return back()->with('warning', 'Không tìm thấy vé hoặc bạn không có quyền hủy vé này.');
+            $message = 'Không tìm thấy vé hoặc bạn không có quyền hủy vé này.';
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $message,
+                ], 404);
+            }
+            return back()->with('warning', $message);
         }
 
         if ($ticket->trang_thai === 'da_huy') {
-            return back()->with('warning', 'Vé này đã được hủy trước đó.');
+            $message = 'Vé này đã được hủy trước đó.';
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $message,
+                ], 422);
+            }
+            return back()->with('warning', $message);
+        }
+
+        if ($ticket->trang_thai === 'da_tham_gia') {
+            $message = 'Vé đã được check-in nên không thể hủy.';
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $message,
+                ], 422);
+            }
+            return back()->with('warning', $message);
         }
 
         if ($ticket->suKien && $ticket->suKien->thoi_gian_bat_dau <= now()) {
-            return back()->with('warning', 'Không thể hủy vé khi sự kiện đã bắt đầu.');
+            $message = 'Không thể hủy vé khi sự kiện đã bắt đầu.';
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $message,
+                ], 422);
+            }
+            return back()->with('warning', $message);
         }
 
         $ticket->trang_thai = 'da_huy';
         $ticket->save();
+        event(TicketCountsChanged::forEvent($ticket->suKien));
 
-        return back()->with('success', 'Đã hủy vé thành công!');
+        $message = 'Đã hủy vé thành công!';
+        if ($request->expectsJson()) {
+            $ticketCount = DangKy::where('nguoi_dung_id', $user->id)
+                ->where('trang_thai', '!=', 'da_huy')
+                ->count();
+
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'status' => 'da_huy',
+                'ticket_id' => $ticket->id,
+                'ticket_count' => $ticketCount,
+            ]);
+        }
+
+        return back()->with('success', $message);
+        });
     }
 
     /**
@@ -107,7 +171,26 @@ class DashboardController extends Controller
     {
         $user = $this->getCurrentUser();
         if (!$user) {
-            return redirect()->route('Auth.index')->with('warning', 'Vui lòng đăng nhập để lưu sự kiện yêu thích.');
+            $message = 'Vui lòng đăng nhập để lưu sự kiện yêu thích.';
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $message,
+                    'redirect' => route('Auth.index'),
+                ], 401);
+            }
+            return redirect()->route('Auth.index')->with('warning', $message);
+        }
+
+        $event = SuKien::whereKey($eventId)->where('trang_thai', 'cong_khai')->first();
+        if (!$event) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Không tìm thấy sự kiện hoặc sự kiện không khả dụng.',
+                ], 404);
+            }
+            abort(404);
         }
 
         $fav = YeuThich::where('nguoi_dung_id', $user->id)
@@ -116,13 +199,26 @@ class DashboardController extends Controller
 
         if ($fav) {
             $fav->delete();
+            $favorited = false;
             $message = 'Đã xóa sự kiện khỏi danh sách yêu thích!';
         } else {
             YeuThich::create([
                 'nguoi_dung_id' => $user->id,
                 'su_kien_id' => $eventId,
             ]);
+            $favorited = true;
             $message = 'Đã thêm sự kiện vào danh sách yêu thích!';
+        }
+
+        if ($request->expectsJson()) {
+            $favCount = YeuThich::where('nguoi_dung_id', $user->id)->count();
+
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'favorited' => $favorited,
+                'fav_count' => $favCount,
+            ]);
         }
 
         return back()->with('success', $message);
@@ -171,9 +267,8 @@ class DashboardController extends Controller
 
         $userModel->update($data);
 
-        // Đồng bộ lại thông tin mới vào session và auth
+        // Cập nhật user đang đăng nhập sau khi lưu hồ sơ.
         $freshUser = $userModel->fresh();
-        session(['user' => $freshUser]);
         if (Auth::check()) {
             Auth::setUser($freshUser);
         }
@@ -196,15 +291,7 @@ class DashboardController extends Controller
             return back()->with('error', 'Không tìm thấy thông tin tài khoản người dùng.');
         }
 
-        // Kiểm tra tính hợp lệ của mật khẩu hiện tại (hỗ trợ Hash::check, plain text, hoặc md5)
-        $currentValid = false;
-        if (Hash::check($request->current_password, $userModel->mat_khau)) {
-            $currentValid = true;
-        } elseif ($userModel->mat_khau === $request->current_password || md5($request->current_password) === $userModel->mat_khau) {
-            $currentValid = true;
-        }
-
-        if (!$currentValid) {
+        if (!Hash::isHashed($userModel->mat_khau) || !Hash::check($request->current_password, $userModel->mat_khau)) {
             return back()->withErrors(['current_password' => 'Mật khẩu hiện tại không chính xác.'])->withInput();
         }
 
@@ -212,7 +299,6 @@ class DashboardController extends Controller
         $userModel->save();
 
         $freshUser = $userModel->fresh();
-        session(['user' => $freshUser]);
         if (Auth::check()) {
             Auth::setUser($freshUser);
         }

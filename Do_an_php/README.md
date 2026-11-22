@@ -19,35 +19,40 @@
 | **2** | **Lương Văn Quan** | • Lập bảng map HTML mockup sang layout, partial, component và Blade view<br>• Tạo `layouts/app`, navbar, footer, alert và input component bằng Blade + Bootstrap<br>• Chuyển trang chủ, danh sách và chi tiết sự kiện sang Blade responsive<br>• Chuyển Vé của tôi, Yêu thích và Hồ sơ sang Blade<br>• Chụp ảnh màn hình chức năng; review responsive và thống nhất UI trước demo | • Danh sách chuyển đổi view rõ ràng<br>• Layout dùng chung cho toàn site<br>• Guest xem danh sách và chi tiết event<br>• Giao diện user hoàn chỉnh<br>• Bộ ảnh báo cáo và UI đã QA | **Hoàn thành** |
 | **3** | **Trịnh Hữu Kiến Quốc** | • Đăng ký, đăng nhập, đăng xuất với `NguoiDung`, Hash và Laravel Auth<br>• Tạo middleware `role:admin`; bảo vệ route và hiển thị quyền trong Blade<br>• CRUD đầy đủ `danh_muc` và `su_kien`: Resource Controller, Form Request, validate, upload poster tùy chọn<br>• Tìm kiếm, lọc danh mục/trạng thái, phân trang Bootstrap với `withQueryString`<br>• Đăng ký vé phía server: chặn trùng, hết chỗ, event chưa công khai/đã bắt đầu<br>• Vé của tôi, hủy vé, giữ trạng thái cancelled và cho phép đăng ký lại<br>• Test rule chính, README, ERD, Use Case, phân công, script demo và freeze tính năng | • User/Admin đăng nhập được<br>• User không truy cập được `/admin`<br>• Admin tạo/xem/sửa/xóa đúng hai bảng<br>• Danh sách có search/filter/pagination<br>• Đăng ký vé đúng quy tắc nghiệp vụ<br>• User quản lý vé của mình<br>• Bản demo ổn định và hồ sơ hoàn chỉnh | **Hoàn thành** |
 
+**Lưu ý tiến độ:** Cột “Hoàn thành” phản ánh bảng phân công ban đầu, không thay cho biên bản nghiệm thu. Bộ ảnh chụp màn hình và kiểm tra responsive trên thiết bị thật vẫn cần nhóm bổ sung trước khi nộp.
+
 ---
 
 ## 3. Danh sách Chức năng Hệ thống
 
 ### Phân hệ Khách & Người dùng (User / Public)
 1. **Trang chủ & Khám phá sự kiện:**
-   * Tìm kiếm từ khóa đa trường (theo tên sự kiện, mô tả tóm tắt, địa điểm tổ chức).
+   * Tìm kiếm bằng truy vấn Eloquent theo tên sự kiện, mô tả, địa điểm và tên danh mục.
    * Lọc theo danh mục thể loại (Âm nhạc, Công nghệ, Thể thao, Ẩm thực, Hội thảo...).
    * Lọc theo 4 trạng thái sự kiện: *Sắp diễn ra, Đang diễn ra, Đã kết thúc, Sự kiện yêu thích*.
-   * Phân trang tự động chuẩn Bootstrap với phương thức `withQueryString()`.
+   * Phân trang 12 sự kiện/trang bằng `paginate()->withQueryString()`; giữ từ khóa và bộ lọc khi đổi trang.
+   * Ô tìm kiếm cập nhật danh sách bằng AJAX sau khi ngừng gõ; biểu mẫu GET vẫn hoạt động khi JavaScript tắt.
+   * Trang chi tiết cập nhật số chỗ qua Laravel Reverb khi có lượt đặt hoặc hủy vé, không cần tải lại trang.
 2. **Xem chi tiết sự kiện:**
    * Hiển thị đầy đủ banner poster, đơn vị tổ chức, thời gian bắt đầu/kết thúc, giá vé.
    * Thanh tiến độ (Progress bar) trực quan thể hiện tỷ lệ số chỗ đã đăng ký / quy mô tối đa.
-   * **Tích hợp API Bản đồ Google Maps:** Nhúng bản đồ vị trí trực quan theo địa điểm tổ chức, hỗ trợ liên kết mở ứng dụng Google Maps chỉ đường.
+   * **Bản đồ địa điểm:** Nhúng iframe Google Maps theo địa điểm tổ chức; không dùng API key hoặc gọi Google Maps API từ server.
    * Danh sách các sự kiện liên quan cùng thể loại.
 3. **Đăng ký & Đặt vé sự kiện (Core Feature):**
    * Kiểm tra điều kiện ngặt nghèo: sự kiện đã hủy, sự kiện đã qua thời gian bắt đầu, sự kiện đã hết chỗ.
    * Chống trùng lặp: mỗi người dùng chỉ được đăng ký 1 vé cho mỗi sự kiện.
-   * Tự động sinh mã vé ngẫu nhiên theo định dạng chuẩn: `QQQ-YYYY-XXXXXX` (Ví dụ: `QQQ-2026-B8D2F1`).
+   * Tự động sinh mã vé `QQQ-YYYY-ID-RANDOM12`; ID giúp bảo đảm mã không trùng, phần ngẫu nhiên khiến mã khó đoán.
 4. **Quản lý Vé của tôi & Vé điện tử QR MoMo (E-Ticket):**
    * Danh sách toàn bộ vé đã đăng ký kèm mã vé, ngày đăng ký, trạng thái duyệt.
    * **Vé điện tử phong cách MoMo / Ticketbox:** Tự động sinh mã QR động trực tiếp từ mã vé định danh, giao diện cuống vé răng cưa chuẩn thực tế, tích hợp nút **In / Tải vé PDF** (`window.print`).
-   * Chức năng **Hủy vé an toàn**: cập nhật trạng thái `da_huy`, bảo lưu lịch sử giao dịch và cho phép đăng ký lại khi cần.
+   * Chức năng **Hủy vé an toàn**: cập nhật trạng thái `da_huy`, bảo lưu lịch sử giao dịch và cho phép đăng ký lại khi cần. Không hủy được vé đã check-in (`da_tham_gia`) hoặc khi sự kiện đã bắt đầu.
+   * Hủy vé bằng AJAX: badge và nút đổi ngay, hiện thông báo toast, không tải lại trang; khi tắt JavaScript vẫn hủy được qua form thường.
 5. **Sự kiện yêu thích (Bookmark):**
-   * Nút tim lưu yêu thích tại tất cả các thẻ sự kiện.
+   * Nút tim lưu yêu thích tại tất cả các thẻ sự kiện; bấm bằng AJAX (không tải lại trang), controller trả JSON khi request AJAX và vẫn redirect khi tắt JavaScript.
    * Trang quản lý danh sách yêu thích riêng cho từng tài khoản.
 6. **Hồ sơ cá nhân & Bảo mật:**
    * Xem và chỉnh sửa thông tin cá nhân (họ tên, email, số điện thoại, ngày sinh, địa chỉ, tiểu sử).
-   * Đổi mật khẩu tài khoản với cơ chế xác thực mật khẩu cũ và băm mật khẩu mới bằng thuật toán Bcrypt.
+   * Đổi mật khẩu bằng `Hash::check` và lưu hash mới; quên mật khẩu dùng liên kết email có token hết hạn.
 
 ### Phân hệ Quản trị viên (Admin Portal)
 1. **Bảng điều khiển Thống kê & Biểu đồ trực quan (Dashboard Tab):**
@@ -57,6 +62,7 @@
      * **Biểu đồ cột (Bar Chart):** Top các sự kiện thu hút số lượng lượt đăng ký vé cao nhất.
 2. **Quản lý Sự kiện (Events Tab - CRUD Modal):**
    * Danh sách bảng sự kiện trực quan có hình ảnh, danh mục, thời gian, số lượng vé và trạng thái.
+   * Tìm kiếm theo tên, mô tả, địa điểm, danh mục và phân trang 10 sự kiện/trang. Danh mục, lượt đăng ký cũng phân trang 10 dòng/trang.
    * **Thêm mới sự kiện:** Popup modal hỗ trợ upload ảnh poster trực tiếp từ máy tính hoặc chọn ảnh thumbnail có sẵn.
    * **Chỉnh sửa sự kiện:** Đổ dữ liệu tự động vào form modal qua Javascript Data Attributes.
    * **Xóa sự kiện an toàn:** Nếu sự kiện đã có người đặt vé, hệ thống tự động chuyển trạng thái sang `da_huy` để tránh lỗi vi phạm khóa ngoại MySQL.
@@ -65,11 +71,13 @@
    * Quy tắc nghiệp vụ chặn xóa danh mục khi đang có sự kiện trực thuộc.
 4. **Duyệt đăng ký vé & Quét mã QR Check-in (Registrations Tab):**
    * Theo dõi danh sách tất cả các lượt đăng ký vé của người dùng trong hệ thống.
-   * **Soát vé & Check-in QR trực tiếp (O2O Scanner & RESTful API):**
+   * **Soát vé & Check-in QR trực tiếp:**
      * Tích hợp máy quét Camera/Webcam chuẩn HTML5: Quét trực tiếp mã QR trên điện thoại của khách tại cổng sự kiện.
      * Ô nhập nhanh mã vé hỗ trợ soát vé thủ công.
-     * Tự động xác thực qua API `POST /admin/check-in`, cập nhật trạng thái `da_tham_gia` theo thời gian thực và cảnh báo ngăn chặn hành vi sử dụng vé đã check-in.
+     * Gửi yêu cầu đến `POST /admin/check-in` có middleware đăng nhập và Admin, cập nhật trạng thái `da_tham_gia` và cảnh báo vé đã check-in.
+   * Bộ đếm và tên người vừa check-in cập nhật trên các màn Admin đang mở qua kênh Reverb riêng cho Admin.
    * Thao tác 1 chạm: **Duyệt** vé (`da_xac_nhan`), **Check-in** vé (`da_tham_gia`) hoặc **Hủy** vé (`da_huy`).
+   * Luồng trạng thái được kiểm tra ở server, giao diện chỉ hiện nút hợp lệ: `cho_duyet → da_xac_nhan | da_huy`; `da_xac_nhan → da_tham_gia | da_huy`; `da_huy → da_xac_nhan` chỉ khi sự kiện còn chỗ, còn công khai và chưa bắt đầu; `da_tham_gia` là trạng thái cuối.
 5. **Cơ chế Phân quyền (Security & Middleware):**
    * Middleware `AuthenticateCustom` (`auth.custom`): Chặn khách vãng lai truy cập vào các trang cá nhân và đặt vé.
    * Middleware `AdminMiddleware` (`admin`): Kiểm tra quyền hạn `vai_tro === 'admin'`, chặn người dùng thường truy cập trái phép vào URL `/admin`.
@@ -77,6 +85,8 @@
 ---
 
 ## 4. Sơ đồ Cơ sở dữ liệu (Database Schema)
+
+Xem sơ đồ quan hệ trong [`docs/ERD.md`](docs/ERD.md), sơ đồ chức năng trong [`docs/UseCase.puml`](docs/UseCase.puml) và khung thuyết trình ở [`docs/BAO_CAO_DEMO.md`](docs/BAO_CAO_DEMO.md). Bảng phân công ở mục 2; cần chụp ảnh màn hình từ bản demo chạy trên máy nhóm trước khi nộp báo cáo.
 
 Cơ sở dữ liệu gồm 5 bảng chính được thiết kế chuẩn hóa quan hệ (Database: `quan_ly_su_kien`):
 
@@ -101,7 +111,7 @@ Cơ sở dữ liệu gồm 5 bảng chính được thiết kế chuẩn hóa qu
 * **`nguoi_dung`**: Lưu thông tin tài khoản, vai trò (`admin` / `user`), mật khẩu mã hóa Bcrypt.
 * **`danh_muc`**: Phân loại sự kiện (triển lãm, âm nhạc, công nghệ...), trạng thái hoạt động.
 * **`su_kien`**: Tên sự kiện, slug URL, ngày giờ bắt đầu/kết thúc, địa điểm, quy mô vé, giá vé, hình ảnh, trạng thái.
-* **`dang_ky`**: Khóa ngoại liên kết `nguoi_dung_id` và `su_kien_id`, mã vé độc nhất `ma_ve`, trạng thái duyệt (`cho_duyet`, `da_xac_nhan`, `da_huy`).
+* **`dang_ky`**: Khóa ngoại liên kết `nguoi_dung_id` và `su_kien_id`, mã vé độc nhất `ma_ve`, trạng thái vé (`cho_duyet`, `da_xac_nhan`, `da_tham_gia`, `da_huy`).
 * **`yeu_thich`**: Bảng quan hệ N - N lưu trữ các sự kiện được người dùng đánh dấu yêu thích.
 
 ---
@@ -178,9 +188,11 @@ git clone https://github.com/quan02077/Do_An_PHP.git
 cd Do_An_PHP/Do_an_php
 ```
 
-### Bước 2: Cài đặt thư viện phụ thuộc (Composer)
+### Bước 2: Cài đặt thư viện PHP và JavaScript
 ```bash
 composer install
+npm install
+npm run build
 ```
 
 ### Bước 3: Cấu hình tệp môi trường (.env)
@@ -197,6 +209,12 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
+Đặt `APP_URL` đúng địa chỉ đang mở, ví dụ `http://127.0.0.1:8000`. Quên mật khẩu dùng email chứa liên kết token có thời hạn. `.env.example` đặt `MAIL_MAILER=log` để thử nghiệm: mở `storage/logs/laravel.log` lấy liên kết. Muốn gửi email thật, cấu hình SMTP trong `.env` trước khi demo.
+
+Realtime dùng Reverb. `.env.example` chứa khóa mẫu chỉ dành cho demo local; khi chạy ngoài máy cá nhân hãy thay `REVERB_APP_KEY`, `REVERB_APP_SECRET` và `REVERB_APP_ID`. Đặt `BROADCAST_CONNECTION=reverb`, `REVERB_HOST=127.0.0.1`, `REVERB_PORT=8080`, `REVERB_SCHEME=http`. Nếu mở web bằng điện thoại cùng Wi-Fi, khởi chạy Reverb trên `0.0.0.0:8080`; JavaScript sẽ kết nối đến IP máy tính trong thanh địa chỉ. Cho phép cổng 8000 và 8080 qua tường lửa nếu cần.
+
+Trình duyệt điện thoại thường không cấp camera cho trang `http://<IP-LAN>:8000` vì camera yêu cầu secure context. Để demo quét camera, dùng `localhost` trên chính máy có webcam hoặc triển khai HTTPS/WSS hợp lệ; khi dùng điện thoại qua HTTP LAN có thể nhập mã vé thủ công.
+
 ### Bước 4: Khởi tạo Application Key
 ```bash
 php artisan key:generate
@@ -207,10 +225,30 @@ php artisan key:generate
 php artisan migrate:fresh --seed
 ```
 
-### Bước 6: Khởi chạy máy chủ phát triển
+Seeder cũng chép 10 ảnh mẫu từ `database/seeders/images` sang `public/uploads/su_kien` (thư mục `uploads` không nằm trong git). Nếu ảnh sự kiện bị trống, chạy lại lệnh trên. Ảnh admin tải lên không được commit.
+
+### Bước 6: Khởi chạy web và Reverb ở hai cửa sổ terminal
 ```bash
-php artisan serve
+php artisan serve --host=0.0.0.0 --port=8000
 ```
+```bash
+php artisan reverb:start --host=0.0.0.0 --port=8080
+```
+
+Các event realtime dùng `ShouldBroadcastNow`, nên bản demo này không cần chạy `queue:work` cho việc phát số chỗ và check-in. Nếu đổi sang `ShouldBroadcast`, phải chạy worker hàng đợi.
+
+Chạy kiểm thử với SQLite trong bộ nhớ sau khi cài `vendor`:
+```bash
+php artisan test
+```
+
+SQLite trong bộ nhớ không kiểm chứng được khóa dòng khi nhiều người đặt cùng lúc. Kiểm thử đồng thời trên MySQL/MariaDB thật (tự tạo và xóa database `qqq_concurrency_test`, không đụng `quan_ly_su_kien`; chạy bằng Git Bash):
+
+```bash
+bash tests/concurrency/run.sh
+```
+
+Chi tiết kịch bản và kết quả: `tests/concurrency/README.md`.
 
 Truy cập hệ thống tại: **`http://127.0.0.1:8000`**
 
@@ -222,6 +260,6 @@ Hệ thống đã nạp sẵn tài khoản với đầy đủ dữ liệu mô ph
 
 | Loại tài khoản | Email đăng nhập | Mật khẩu | Quyền hạn và Phạm vi thử nghiệm |
 |:---|:---|:---|:---|
-| **Quản trị viên (Admin)** | `admin@gmail.com` | `123456` | Toàn quyền vào `/admin`: Quản lý sự kiện, danh mục, upload ảnh poster, duyệt/hủy vé |
-| **Người dùng (User 1)** | `user@gmail.com` | `123456` | Trải nghiệm đặt vé, xem vé trong *Vé của tôi*, hủy vé, lưu yêu thích, sửa hồ sơ |
-| **Người dùng (User 2)** | `user2@gmail.com` | `123456` | Tài khoản thứ 2 để thử nghiệm đăng ký vé song song và kiểm tra số lượng chỗ |
+| **Quản trị viên (Admin)** | `admin@qqq.vn` | `123456` | Toàn quyền vào `/admin`: Quản lý sự kiện, danh mục, upload ảnh poster, duyệt/hủy vé |
+| **Người dùng (User 1)** | `quan@gmail.com` | `123456` | Trải nghiệm đặt vé, xem vé trong *Vé của tôi*, hủy vé, lưu yêu thích, sửa hồ sơ |
+| **Người dùng (User 2)** | `nam@gmail.com` | `123456` | Tài khoản thứ 2 để thử nghiệm đăng ký vé song song và kiểm tra số lượng chỗ |

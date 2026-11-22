@@ -400,3 +400,74 @@ svg {
   }
 }
 
+/* Responsive 375px & layout safeguards */
+.status-filter-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.card-badges-overlay {
+  right: 3.75rem;
+}
+
+.event-detail-hero {
+  min-height: 360px;
+}
+
+.event-map-wrapper {
+  height: 350px;
+}
+
+.ticket-thumb {
+  width: 80px;
+  height: 80px;
+}
+
+.ticket-actions {
+  width: 100%;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--bs-border-color);
+}
+
+#qqq-toast-container {
+  max-width: calc(100vw - 1.5rem);
+}
+
+@media (min-width: 768px) {
+  .ticket-actions {
+    width: auto;
+    padding-top: 0;
+    border-top: 0;
+  }
+}
+
+@media (max-width: 575.98px) {
+  h1 {
+    font-size: 1.625rem;
+    line-height: 2.1rem;
+  }
+
+  .event-detail-hero {
+    min-height: 280px;
+  }
+
+  .event-detail-hero #event-title {
+    font-size: 1.375rem;
+    line-height: 1.35;
+  }
+
+  .event-map-wrapper {
+    height: 240px;
+  }
+
+  .ticket-thumb {
+    width: 64px;
+    height: 64px;
+  }
+
+  .pagination {
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 0.25rem;
+  }
+}

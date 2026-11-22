@@ -12,7 +12,7 @@ class AuthenticateCustom
     /** Chỉ cho phép người dùng đã đăng nhập truy cập route được bảo vệ. */
     public function handle(Request $request, Closure $next): Response
     {
-        $user = Auth::user() ?? $request->session()->get('user');
+        $user = Auth::user();
 
         if (!$user) {
             return redirect()->route('Auth.index')
