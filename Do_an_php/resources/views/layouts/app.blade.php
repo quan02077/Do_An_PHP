@@ -11,7 +11,7 @@
   @stack('styles')
 </head>
 
-<body class="bg-light text-dark min-vh-100 d-flex flex-column">
+<body class="bg-light text-dark min-vh-100 d-flex flex-column overflow-x-hidden">
   @include('partials.nav')
 
   <main class="grow">

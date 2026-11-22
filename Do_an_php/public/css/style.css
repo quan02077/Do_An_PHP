@@ -46,6 +46,11 @@
   box-sizing: border-box;
 }
 
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -355,3 +360,43 @@ svg {
   padding-left: 0.75em;
   padding-right: 0.75em;
 }
+
+/* ─── Mobile Responsiveness & Scroll Utilities ─────────────────────── */
+.scrollbar-none::-webkit-scrollbar,
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.scrollbar-none,
+.no-scrollbar {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Prevent horizontal overflow on containers */
+.container,
+.container-sm,
+.container-md,
+.container-lg,
+.container-xl,
+.container-xxl,
+.container-fluid {
+  max-width: 100%;
+}
+
+@media (max-width: 576px) {
+  .display-6 {
+    font-size: 1.65rem !important;
+    line-height: 1.35 !important;
+  }
+
+  .status-filter-tab {
+    font-size: 0.78rem !important;
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+}
+

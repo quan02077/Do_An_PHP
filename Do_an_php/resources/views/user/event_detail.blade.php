@@ -46,7 +46,7 @@
                     </button>
                 </form>
 
-                <div class="position-absolute bottom-0 start-0 end-0 p-4 text-white">
+                <div class="position-absolute bottom-0 start-0 end-0 p-3 p-sm-4 text-white">
                     <h1 id="event-title" class="fw-bold tracking-tight mb-2 display-6">{{ $event->ten_su_kien }}</h1>
                     <div class="d-flex flex-wrap align-items-center gap-3 small text-white-50">
                         <div class="d-flex align-items-center gap-2" id="event-time-badge">
