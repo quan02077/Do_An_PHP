@@ -209,7 +209,20 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-Đặt `APP_URL` đúng địa chỉ đang mở, ví dụ `http://127.0.0.1:8000`. Quên mật khẩu dùng email chứa liên kết token có thời hạn. `.env.example` đặt `MAIL_MAILER=log` để thử nghiệm: mở `storage/logs/laravel.log` lấy liên kết. Muốn gửi email thật, cấu hình SMTP trong `.env` trước khi demo.
+Đặt `APP_URL` đúng địa chỉ đang mở, ví dụ `http://127.0.0.1:8000`. Quên mật khẩu gửi email tiếng Việt chứa liên kết token có thời hạn (60 phút) qua **Gmail OAuth2** (`MAIL_MAILER=gmail_oauth2`, hỗ trợ cả `MAIL_GMAIL_MODE=smtp` cho SMTP XOAUTH2 và `MAIL_GMAIL_MODE=api` cho Gmail REST API):
+```env
+MAIL_MAILER=gmail_oauth2
+MAIL_GMAIL_MODE=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=your_email@gmail.com
+GMAIL_OAUTH_CLIENT_ID=your_google_client_id
+GMAIL_OAUTH_CLIENT_SECRET=your_google_client_secret
+GMAIL_OAUTH_REFRESH_TOKEN=your_google_refresh_token
+MAIL_FROM_ADDRESS="your_email@gmail.com"
+MAIL_FROM_NAME="${APP_NAME}"
+```
+Nếu dùng Gmail App Password/Mailtrap có thể đổi sang `MAIL_MAILER=smtp`, hoặc chạy demo offline với `MAIL_MAILER=log` rồi mở `storage/logs/laravel.log` để lấy liên kết đặt lại mật khẩu.
 
 Realtime dùng Reverb. `.env.example` chứa khóa mẫu chỉ dành cho demo local; khi chạy ngoài máy cá nhân hãy thay `REVERB_APP_KEY`, `REVERB_APP_SECRET` và `REVERB_APP_ID`. Đặt `BROADCAST_CONNECTION=reverb`, `REVERB_HOST=127.0.0.1`, `REVERB_PORT=8080`, `REVERB_SCHEME=http`. Nếu mở web bằng điện thoại cùng Wi-Fi, khởi chạy Reverb trên `0.0.0.0:8080`; JavaScript sẽ kết nối đến IP máy tính trong thanh địa chỉ. Cho phép cổng 8000 và 8080 qua tường lửa nếu cần.
 

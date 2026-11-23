@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\NguoiDung;
+use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\ResetPasswordRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 
 class AuthController extends Controller
@@ -67,25 +69,68 @@ class AuthController extends Controller
 
     public function resetPassword(ResetPasswordRequest $request)
     {
+        if (Auth::check()) {
+            return redirect()->route('Dashboard.myTicket');
+        }
+
         $status = Password::reset($request->validated(), function (NguoiDung $user, string $password) {
             $user->forceFill(['mat_khau' => Hash::make($password)])->save();
         });
 
-        return $status === Password::PASSWORD_RESET
-            ? redirect()->route('Auth.index')->with('success', 'Đặt lại mật khẩu thành công!')
-            : back()->withErrors(['email' => __($status)]);
+        if ($status === Password::PASSWORD_RESET) {
+            return redirect()->route('Auth.index')
+                ->with('success', 'Đặt lại mật khẩu thành công! Vui lòng đăng nhập với mật khẩu mới.');
+        }
+
+        $errorMessage = match ($status) {
+            Password::INVALID_TOKEN => 'Liên kết đặt lại mật khẩu không hợp lệ hoặc đã hết hạn. Vui lòng gửi yêu cầu mới.',
+            Password::INVALID_USER => 'Không tìm thấy tài khoản tương ứng với địa chỉ email này.',
+            Password::RESET_THROTTLED => 'Bạn thao tác quá nhanh. Vui lòng thử lại sau ít phút.',
+            default => 'Không thể đặt lại mật khẩu. Vui lòng thử lại.',
+        };
+
+        return back()
+            ->withInput($request->only('email'))
+            ->withErrors(['email' => $errorMessage]);
     }
 
-    public function sendResetLink(Request $request)
+    public function sendResetLink(ForgotPasswordRequest $request)
     {
-        $request->validate(['email' => ['required', 'email']]);
-        Password::sendResetLink($request->only('email'));
+        if (Auth::check()) {
+            return redirect()->route('Dashboard.myTicket');
+        }
 
-        return back()->with('status', 'Nếu email tồn tại, liên kết đặt lại mật khẩu đã được gửi.');
+        try {
+            $status = Password::sendResetLink($request->only('email'));
+        } catch (\Throwable $e) {
+            Log::error('Password reset email failed', [
+                'email' => $request->email,
+                'error' => $e->getMessage(),
+            ]);
+
+            return back()
+                ->withInput($request->only('email'))
+                ->withErrors(['email' => 'Không thể gửi email đặt lại mật khẩu lúc này. Vui lòng kiểm tra cấu hình SMTP hoặc thử lại sau.']);
+        }
+
+        if ($status === Password::RESET_THROTTLED) {
+            return back()
+                ->withInput($request->only('email'))
+                ->withErrors(['email' => 'Bạn vừa gửi yêu cầu đặt lại mật khẩu. Vui lòng đợi ít nhất 1 phút trước khi thử lại.']);
+        }
+
+        return back()->with('status', 'Nếu email tồn tại trong hệ thống, liên kết đặt lại mật khẩu đã được gửi. Vui lòng kiểm tra hộp thư đến hoặc thư rác (Spam).');
     }
 
     public function showResetForm(string $token, Request $request)
     {
-        return view('auth.auth', ['resetToken' => $token, 'resetEmail' => $request->query('email')]);
+        if (Auth::check()) {
+            return redirect()->route('Dashboard.myTicket');
+        }
+
+        return view('auth.auth', [
+            'resetToken' => $token,
+            'resetEmail' => $request->query('email'),
+        ]);
     }
 }

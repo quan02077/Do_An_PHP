@@ -45,8 +45,20 @@ return [
             'port' => env('MAIL_PORT', 2525),
             'username' => env('MAIL_USERNAME'),
             'password' => env('MAIL_PASSWORD'),
-            'timeout' => null,
+            'timeout' => env('MAIL_TIMEOUT', 15),
             'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url((string) env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
+        ],
+
+        'gmail_oauth2' => [
+            'transport' => 'gmail_oauth2',
+            'mode' => env('MAIL_GMAIL_MODE', 'smtp'), // 'smtp' (XOAUTH2) hoặc 'api' (Gmail REST API)
+            'host' => env('MAIL_HOST', 'smtp.gmail.com'),
+            'port' => (int) env('MAIL_PORT', 587),
+            'username' => env('MAIL_USERNAME'),
+            'client_id' => env('GMAIL_OAUTH_CLIENT_ID'),
+            'client_secret' => env('GMAIL_OAUTH_CLIENT_SECRET'),
+            'refresh_token' => env('GMAIL_OAUTH_REFRESH_TOKEN'),
+            'timeout' => (int) env('MAIL_TIMEOUT', 15),
         ],
 
         'ses' => [

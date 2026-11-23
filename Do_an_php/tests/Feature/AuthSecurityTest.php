@@ -38,8 +38,23 @@ class AuthSecurityTest extends TestCase
 
         $this->from('/auth?mode=forgot')->post('/forgot-password', ['email' => $user->email])
             ->assertRedirect('/auth?mode=forgot')->assertSessionHas('status');
-        Notification::assertSentTo($user, ResetPassword::class);
+        Notification::assertSentTo($user, ResetPassword::class, function (ResetPassword $notification) use ($user) {
+            $mail = $notification->toMail($user);
+
+            return str_contains($mail->subject, 'Đặt lại mật khẩu')
+                && $mail->view === 'emails.reset_password'
+                && ($mail->viewData['user']->id ?? null) === $user->id;
+        });
+
+        $this->from('/auth?mode=forgot')->post('/forgot-password', ['email' => $user->email])
+            ->assertRedirect('/auth?mode=forgot')->assertSessionHasErrors('email');
+
         $token = Password::createToken($user);
+        $this->get('/reset-password/' . $token)->assertOk()->assertSee('name="email"', false);
+        $this->get('/reset-password/' . $token . '?email=' . urlencode($user->email))
+            ->assertOk()
+            ->assertSee($user->email);
+
         $this->post('/reset-password', [
             'email' => $user->email, 'token' => $token,
             'password' => 'newsecret123', 'password_confirmation' => 'newsecret123',
@@ -48,8 +63,20 @@ class AuthSecurityTest extends TestCase
         $this->post('/reset-password', [
             'email' => $user->email, 'token' => $token,
             'password' => 'anothersecret', 'password_confirmation' => 'anothersecret',
-        ])->assertSessionHasErrors('email');
+        ])->assertSessionHasErrors([
+            'email' => 'Liên kết đặt lại mật khẩu không hợp lệ hoặc đã hết hạn. Vui lòng gửi yêu cầu mới.',
+        ]);
         $this->assertTrue(Hash::check('newsecret123', $user->fresh()->mat_khau));
+    }
+
+    public function test_authenticated_user_is_redirected_away_from_password_reset_routes(): void
+    {
+        $user = NguoiDung::factory()->create();
+
+        $this->actingAs($user)->get('/reset-password/sample-token')
+            ->assertRedirect(route('Dashboard.myTicket'));
+        $this->actingAs($user)->post('/forgot-password', ['email' => $user->email])
+            ->assertRedirect(route('Dashboard.myTicket'));
     }
 
     public function test_hashed_password_still_logs_in_and_plain_current_password_cannot_change_it(): void
