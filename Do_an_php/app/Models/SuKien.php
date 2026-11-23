@@ -102,6 +102,14 @@ class SuKien extends Model
     }
 
     /**
+     * Danh sách đánh giá của sự kiện
+     */
+    public function danhGias()
+    {
+        return $this->hasMany(DanhGia::class, 'su_kien_id', 'id');
+    }
+
+    /**
      * Kiểm tra sự kiện có miễn phí vé hay không
      */
     public function getIsFreeAttribute(): bool

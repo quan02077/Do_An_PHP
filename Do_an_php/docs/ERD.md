@@ -1,6 +1,6 @@
 # ERD hệ thống QQQ
 
-Các bảng nghiệp vụ dùng tên tiếng Việt theo migration. `dang_ky` và `yeu_thich` là hai bảng nối giữa người dùng và sự kiện.
+Các bảng nghiệp vụ dùng tên tiếng Việt theo migration. `dang_ky`, `yeu_thich` và `danh_gia` liên kết giữa người dùng và sự kiện.
 
 ```mermaid
 erDiagram
@@ -10,6 +10,8 @@ erDiagram
     SU_KIEN ||--o{ DANG_KY : co_ve
     NGUOI_DUNG ||--o{ YEU_THICH : luu
     SU_KIEN ||--o{ YEU_THICH : duoc_yeu_thich
+    NGUOI_DUNG ||--o{ DANH_GIA : viet
+    SU_KIEN ||--o{ DANH_GIA : nhan_danh_gia
 
     NGUOI_DUNG {
         bigint id PK
@@ -17,6 +19,7 @@ erDiagram
         string email UK
         string mat_khau
         string vai_tro
+        string trang_thai
     }
     DANH_MUC {
         bigint id PK
@@ -39,12 +42,21 @@ erDiagram
         bigint su_kien_id FK
         string ma_ve UK
         string trang_thai
+        timestamp da_nhac_lich_luc
     }
     YEU_THICH {
         bigint id PK
         bigint nguoi_dung_id FK
         bigint su_kien_id FK
     }
+    DANH_GIA {
+        bigint id PK
+        bigint nguoi_dung_id FK
+        bigint su_kien_id FK
+        tinyint so_sao
+        text noi_dung
+        string trang_thai
+    }
 ```
 
-Ràng buộc duy nhất: `nguoi_dung.email`, `su_kien.slug`, `dang_ky.ma_ve`, cặp `(dang_ky.nguoi_dung_id, dang_ky.su_kien_id)` và cặp `(yeu_thich.nguoi_dung_id, yeu_thich.su_kien_id)`.
+Ràng buộc duy nhất: `nguoi_dung.email`, `su_kien.slug`, `dang_ky.ma_ve`, cặp `(dang_ky.nguoi_dung_id, dang_ky.su_kien_id)`, cặp `(yeu_thich.nguoi_dung_id, yeu_thich.su_kien_id)` và cặp `(danh_gia.nguoi_dung_id, danh_gia.su_kien_id)`.

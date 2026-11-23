@@ -118,6 +118,98 @@
                     <span class="text-break">Địa điểm: <strong>{{ $event->dia_diem ?? 'Chưa cập nhật' }}</strong></span>
                 </div>
             </div>
+
+            <!-- Khối Đánh giá sau sự kiện -->
+            <div class="bg-white shadow-sm border rounded-4 p-3 p-sm-4 p-md-5 mb-4" id="event-reviews-section">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 border-bottom pb-3 mb-4">
+                    <h2 class="fw-bold tracking-tight fs-4 text-dark mb-0">Đánh giá</h2>
+                    <div class="d-flex align-items-center gap-2 small">
+                        @if(($reviewCount ?? 0) > 0 && $reviewAvg !== null)
+                            <span class="badge rounded-pill bg-warning-subtle text-warning-emphasis border border-warning-subtle px-3 py-2 fs-6">
+                                ★ {{ number_format((float) $reviewAvg, 1) }} / 5
+                            </span>
+                            <span class="text-muted">({{ $reviewCount }} đánh giá)</span>
+                        @else
+                            <span class="text-muted">Chưa có đánh giá nào</span>
+                        @endif
+                    </div>
+                </div>
+
+                @if(!empty($canReview))
+                    <div class="bg-light border rounded-3 p-3 p-sm-4 mb-4">
+                        <h3 class="fs-6 fw-bold text-dark mb-3">
+                            {{ !empty($userReview) ? 'Chỉnh sửa đánh giá của bạn' : 'Viết đánh giá của bạn' }}
+                        </h3>
+                        <form method="POST" action="{{ route('Reviews.store', $event->id) }}">
+                            @csrf
+                            <div class="mb-3">
+                                <label for="review-stars" class="form-label small fw-medium text-dark mb-1">Số sao <span class="text-danger">*</span></label>
+                                <select id="review-stars" name="so_sao" class="form-select form-select-sm py-2" required>
+                                    @php
+                                        $selectedStar = (int) old('so_sao', $userReview->so_sao ?? 5);
+                                    @endphp
+                                    @for($star = 5; $star >= 1; $star--)
+                                        <option value="{{ $star }}" {{ $selectedStar === $star ? 'selected' : '' }}>
+                                            {{ $star }} sao ({{ str_repeat('★', $star) }})
+                                        </option>
+                                    @endfor
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="review-content" class="form-label small fw-medium text-dark mb-1">Nhận xét về sự kiện</label>
+                                <textarea id="review-content" name="noi_dung" rows="3" maxlength="1000" class="form-control form-control-sm py-2" placeholder="Chia sẻ trải nghiệm của bạn sau khi tham gia sự kiện...">{{ old('noi_dung', $userReview->noi_dung ?? '') }}</textarea>
+                            </div>
+                            <div class="d-flex flex-wrap align-items-center gap-2">
+                                <button type="submit" class="btn btn-sm btn-dark px-3 py-2 fw-medium">
+                                    {{ !empty($userReview) ? 'Cập nhật đánh giá' : 'Gửi đánh giá' }}
+                                </button>
+                            </div>
+                        </form>
+
+                        @if(!empty($userReview))
+                            <form method="POST" action="{{ route('Reviews.destroy', $userReview->id) }}" class="mt-2" onsubmit="return confirm('Bạn có chắc chắn muốn xóa đánh giá của mình?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-outline-danger px-3 py-1">
+                                    <i class="fa-regular fa-trash-can me-1"></i>Xóa đánh giá
+                                </button>
+                            </form>
+                        @endif
+                    </div>
+                @else
+                    <p class="small text-muted bg-light border rounded-3 p-3 mb-4">
+                        <i class="fa-solid fa-circle-info me-1"></i>
+                        Chỉ người đã tham gia sự kiện mới có thể đánh giá sau khi sự kiện kết thúc.
+                    </p>
+                @endif
+
+                <div class="d-flex flex-column gap-3">
+                    @forelse($reviews ?? [] as $review)
+                        <div class="border rounded-3 p-3">
+                            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-1">
+                                <div class="fw-semibold text-dark small">
+                                    {{ $review->nguoiDung->ho_ten ?? 'Thành viên' }}
+                                </div>
+                                <div class="d-flex align-items-center gap-2 small">
+                                    <span class="text-warning fw-semibold" aria-label="{{ $review->so_sao }} trên 5 sao">
+                                        {{ str_repeat('★', (int) $review->so_sao) }}{{ str_repeat('☆', max(0, 5 - (int) $review->so_sao)) }}
+                                    </span>
+                                    <span class="text-muted">{{ optional($review->created_at)->format('d/m/Y') }}</span>
+                                </div>
+                            </div>
+                            @if(!empty($review->noi_dung))
+                                <p class="small text-secondary mb-0 text-break" style="white-space: pre-line;">{{ $review->noi_dung }}</p>
+                            @endif
+                        </div>
+                    @empty
+                        <p class="small text-muted mb-0">Chưa có đánh giá hiển thị nào cho sự kiện này.</p>
+                    @endforelse
+                </div>
+
+                @if(isset($reviews) && $reviews->hasPages())
+                    <div class="mt-3">{{ $reviews->links('pagination::bootstrap-5') }}</div>
+                @endif
+            </div>
         </div>
 
         <!-- Right 1 Col: Ticket Registration Card -->

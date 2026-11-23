@@ -92,6 +92,14 @@ class NguoiDung extends Authenticatable implements CanResetPasswordContract
     }
 
     /**
+     * Danh sách đánh giá sự kiện mà người dùng đã gửi
+     */
+    public function danhGias()
+    {
+        return $this->hasMany(DanhGia::class, 'nguoi_dung_id', 'id');
+    }
+
+    /**
      * Trả về đường dẫn ảnh đại diện đầy đủ từ tên file lưu trong CSDL (VD: "avatar.jpg")
      */
     public function getUrlAnhDaiDienAttribute(): string

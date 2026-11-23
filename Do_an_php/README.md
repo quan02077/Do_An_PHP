@@ -224,6 +224,14 @@ MAIL_FROM_NAME="${APP_NAME}"
 ```
 Nếu dùng Gmail App Password/Mailtrap có thể đổi sang `MAIL_MAILER=smtp`, hoặc chạy demo offline với `MAIL_MAILER=log` rồi mở `storage/logs/laravel.log` để lấy liên kết đặt lại mật khẩu.
 
+### Tính năng Quản lý người dùng, Nhắc lịch tự động & Đánh giá sau sự kiện
+- **Quản lý người dùng (Tab `Người dùng` trong `/admin`)**: tìm kiếm theo họ tên/email/SĐT, lọc vai trò & trạng thái, khóa/mở khóa (`bi_khoa`/`hoat_dong`) và đổi vai trò (`user`/`admin`). Không cho xóa tài khoản để bảo toàn lịch sử vé; không cho tự khóa/tự hạ quyền và không khóa/hạ quyền admin cuối cùng. **Khi khóa tài khoản, các vé `cho_duyet`/`da_xac_nhan` trước đó vẫn được giữ nguyên** (chỉ chặn đăng nhập, tự đăng xuất ở request kế tiếp nếu đang đăng nhập và chặn thao tác mới).
+- **Nhắc lịch trước ngày diễn ra (`su-kien:nhac-lich`)**: đã đăng ký chạy tự động mỗi giờ trong `routes/console.php` (`withoutOverlapping`), ghi dấu `dang_ky.da_nhac_lich_luc` sau khi gửi thành công để tránh gửi trùng.
+  - Chạy tay khi demo: `php artisan su-kien:nhac-lich --gio=48`
+  - Chạy lịch định kỳ trên máy dev: `php artisan schedule:work`
+  - Xem nội dung email khi dùng `MAIL_MAILER=log` trong `storage/logs/laravel.log`.
+- **Đánh giá sau sự kiện**: chỉ thành viên (`hoat_dong`, không phải admin) đã check-in (`trang_thai = da_tham_gia`) của sự kiện **đã kết thúc** mới được tạo/sửa/xóa đánh giá (1–5 sao, tối đa 1 đánh giá/người/sự kiện). Điểm trung bình hiển thị trên thẻ sự kiện và trang chi tiết; admin có thể ẩn/hiện đánh giá vi phạm tại tab `Đánh giá` trong `/admin`.
+
 Realtime dùng Reverb. `.env.example` chứa khóa mẫu chỉ dành cho demo local; khi chạy ngoài máy cá nhân hãy thay `REVERB_APP_KEY`, `REVERB_APP_SECRET` và `REVERB_APP_ID`. Đặt `BROADCAST_CONNECTION=reverb`, `REVERB_HOST=127.0.0.1`, `REVERB_PORT=8080`, `REVERB_SCHEME=http`. Nếu mở web bằng điện thoại cùng Wi-Fi, khởi chạy Reverb trên `0.0.0.0:8080`; JavaScript sẽ kết nối đến IP máy tính trong thanh địa chỉ. Cho phép cổng 8000 và 8080 qua tường lửa nếu cần.
 
 Trình duyệt điện thoại thường không cấp camera cho trang `http://<IP-LAN>:8000` vì camera yêu cầu secure context. Để demo quét camera, dùng `localhost` trên chính máy có webcam hoặc triển khai HTTPS/WSS hợp lệ; khi dùng điện thoại qua HTTP LAN có thể nhập mã vé thủ công.

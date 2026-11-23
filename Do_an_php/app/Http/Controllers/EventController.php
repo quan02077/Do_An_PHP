@@ -64,7 +64,40 @@ class EventController extends Controller
                 ->first();
         }
 
-        return view('user.event_detail', compact('event', 'user', 'isFavorited', 'userTicket'));
+        // Nạp danh sách đánh giá đang hiển thị, điểm trung bình và điều kiện được đánh giá
+        $visibleReviewsQuery = $event->danhGias()->where('trang_thai', 'hien');
+        $reviewCount = (clone $visibleReviewsQuery)->count();
+        $reviewAvg = $reviewCount > 0 ? round((float) (clone $visibleReviewsQuery)->avg('so_sao'), 1) : null;
+        $reviews = $visibleReviewsQuery->with('nguoiDung')
+            ->latest('id')
+            ->paginate(5, ['*'], 'reviews_page')
+            ->withQueryString();
+
+        $userReview = $user
+            ? $event->danhGias()->where('nguoi_dung_id', $user->id)->first()
+            : null;
+
+        $eventEnded = $event->thoi_gian_ket_thuc && $event->thoi_gian_ket_thuc < now();
+        $hasAttended = $userTicket && $userTicket->trang_thai === 'da_tham_gia';
+        $canReview = (bool) (
+            $user
+            && $user->trang_thai === 'hoat_dong'
+            && $user->vai_tro !== 'admin'
+            && $eventEnded
+            && $hasAttended
+        );
+
+        return view('user.event_detail', compact(
+            'event',
+            'user',
+            'isFavorited',
+            'userTicket',
+            'reviews',
+            'reviewCount',
+            'reviewAvg',
+            'userReview',
+            'canReview'
+        ));
     }
 
     /**

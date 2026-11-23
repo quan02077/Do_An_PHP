@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\DanhGia;
 use App\Models\DanhMuc;
 use App\Models\DangKy;
 use App\Models\NguoiDung;
@@ -25,6 +26,7 @@ class DatabaseSeeder extends Seeder
 
         // 1. Tắt kiểm tra khóa ngoại để xóa dữ liệu cũ nếu chạy lại
         Schema::disableForeignKeyConstraints();
+        DanhGia::truncate();
         YeuThich::truncate();
         DangKy::truncate();
         SuKien::truncate();
@@ -394,7 +396,56 @@ class DatabaseSeeder extends Seeder
             'su_kien_id' => $createdEvents[3]->id,
         ]);
 
-        $this->command->info('Đã nạp thành công toàn bộ dữ liệu mẫu (Users, 6 Danh mục, 12 Sự kiện gồm Đầy chỗ & Đã hủy, Vé và Yêu thích)!');
+        // 7. Bổ sung 1 sự kiện đã kết thúc kèm vé đã check-in và 4 đánh giá mẫu để demo tính năng Đánh giá
+        $user3 = NguoiDung::create([
+            'ho_ten' => 'Lê Thị Thu Hà',
+            'email' => 'ha@gmail.com',
+            'mat_khau' => '123456',
+            'so_dien_thoai' => '0933445566',
+            'vai_tro' => 'user',
+            'trang_thai' => 'hoat_dong',
+            'dia_chi' => 'TP. Hồ Chí Minh',
+        ]);
+
+        $user4 = NguoiDung::create([
+            'ho_ten' => 'Phạm Quốc Bảo',
+            'email' => 'bao@gmail.com',
+            'mat_khau' => '123456',
+            'so_dien_thoai' => '0944556677',
+            'vai_tro' => 'user',
+            'trang_thai' => 'hoat_dong',
+            'dia_chi' => 'Cần Thơ',
+        ]);
+
+        $endedReviewEvent = $createdEvents[7]; // Diễn Đàn Doanh Nhân Trẻ & Chuyển Đổi Số (đã kết thúc 10 ngày trước)
+
+        $reviewSamples = [
+            [$user1, 'QQQ-2026-DN0001', 5, 'Diễn giả chia sẻ rất thực tế, nhiều ví dụ dễ áp dụng ngay vào công việc.'],
+            [$user2, 'QQQ-2026-DN0002', 4, 'Nội dung hay và tổ chức check-in bằng QR nhanh gọn, chỉ hơi tiếc phần hỏi đáp hơi ngắn.'],
+            [$user3, 'QQQ-2026-DN0003', 5, 'Không gian hội trường thoải mái, tài liệu gửi sau sự kiện rất chi tiết.'],
+            [$user4, 'QQQ-2026-DN0004', 4, 'Chương trình bổ ích cho người muốn tìm hiểu sâu hơn về chuyển đổi số.'],
+        ];
+
+        foreach ($reviewSamples as [$attendee, $ticketCode, $stars, $content]) {
+            DangKy::create([
+                'nguoi_dung_id' => $attendee->id,
+                'su_kien_id' => $endedReviewEvent->id,
+                'ma_ve' => $ticketCode,
+                'thoi_gian_dang_ky' => Carbon::now()->subDays(12),
+                'trang_thai' => 'da_tham_gia',
+                'ghi_chu' => 'Đã check-in tham dự sự kiện.',
+            ]);
+
+            DanhGia::create([
+                'nguoi_dung_id' => $attendee->id,
+                'su_kien_id' => $endedReviewEvent->id,
+                'so_sao' => $stars,
+                'noi_dung' => $content,
+                'trang_thai' => 'hien',
+            ]);
+        }
+
+        $this->command->info('Đã nạp thành công toàn bộ dữ liệu mẫu (Users, 6 Danh mục, 12 Sự kiện gồm Đầy chỗ, Đã hủy & Đã kết thúc có Đánh giá, Vé và Yêu thích)!');
     }
 
     /**

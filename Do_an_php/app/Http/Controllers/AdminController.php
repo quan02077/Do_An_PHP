@@ -7,6 +7,7 @@ use App\Events\TicketCountsChanged;
 use App\Http\Requests\UpdateUserRoleRequest;
 use App\Http\Requests\UpdateUserStatusRequest;
 use App\Models\DangKy;
+use App\Models\DanhGia;
 use App\Models\DanhMuc;
 use App\Models\NguoiDung;
 use App\Models\SuKien;
@@ -68,6 +69,19 @@ class AdminController extends Controller
             $usersQuery->where('trang_thai', $userStatus);
         }
         $users = $usersQuery->orderByDesc('id')->paginate(10, ['*'], 'users_page')->withQueryString();
+
+        // Nạp danh sách đánh giá cho tab quản lý đánh giá (lọc theo sự kiện và số sao)
+        $allEventsForFilter = SuKien::query()->orderByDesc('id')->get(['id', 'ten_su_kien']);
+        $reviewsQuery = DanhGia::with(['nguoiDung', 'suKien']);
+        $reviewEventId = $request->query('review_event');
+        if (!empty($reviewEventId) && ctype_digit((string) $reviewEventId)) {
+            $reviewsQuery->where('su_kien_id', (int) $reviewEventId);
+        }
+        $reviewRating = $request->query('review_rating');
+        if (!empty($reviewRating) && in_array((int) $reviewRating, [1, 2, 3, 4, 5], true)) {
+            $reviewsQuery->where('so_sao', (int) $reviewRating);
+        }
+        $reviews = $reviewsQuery->orderByDesc('id')->paginate(10, ['*'], 'reviews_page')->withQueryString();
         $uploadDir = public_path('uploads/su_kien');
         File::ensureDirectoryExists($uploadDir);
         $eventImages = collect(File::files($uploadDir))
@@ -105,6 +119,8 @@ class AdminController extends Controller
             'registrations',
             'categories',
             'users',
+            'reviews',
+            'allEventsForFilter',
             'allCategories',
             'eventImages',
             'categoryChart',
@@ -329,6 +345,22 @@ class AdminController extends Controller
         $roleLabel = $newRole === 'admin' ? 'Quản trị viên' : 'Thành viên';
 
         return back()->with('success', 'Đã chuyển vai trò của ' . $target->ho_ten . ' thành ' . $roleLabel . '.');
+    }
+
+    /**
+     * Ẩn hoặc hiện lại đánh giá sự kiện (kiểm duyệt nội dung vi phạm).
+     */
+    public function toggleReviewVisibility($id)
+    {
+        if ($response = $this->requireAdmin()) {
+            return $response;
+        }
+
+        $review = DanhGia::findOrFail($id);
+        $newStatus = $review->trang_thai === 'hien' ? 'an' : 'hien';
+        $review->update(['trang_thai' => $newStatus]);
+
+        return back()->with('success', $newStatus === 'an' ? 'Đã ẩn đánh giá.' : 'Đã hiển thị lại đánh giá.');
     }
 
     private function requireAdmin()

@@ -22,6 +22,8 @@ class HomeController extends Controller
         // Nếu là Thành viên (User) hoặc Khách -> Hiển thị trang danh sách sự kiện (User index)
         $categories = DanhMuc::all();
         $eventsQuery = SuKien::with(['danhMuc', 'dangKys'])
+            ->withAvg(['danhGias as diem_trung_binh' => fn ($query) => $query->where('trang_thai', 'hien')], 'so_sao')
+            ->withCount(['danhGias as so_luot_danh_gia' => fn ($query) => $query->where('trang_thai', 'hien')])
             ->whereIn('trang_thai', ['cong_khai', 'da_huy']);
 
         $search = trim((string) $request->query('search', ''));

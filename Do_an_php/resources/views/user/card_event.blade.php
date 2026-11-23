@@ -51,9 +51,16 @@
 
     <div class="card-body d-flex flex-column justify-content-between p-3 p-sm-4">
       <div class="min-w-0">
-        <div class="d-flex align-items-center gap-2 text-muted small mb-2">
-          <i class="fa-regular fa-calendar flex-shrink-0"></i>
-          <span>{{ $dateFormatted }}</span>
+        <div class="d-flex align-items-center justify-content-between gap-2 text-muted small mb-2">
+          <div class="d-flex align-items-center gap-2">
+            <i class="fa-regular fa-calendar flex-shrink-0"></i>
+            <span>{{ $dateFormatted }}</span>
+          </div>
+          @if(($event->so_luot_danh_gia ?? 0) > 0 && $event->diem_trung_binh !== null)
+            <span class="text-warning-emphasis fw-semibold text-nowrap">
+              ★ {{ number_format((float) $event->diem_trung_binh, 1) }} ({{ $event->so_luot_danh_gia }})
+            </span>
+          @endif
         </div>
 
         <h3 class="fs-5 fw-bold text-dark mb-2 line-clamp-2 text-break">

@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 
 // Trang chủ & Danh sách sự kiện
@@ -30,6 +31,12 @@ Route::middleware('auth.custom')->group(function () {
     Route::get('/profile', [DashboardController::class, 'profile'])->name('Dashboard.profile');
     Route::post('/profile', [DashboardController::class, 'updateProfile'])->name('Dashboard.updateProfile');
     Route::post('/profile/change-password', [DashboardController::class, 'changePassword'])->name('Dashboard.changePassword');
+
+    // Đánh giá sau sự kiện
+    Route::post('/event/{id}/reviews', [ReviewController::class, 'store'])
+        ->middleware('throttle:10,1')
+        ->name('Reviews.store');
+    Route::delete('/reviews/{id}', [ReviewController::class, 'destroy'])->name('Reviews.destroy');
 });
 
 Route::prefix('admin')->name('admin.')->middleware(['auth.custom', 'admin'])->group(function () {
@@ -48,6 +55,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth.custom', 'admin'])->gr
     // Quản lý người dùng (khóa/mở khóa, đổi vai trò)
     Route::put('/users/{id}/status', [AdminController::class, 'updateUserStatus'])->name('users.status');
     Route::put('/users/{id}/role', [AdminController::class, 'updateUserRole'])->name('users.role');
+
+    // Quản lý đánh giá sự kiện (ẩn / hiện)
+    Route::put('/reviews/{id}/visibility', [AdminController::class, 'toggleReviewVisibility'])->name('reviews.visibility');
 
     // Quản lý sự kiện (CRUD qua modal)
     Route::resource('event', EventController::class)->except(['show', 'create', 'edit']);
