@@ -71,7 +71,8 @@ class AuthSecurityTest extends TestCase
 
     public function test_authenticated_user_is_redirected_away_from_password_reset_routes(): void
     {
-        $user = NguoiDung::factory()->create();
+        /** @var NguoiDung $user */
+        $user = NguoiDung::factory()->createOne();
 
         $this->actingAs($user)->get('/reset-password/sample-token')
             ->assertRedirect(route('Dashboard.myTicket'));
@@ -81,7 +82,8 @@ class AuthSecurityTest extends TestCase
 
     public function test_hashed_password_still_logs_in_and_plain_current_password_cannot_change_it(): void
     {
-        $user = NguoiDung::factory()->create(['mat_khau' => Hash::make('secret123')]);
+        /** @var NguoiDung $user */
+        $user = NguoiDung::factory()->createOne(['mat_khau' => Hash::make('secret123')]);
         $this->post('/login', ['email' => $user->email, 'password' => 'secret123'])
             ->assertRedirect('/');
         $this->assertAuthenticatedAs($user);
