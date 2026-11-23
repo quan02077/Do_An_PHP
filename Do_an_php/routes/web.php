@@ -45,7 +45,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth.custom', 'admin'])->gr
     Route::put('/registrations/{id}/status', [AdminController::class, 'updateRegistrationStatus'])->name('registrations.status');
     Route::post('/check-in', [AdminController::class, 'checkInTicket'])->name('checkin');
 
-    // Quản lý sự kiện (CRUD qua modal)
+    // Quản lý sự kiện (CRUD qua modal & AI điền nháp)
+    Route::post('/event/ai-draft', [AdminController::class, 'draftEventWithAi'])
+        ->middleware('throttle:10,1')
+        ->name('event.ai-draft');
     Route::resource('event', EventController::class)->except(['show', 'create', 'edit']);
 });
 
