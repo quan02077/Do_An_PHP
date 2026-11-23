@@ -19,12 +19,14 @@ class DangKy extends Model
         'thoi_gian_dang_ky',
         'trang_thai',
         'ghi_chu',
+        'da_nhac_lich_luc',
     ];
 
     protected function casts(): array
     {
         return [
             'thoi_gian_dang_ky' => 'datetime',
+            'da_nhac_lich_luc' => 'datetime',
         ];
     }
 
