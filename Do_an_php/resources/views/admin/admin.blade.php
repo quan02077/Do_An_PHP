@@ -30,6 +30,9 @@
                     <button type="button" onclick="switchAdminTab('categories')" id="adm-tab-categories" class="btn btn-sm rounded-pill fw-medium text-secondary px-3 py-2 text-nowrap flex-shrink-0">
                         Danh mục sự kiện
                     </button>
+                    <button type="button" onclick="switchAdminTab('users')" id="adm-tab-users" class="btn btn-sm rounded-pill fw-medium text-secondary px-3 py-2 text-nowrap flex-shrink-0">
+                        Người dùng
+                    </button>
                 </div>
             </div>
 
@@ -54,6 +57,9 @@
 
         <!-- Tab 3: Danh mục sự kiện -->
         @include('admin.tabs.categories')
+
+        <!-- Tab 4: Quản lý người dùng -->
+        @include('admin.tabs.users')
     </div>
 </div>
 
@@ -65,7 +71,7 @@
 @push('scripts')
 <script>
     function switchAdminTab(tab) {
-        const tabs = ["events", "registrations", "categories"];
+        const tabs = ["events", "registrations", "categories", "users"];
         tabs.forEach((t) => {
             const btn = document.getElementById("adm-tab-" + t);
             const view = document.getElementById("adm-view-" + t);

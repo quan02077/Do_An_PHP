@@ -19,6 +19,15 @@ class AuthenticateCustom
                 ->with('warning', 'Vui lòng đăng nhập để sử dụng chức năng này.');
         }
 
+        if ($user->trang_thai === 'bi_khoa') {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return redirect()->route('Auth.index')
+                ->with('error', 'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.');
+        }
+
         return $next($request);
     }
 }

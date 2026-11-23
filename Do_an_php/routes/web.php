@@ -45,6 +45,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth.custom', 'admin'])->gr
     Route::put('/registrations/{id}/status', [AdminController::class, 'updateRegistrationStatus'])->name('registrations.status');
     Route::post('/check-in', [AdminController::class, 'checkInTicket'])->name('checkin');
 
+    // Quản lý người dùng (khóa/mở khóa, đổi vai trò)
+    Route::put('/users/{id}/status', [AdminController::class, 'updateUserStatus'])->name('users.status');
+    Route::put('/users/{id}/role', [AdminController::class, 'updateUserRole'])->name('users.role');
+
     // Quản lý sự kiện (CRUD qua modal)
     Route::resource('event', EventController::class)->except(['show', 'create', 'edit']);
 });

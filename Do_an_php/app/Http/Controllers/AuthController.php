@@ -35,6 +35,10 @@ class AuthController extends Controller
             return back()->withErrors(['password' => 'Mật khẩu không chính xác.'])->withInput();
         }
 
+        if ($user->trang_thai === 'bi_khoa') {
+            return back()->withErrors(['email' => 'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.'])->withInput();
+        }
+
         Auth::login($user);
         $request->session()->regenerate();
 
@@ -100,6 +104,13 @@ class AuthController extends Controller
             return redirect()->route('Dashboard.myTicket');
         }
 
+        $genericMessage = 'Nếu email tồn tại trong hệ thống, liên kết đặt lại mật khẩu đã được gửi. Vui lòng kiểm tra hộp thư đến hoặc thư rác (Spam).';
+
+        $account = NguoiDung::where('email', $request->validated('email'))->first();
+        if ($account && $account->trang_thai === 'bi_khoa') {
+            return back()->with('status', $genericMessage);
+        }
+
         try {
             $status = Password::sendResetLink($request->only('email'));
         } catch (\Throwable $e) {
@@ -119,7 +130,7 @@ class AuthController extends Controller
                 ->withErrors(['email' => 'Bạn vừa gửi yêu cầu đặt lại mật khẩu. Vui lòng đợi ít nhất 1 phút trước khi thử lại.']);
         }
 
-        return back()->with('status', 'Nếu email tồn tại trong hệ thống, liên kết đặt lại mật khẩu đã được gửi. Vui lòng kiểm tra hộp thư đến hoặc thư rác (Spam).');
+        return back()->with('status', $genericMessage);
     }
 
     public function showResetForm(string $token, Request $request)
