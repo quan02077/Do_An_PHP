@@ -232,6 +232,14 @@ Nếu dùng Gmail App Password/Mailtrap có thể đổi sang `MAIL_MAILER=smtp`
   - Xem nội dung email khi dùng `MAIL_MAILER=log` trong `storage/logs/laravel.log`.
 - **Đánh giá sau sự kiện**: chỉ thành viên (`hoat_dong`, không phải admin) đã check-in (`trang_thai = da_tham_gia`) của sự kiện **đã kết thúc** mới được tạo/sửa/xóa đánh giá (1–5 sao, tối đa 1 đánh giá/người/sự kiện). Điểm trung bình hiển thị trên thẻ sự kiện và trang chi tiết; admin có thể ẩn/hiện đánh giá vi phạm tại tab `Đánh giá` trong `/admin`.
 
+### Tính năng Soạn sự kiện bằng AI (Groq)
+Để dùng tính năng **Soạn sự kiện bằng AI** trong modal *"Thêm sự kiện mới"* của trang quản trị (gọi Groq `openai/gpt-oss-120b` với `response_format: json_schema`, chỉ điền nháp vào form và không ghi thẳng vào CSDL), bổ sung khóa vào `.env`:
+```env
+GROQ_API_KEY=your_groq_api_key
+GROQ_MODEL=openai/gpt-oss-120b
+```
+Nếu chưa cấu hình `GROQ_API_KEY`, form thêm sự kiện vẫn nhập tay bình thường và nút AI sẽ báo thông báo tiếng Việt thân thiện.
+
 Realtime dùng Reverb. `.env.example` chứa khóa mẫu chỉ dành cho demo local; khi chạy ngoài máy cá nhân hãy thay `REVERB_APP_KEY`, `REVERB_APP_SECRET` và `REVERB_APP_ID`. Đặt `BROADCAST_CONNECTION=reverb`, `REVERB_HOST=127.0.0.1`, `REVERB_PORT=8080`, `REVERB_SCHEME=http`. Nếu mở web bằng điện thoại cùng Wi-Fi, khởi chạy Reverb trên `0.0.0.0:8080`; JavaScript sẽ kết nối đến IP máy tính trong thanh địa chỉ. Cho phép cổng 8000 và 8080 qua tường lửa nếu cần.
 
 Trình duyệt điện thoại thường không cấp camera cho trang `http://<IP-LAN>:8000` vì camera yêu cầu secure context. Để demo quét camera, dùng `localhost` trên chính máy có webcam hoặc triển khai HTTPS/WSS hợp lệ; khi dùng điện thoại qua HTTP LAN có thể nhập mã vé thủ công.

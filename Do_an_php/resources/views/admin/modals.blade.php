@@ -12,6 +12,25 @@
       <div class="modal-body p-3 p-sm-4">
         <form id="add-event-form" method="POST" action="{{ route('admin.event.store') }}" enctype="multipart/form-data">
           @csrf
+          <div class="bg-light border rounded-3 p-3 mb-3">
+            <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+              <label for="ai-draft-input" class="form-label small fw-semibold text-dark mb-0">
+                <i class="fa-solid fa-wand-magic-sparkles me-1 text-primary"></i>Mô tả nhanh bằng AI
+              </label>
+              <button type="button" id="ai-draft-btn" class="btn btn-sm btn-outline-dark rounded-3 px-3 fw-medium d-inline-flex align-items-center gap-1">
+                <span id="ai-draft-spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                <span id="ai-draft-btn-label">Soạn bằng AI</span>
+              </button>
+            </div>
+            <textarea
+              id="ai-draft-input"
+              rows="2"
+              class="form-control form-control-sm py-2 bg-white"
+              placeholder="Hội thảo AI 200 chỗ, 9h sáng 15/12 đến 11h30 ở hội trường A, vé 50 nghìn, do CLB Tin học tổ chức"></textarea>
+            <div class="form-text mt-1 mb-0">AI chỉ điền nháp, vui lòng kiểm tra trước khi lưu.</div>
+            <div id="ai-draft-message" class="alert d-none mt-2 mb-0 py-2 px-3 small" role="alert"></div>
+          </div>
+
           <div class="mb-3">
             <label for="new-ev-title" class="form-label small fw-medium text-dark mb-1">Tên sự kiện <span class="text-danger">*</span></label>
             <input type="text" name="ten_su_kien" id="new-ev-title" required class="form-control form-control-sm py-2" placeholder="Ví dụ: Hội thảo Công nghệ AI Summit 2026..." />
@@ -288,3 +307,7 @@
     </div>
   </div>
 </div>
+
+@push('scripts')
+  @include('admin.partials.ai_draft_script')
+@endpush

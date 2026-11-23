@@ -59,7 +59,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth.custom', 'admin'])->gr
     // Quản lý đánh giá sự kiện (ẩn / hiện)
     Route::put('/reviews/{id}/visibility', [AdminController::class, 'toggleReviewVisibility'])->name('reviews.visibility');
 
-    // Quản lý sự kiện (CRUD qua modal)
+    // Quản lý sự kiện (CRUD qua modal & AI điền nháp)
+    Route::post('/event/ai-draft', [AdminController::class, 'draftEventWithAi'])
+        ->middleware('throttle:10,1')
+        ->name('event.ai-draft');
     Route::resource('event', EventController::class)->except(['show', 'create', 'edit']);
 });
 

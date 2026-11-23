@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Events\TicketCheckedIn;
 use App\Events\TicketCountsChanged;
+use App\Exceptions\AiDraftException;
+use App\Http\Requests\AiEventDraftRequest;
 use App\Http\Requests\UpdateUserRoleRequest;
 use App\Http\Requests\UpdateUserStatusRequest;
 use App\Models\DangKy;
@@ -11,6 +13,8 @@ use App\Models\DanhGia;
 use App\Models\DanhMuc;
 use App\Models\NguoiDung;
 use App\Models\SuKien;
+use App\Services\AiEventDraftService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -361,6 +365,28 @@ class AdminController extends Controller
         $review->update(['trang_thai' => $newStatus]);
 
         return back()->with('success', $newStatus === 'an' ? 'Đã ẩn đánh giá.' : 'Đã hiển thị lại đánh giá.');
+    }
+
+    /**
+     * Dùng AI (Groq) soạn nháp thông tin sự kiện để điền sẵn vào form thêm mới (không ghi DB).
+     */
+    public function draftEventWithAi(AiEventDraftRequest $request, AiEventDraftService $service): JsonResponse
+    {
+        $danhMucs = DanhMuc::query()->orderBy('id')->get(['id', 'ten_danh_muc']);
+
+        try {
+            $data = $service->draft($request->validated('mo_ta_nhanh'), $danhMucs);
+        } catch (AiDraftException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], $e->status());
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $data,
+        ]);
     }
 
     private function requireAdmin()
