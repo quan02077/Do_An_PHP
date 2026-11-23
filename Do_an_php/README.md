@@ -209,7 +209,7 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-Đặt `APP_URL` đúng địa chỉ đang mở, ví dụ `http://127.0.0.1:8000`. Quên mật khẩu gửi email tiếng Việt chứa liên kết token có thời hạn (60 phút) qua **Gmail OAuth2** (`MAIL_MAILER=gmail_oauth2`, hỗ trợ cả `MAIL_GMAIL_MODE=smtp` cho SMTP XOAUTH2 và `MAIL_GMAIL_MODE=api` cho Gmail REST API):
+Đặt `APP_URL` đúng địa chỉ đang mở, ví dụ `http://127.0.0.1:8000`. `.env.example` đặt mặc định `MAIL_MAILER=log` (email quên mật khẩu/nhắc lịch ghi vào `storage/logs/laravel.log`) để máy clone mới chạy thử không bị lỗi. Khi muốn gửi email thật, đổi `MAIL_MAILER=smtp` (Gmail App Password / Mailtrap) hoặc `MAIL_MAILER=gmail_oauth2` (hỗ trợ cả `MAIL_GMAIL_MODE=smtp` cho SMTP XOAUTH2 và `MAIL_GMAIL_MODE=api` cho Gmail REST API):
 ```env
 MAIL_MAILER=gmail_oauth2
 MAIL_GMAIL_MODE=smtp
@@ -222,7 +222,6 @@ GMAIL_OAUTH_REFRESH_TOKEN=your_google_refresh_token
 MAIL_FROM_ADDRESS="your_email@gmail.com"
 MAIL_FROM_NAME="${APP_NAME}"
 ```
-Nếu dùng Gmail App Password/Mailtrap có thể đổi sang `MAIL_MAILER=smtp`, hoặc chạy demo offline với `MAIL_MAILER=log` rồi mở `storage/logs/laravel.log` để lấy liên kết đặt lại mật khẩu.
 
 ### Tính năng Quản lý người dùng, Nhắc lịch tự động & Đánh giá sau sự kiện
 - **Quản lý người dùng (Tab `Người dùng` trong `/admin`)**: tìm kiếm theo họ tên/email/SĐT, lọc vai trò & trạng thái, khóa/mở khóa (`bi_khoa`/`hoat_dong`) và đổi vai trò (`user`/`admin`). Không cho xóa tài khoản để bảo toàn lịch sử vé; không cho tự khóa/tự hạ quyền và không khóa/hạ quyền admin cuối cùng. **Khi khóa tài khoản, các vé `cho_duyet`/`da_xac_nhan` trước đó vẫn được giữ nguyên** (chỉ chặn đăng nhập, tự đăng xuất ở request kế tiếp nếu đang đăng nhập và chặn thao tác mới).
