@@ -116,29 +116,49 @@
         crossorigin="anonymous"></script>
 
 <script>
-// 1. Hàm xử lý khi quét thành công mã QR (Y hệt trong video)
+// Vá lỗi của thư viện html5-qrcode khi thao tác DOM gỡ bỏ node chưa sẵn sàng
+(function() {
+    const originalRemoveChild = Node.prototype.removeChild;
+    Node.prototype.removeChild = function(child) {
+        if (!child || !(child instanceof Node)) {
+            return null;
+        }
+        try {
+            return originalRemoveChild.apply(this, arguments);
+        } catch (e) {
+            return null;
+        }
+    };
+})();
+
+// 1. Hàm xử lý khi quét thành công mã QR
 function onScanSuccess(decodedText) {
     guiCheckIn(decodedText);
 }
 
-// 2. Khởi tạo Scanner tự động tạo giao diện (Y hệt trong video)
+// 2. Khởi tạo Scanner tự động tạo giao diện
 let html5QrcodeScanner = null;
 
 function khoiTaoScanner() {
-    if (!html5QrcodeScanner && document.getElementById('reader')) {
+    const container = document.getElementById('adm-view-registrations');
+    const readerEl = document.getElementById('reader');
+    if (!container || container.classList.contains('d-none') || !readerEl) {
+        return; // Không khởi tạo khi tab đang ẩn
+    }
+    if (!html5QrcodeScanner) {
         html5QrcodeScanner = new Html5QrcodeScanner(
             "reader", 
             { 
                 fps: 10, 
                 qrbox: { width: 220, height: 220 } 
-            }
+            },
+            /* verbose= */ false
         );
-        html5QrcodeScanner.render(onScanSuccess);
+        html5QrcodeScanner.render(onScanSuccess, function onScanFailure(error) {
+            // Bỏ qua lỗi quét từng khung hình khi chưa thấy mã QR
+        });
     }
 }
-
-// Khởi chạy scanner
-setTimeout(khoiTaoScanner, 300);
 
 // 3. Hàm gửi mã vé lên Laravel API bằng fetch()
 let isProcessingCheckin = false;
