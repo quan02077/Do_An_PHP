@@ -1,7 +1,3 @@
-{{-- ========================================================================= --}}
-{{-- 1. MODALS QUẢN LÝ SỰ KIỆN (THÊM MỚI & CHỈNH SỬA)                         --}}
-{{-- ========================================================================= --}}
-
 <!-- MODAL: THÊM SỰ KIỆN MỚI -->
 <div class="modal fade" id="add-event-modal" tabindex="-1" aria-labelledby="addEventModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -201,10 +197,6 @@
   </div>
 </div>
 
-
-{{-- ========================================================================= --}}
-{{-- 2. MODALS QUẢN LÝ DANH MỤC (THÊM MỚI & CHỈNH SỬA)                         --}}
-{{-- ========================================================================= --}}
 
 <!-- MODAL: THÊM DANH MỤC MỚI -->
 <div class="modal fade" id="add-category-modal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true" style="z-index: 1060;">

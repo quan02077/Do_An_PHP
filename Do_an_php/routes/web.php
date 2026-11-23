@@ -7,7 +7,6 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
-/* ==================== 1. USER / PUBLIC ==================== */
 // Trang chủ & Danh sách sự kiện
 Route::get('/', [HomeController::class, 'index'])->name('Home.index');
 Route::get('/home', [HomeController::class, 'index'])->name('home');
@@ -15,7 +14,6 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 // Chi tiết sự kiện (công khai)
 Route::get('/event/{event}', [EventController::class, 'show'])->name('Event.show');
 
-/* ==================== 2. USER DASHBOARD (CẦN ĐĂNG NHẬP) ==================== */
 Route::middleware('auth.custom')->group(function () {
     // Đặt vé tham gia sự kiện
     Route::post('/event/{id}/book', [EventController::class, 'bookTicket'])->name('Event.book');
@@ -34,7 +32,6 @@ Route::middleware('auth.custom')->group(function () {
     Route::post('/profile/change-password', [DashboardController::class, 'changePassword'])->name('Dashboard.changePassword');
 });
 
-/* ==================== 3. ADMIN (CHUẨN BUOI9: PREFIX 'admin' & NAME 'admin.') ==================== */
 Route::prefix('admin')->name('admin.')->middleware(['auth.custom', 'admin'])->group(function () {
     // Bảng quản trị Admin
     Route::get('/', [AdminController::class, 'index'])->name('index');
@@ -52,7 +49,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth.custom', 'admin'])->gr
     Route::resource('event', EventController::class)->except(['show', 'create', 'edit']);
 });
 
-/* ==================== 4. AUTHENTICATION & TÀI KHOẢN ==================== */
 Route::get('/auth', [AuthController::class, 'index'])->name('Auth.index');
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1')->name('Auth.login');
 Route::post('/register', [AuthController::class, 'register'])->name('Auth.register');
